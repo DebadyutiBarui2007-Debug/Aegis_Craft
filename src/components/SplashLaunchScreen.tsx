@@ -14,7 +14,7 @@ export const SplashLaunchScreen: React.FC<SplashLaunchScreenProps> = ({ onComple
     // 0.5s: Progress to 55%
     const timer1 = setTimeout(() => {
       setProgress(55);
-      setStatusText('Syncing PostGIS Radar (Bengaluru 12.9784° N, 77.6408° E)...');
+      setStatusText('Establishing Secure SSL / SSE Live Sync Node...');
     }, 500);
 
     // 1.1s: Progress to 88%
@@ -117,7 +117,7 @@ export const SplashLaunchScreen: React.FC<SplashLaunchScreenProps> = ({ onComple
           </p>
 
           <p className="text-xs text-slate-300 max-w-sm font-sans mb-6 leading-relaxed">
-            Bengaluru Sector 4 Radar • Dynamic ₹ Escrow Vault • Direct Trade Matching
+            Real-Time Live Bidding • Bank-Guaranteed Escrow • Verified Professional Matching
           </p>
 
           {/* Liquid Glass Progress Bar */}
@@ -144,15 +144,15 @@ export const SplashLaunchScreen: React.FC<SplashLaunchScreenProps> = ({ onComple
             </div>
             <div className="bg-slate-900/80 border border-slate-800 rounded-lg p-2 flex flex-col items-center">
               <span className="text-teal-400 font-semibold flex items-center gap-1">
-                <MapPin className="w-3 h-3" /> Bengaluru
+                <Zap className="w-3 h-3" /> Live Bids
               </span>
-              <span className="text-[10px] text-slate-400">ST_DWithin Radar</span>
+              <span className="text-[10px] text-slate-400">Real-Time Match</span>
             </div>
             <div className="bg-slate-900/80 border border-slate-800 rounded-lg p-2 flex flex-col items-center">
               <span className="text-amber-400 font-semibold flex items-center gap-1">
-                <Zap className="w-3 h-3" /> +91 KYC
+                <ShieldCheck className="w-3 h-3" /> KYC Pro
               </span>
-              <span className="text-[10px] text-slate-400">Verified Pros</span>
+              <span className="text-[10px] text-slate-400">Verified Trades</span>
             </div>
           </div>
 
