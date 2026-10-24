@@ -16,8 +16,7 @@
 
 The platform is compiled, containerized, and deployed on Google Cloud Run with official `.run.app` domains:
 
-- **Production / Live Application URL**: [https://ais-pre-mobhbu24disinjoofkicyf-102563679351.asia-east1.run.app](https://ais-pre-mobhbu24disinjoofkicyf-102563679351.asia-east1.run.app)
-- **Development Service URL**: [https://ais-dev-mobhbu24disinjoofkicyf-102563679351.asia-east1.run.app](https://ais-dev-mobhbu24disinjoofkicyf-102563679351.asia-east1.run.app)
+- **Production / Live Application URL**: [[https://ais-pre-mobhbu24disinjoofkicyf-102563679351.asia-east1.run.app](https://ageis-craft-hawkinslab-product.ai.studio)](https://ais-pre-mobhbu24disinjoofkicyf-102563679351.asia-east1.run.app)
 
 ---
 
