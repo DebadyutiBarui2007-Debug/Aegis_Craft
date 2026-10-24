@@ -6,7 +6,6 @@ interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onOpenSos: () => void;
-  onRoleSwitch: (role: 'customer' | 'worker_pro') => void;
   onOpenAuth?: () => void;
   onLogout?: () => void;
 }
@@ -16,7 +15,6 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   onOpenSos,
-  onRoleSwitch,
   onOpenAuth,
   onLogout,
 }) => {
@@ -53,7 +51,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Zone 2: Desktop Navigation Links (Visible on 2XL >= 1400px to prevent any overcrowding) */}
+        {/* Zone 2: Desktop Navigation Links */}
         <nav className="hidden 2xl:flex items-center gap-1 shrink-0">
           {(!currentUser || isCustomer) && (
             <>
@@ -141,30 +139,42 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="text-[11px] md:text-xs font-bold uppercase tracking-wider whitespace-nowrap">112 SOS</span>
           </button>
 
-          {/* Account Profile Pill Button */}
-          <button
-            onClick={onOpenAuth}
-            className="flex items-center gap-2 p-1 md:p-1.5 md:pl-2.5 rounded-xl bg-[#171f33]/90 hover:bg-[#222a3d] border border-white/10 hover:border-[#4edea3]/40 text-left transition-all cursor-pointer shrink-0"
-            type="button"
-            title="Account Settings & Role Switcher"
-          >
-            <div className="hidden sm:flex flex-col text-right max-w-[100px] md:max-w-[120px] leading-tight shrink-0">
-              <span className="text-xs font-bold text-white truncate">
-                {currentUser?.name || 'Account'}
-              </span>
-              <span className="text-[10px] text-[#4edea3] truncate font-mono">
-                {currentUser ? (isWorker ? 'Worker Pro' : 'Customer') : 'Portal'}
-              </span>
+          {/* Account Profile Pill Button & Log Out */}
+          {currentUser ? (
+            <div className="flex items-center gap-1 bg-[#171f33]/90 border border-white/10 p-1 md:p-1.5 rounded-xl shrink-0">
+              <div className="flex items-center gap-2 px-2">
+                <div className="relative w-7 h-7 rounded-lg bg-[#060e20] ring-1 ring-[#4edea3]/50 flex items-center justify-center overflow-hidden shrink-0">
+                  {currentUser.avatar ? (
+                    <img alt={currentUser.name} className="w-full h-full object-cover" src={currentUser.avatar} />
+                  ) : (
+                    <span className="material-symbols-outlined text-base text-[#4edea3]">person</span>
+                  )}
+                </div>
+                <div className="hidden sm:flex flex-col leading-tight">
+                  <span className="text-xs font-bold text-white truncate max-w-[100px]">{currentUser.name}</span>
+                  <span className="text-[10px] text-[#4edea3] font-mono">{isWorker ? 'Worker Pro' : 'Customer'}</span>
+                </div>
+              </div>
+              <button
+                onClick={onLogout}
+                className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-[#222a3d] hover:bg-red-500/20 text-[#bec8d2] hover:text-red-400 border border-white/10 hover:border-red-500/30 transition-all cursor-pointer flex items-center gap-1"
+                type="button"
+                title="Log Out of Account"
+              >
+                <span className="material-symbols-outlined text-sm">logout</span>
+                <span className="hidden md:inline text-[11px]">Log Out</span>
+              </button>
             </div>
-            <div className="relative w-7 h-7 md:w-8 md:h-8 rounded-lg bg-[#060e20] ring-1 ring-[#4edea3]/50 flex items-center justify-center overflow-hidden shrink-0">
-              {currentUser?.avatar ? (
-                <img alt={currentUser.name} className="w-full h-full object-cover shrink-0" src={currentUser.avatar} />
-              ) : (
-                <span className="material-symbols-outlined text-base md:text-lg text-[#4edea3]">person</span>
-              )}
-              <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#4edea3] ring-1 ring-[#060e20]"></span>
-            </div>
-          </button>
+          ) : (
+            <button
+              onClick={onOpenAuth}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs hover:from-emerald-400 hover:to-teal-400 shadow-md transition-all cursor-pointer shrink-0"
+              type="button"
+            >
+              <span className="material-symbols-outlined text-base">login</span>
+              <span>Account Gateway</span>
+            </button>
+          )}
 
           {/* Mobile/Tablet Menu Hamburger Button (< 1400px) */}
           <button
@@ -183,35 +193,31 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Mobile / Tablet / Laptop Slide-Down Navigation Drawer (< 1400px) */}
       {isMobileMenuOpen && (
         <div className="2xl:hidden bg-[#0a1224]/98 backdrop-blur-2xl border-b border-white/10 px-4 py-4 shadow-2xl animate-fade-in space-y-4">
-          {/* Quick Role Switcher */}
+          {/* Logged in Account Banner */}
           {currentUser && (
-            <div className="p-1 rounded-xl bg-[#171f33] border border-white/10 flex items-center gap-1">
+            <div className="p-3 rounded-xl bg-[#171f33] border border-white/10 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#060e20] ring-1 ring-[#4edea3]/50 flex items-center justify-center overflow-hidden">
+                  {currentUser.avatar ? (
+                    <img alt={currentUser.name} className="w-full h-full object-cover" src={currentUser.avatar} />
+                  ) : (
+                    <span className="material-symbols-outlined text-lg text-[#4edea3]">person</span>
+                  )}
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white">{currentUser.name}</div>
+                  <div className="text-[10px] text-[#4edea3] font-mono">{isWorker ? 'Worker Pro Account' : 'Customer Account'}</div>
+                </div>
+              </div>
               <button
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  isCustomer
-                    ? 'bg-[#222a3d] text-[#89ceff] shadow-md border border-[#89ceff]/30'
-                    : 'text-[#bec8d2] hover:text-white'
-                }`}
                 onClick={() => {
-                  onRoleSwitch('customer');
                   setIsMobileMenuOpen(false);
+                  onLogout?.();
                 }}
+                className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-500/20 text-red-300 border border-red-500/30 flex items-center gap-1 cursor-pointer"
               >
-                Customer View
-              </button>
-              <button
-                className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1 transition-all cursor-pointer ${
-                  isWorker
-                    ? 'bg-[#222a3d] text-[#4edea3] shadow-md border border-[#4edea3]/30'
-                    : 'text-[#bec8d2] hover:text-white'
-                }`}
-                onClick={() => {
-                  onRoleSwitch('worker_pro');
-                  setIsMobileMenuOpen(false);
-                }}
-              >
-                <span className="w-2 h-2 rounded-full bg-[#4edea3]"></span>
-                Worker Pro Terminal
+                <span className="material-symbols-outlined text-sm">logout</span>
+                <span>Log Out</span>
               </button>
             </div>
           )}

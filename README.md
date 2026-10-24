@@ -42,8 +42,23 @@ AegisCraft is localized for Indian infrastructure:
 - **Geographic Node**: Bengaluru Metro Sector 4 (Indiranagar, Koramangala, Domlur, Whitefield, HSR Layout) centered at `12.9784° N, 77.6408° E`.
 - **National Emergency Interconnect**: Direct 112 National Emergency Response Support System (ERSS India) protocol instead of foreign dispatch numbers.
 - **Telecom & Authentication**: Indian `+91` 10-digit mobile number authentication with persistent 256-bit session tokens in `localStorage`.
-- **Time Zone & Network Standards**: IST `Asia/Kolkata` timestamps across all audit logs, chat events, and telemetry streams.
-- **Brand Authorized Hubs Directory**: Genuine verified service centers for Havells Galaxy, Voltas Care, Jaquar Orient, Godrej SmartCare, Schneider Electric, LG Best Care, Dr. Fixit Waterproofing, and CenturyPly Woodcare with real published addresses, verified phone contacts, opening hours, and official websites.
+## 🔒 Strict Single-Role Account Separation & Security Architecture
+
+AegisCraft enforces strict, server-authoritative role isolation between Customer accounts (`customer`) and Worker Pro accounts (`worker_pro`):
+
+- **Single Authoritative Role**: Each account is assigned one authoritative role stored in the backend database (`db.users`).
+- **No In-Session Role Toggling**: Once logged in, an account cannot switch roles or toggle access modes. Role modification requests on active sessions return `403 Forbidden`.
+- **Frontend Interface Guards**:
+  - `customer` accounts can access only customer views (`discovery`, `radar`, `bidding`, `tracking`, `mcp`). Direct navigation to `worker` displays an access restriction banner.
+  - `worker_pro` accounts can access only worker views (`worker`, `tracking`, `mcp`). Direct navigation to customer discovery views displays an access restriction banner.
+- **Backend Authorization Controls**:
+  - Job creation (`POST /api/v1/jobs`) is restricted strictly to authenticated `customer` accounts.
+  - Worker bid submission (`POST /api/v1/jobs/:id/bids`) requires authenticated `worker_pro` credentials.
+  - Escrow locking (`POST /api/v1/jobs/:id/bids/:bidId/accept`) requires ownership check (`job.customerId === user.id`).
+- **Account Switching & Logout Protocol**:
+  - To switch between customer and worker interfaces, the user clicks **Log Out**.
+  - Logging out invalidates the session token on the server and clears client storage.
+  - The application returns to the authentication portal where the user can log in to or register a separate account with the desired role.
 
 ---
 

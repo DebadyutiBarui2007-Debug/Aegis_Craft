@@ -127,22 +127,22 @@ export default function App() {
     }
   };
 
-  // Handlers
-  const handleRoleSwitch = async (role: 'customer' | 'worker_pro') => {
-    try {
-      const res = await api.setRole(role);
-      setCurrentUser(res.user);
-      setHasUserAccount(true);
-      if (role === 'worker_pro') {
-        setActiveTab('worker');
-        showToast('Switched to Worker Pro Terminal Interface');
-      } else {
-        setActiveTab('discovery');
-        showToast('Switched to Customer View Interface');
+  // Tab Navigation Guard
+  const handleTabChange = (targetTab: string) => {
+    if (currentUser) {
+      if (currentUser.role === 'customer' && targetTab === 'worker') {
+        showToast('This area is available to worker accounts. Please log out and sign in with your worker account.');
+        return;
       }
-    } catch (e: any) {
-      console.error(e);
+      if (
+        currentUser.role === 'worker_pro' &&
+        (targetTab === 'discovery' || targetTab === 'radar' || targetTab === 'bidding')
+      ) {
+        showToast('This area is available to customer accounts. Please log out and sign in with your customer account.');
+        return;
+      }
     }
+    setActiveTab(targetTab);
   };
 
   const handleUpdateAddress = (newAddress: string) => {
@@ -245,12 +245,14 @@ export default function App() {
   const handleLogout = async () => {
     try {
       await api.logout();
+    } catch (err: any) {
+      console.warn('Logout request completed:', err);
+    } finally {
       setCurrentUser(null);
       setHasUserAccount(false);
-      showToast('Session ended. Please create an account or sign in.');
+      setActiveTab('discovery');
+      showToast('Logged out successfully. Session and credentials cleared.');
       setIsAuthModalOpen(true);
-    } catch (err: any) {
-      showToast(err.message || 'Logout error');
     }
   };
 
@@ -272,9 +274,8 @@ export default function App() {
         <Header
           currentUser={currentUser}
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
+          setActiveTab={handleTabChange}
           onOpenSos={() => setIsSosOpen(true)}
-          onRoleSwitch={handleRoleSwitch}
           onOpenAuth={() => setIsAuthModalOpen(true)}
           onLogout={handleLogout}
         />
@@ -282,6 +283,44 @@ export default function App() {
 
       {/* Main Application Content Body */}
       <main className="relative z-10 w-full pt-28 bg-[#0b1326] min-h-[calc(100vh-5rem)]">
+        {/* Customer Access Denial Fallback Banner */}
+        {currentUser?.role === 'customer' && activeTab === 'worker' && (
+          <div className="max-w-2xl mx-auto my-12 p-8 rounded-2xl bg-[#171f33] border border-amber-500/30 text-center space-y-4">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center">
+              <span className="material-symbols-outlined text-2xl">lock</span>
+            </div>
+            <h3 className="text-lg font-bold text-white">Worker Pro Area Restricted</h3>
+            <p className="text-xs text-[#bec8d2]">
+              This area is available to worker accounts. Please log out and sign in with your worker account to continue.
+            </p>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs uppercase tracking-wider cursor-pointer"
+            >
+              Log Out &amp; Switch Account
+            </button>
+          </div>
+        )}
+
+        {/* Worker Access Denial Fallback Banner */}
+        {currentUser?.role === 'worker_pro' && (activeTab === 'discovery' || activeTab === 'radar' || activeTab === 'bidding') && (
+          <div className="max-w-2xl mx-auto my-12 p-8 rounded-2xl bg-[#171f33] border border-emerald-500/30 text-center space-y-4">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center">
+              <span className="material-symbols-outlined text-2xl">lock</span>
+            </div>
+            <h3 className="text-lg font-bold text-white">Customer Area Restricted</h3>
+            <p className="text-xs text-[#bec8d2]">
+              This area is available to customer accounts. Please log out and sign in with your customer account to continue.
+            </p>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs uppercase tracking-wider cursor-pointer"
+            >
+              Log Out &amp; Switch Account
+            </button>
+          </div>
+        )}
+
         {/* Customer Interface Views (Active if Customer or guest before account creation) */}
         {(!currentUser || currentUser.role === 'customer') && (
           <>
@@ -291,9 +330,9 @@ export default function App() {
                 currentAddress={currentUser?.location.address || defaultLocation.address}
                 onOpenEditAddress={() => setIsAddressModalOpen(true)}
                 onOpenSos={() => setIsSosOpen(true)}
-                onSelectCategory={() => setActiveTab('radar')}
+                onSelectCategory={() => handleTabChange('radar')}
                 onExecuteDispatchSearch={handleExecuteDispatchSearch}
-                onNavigateToTracking={() => setActiveTab('tracking')}
+                onNavigateToTracking={() => handleTabChange('tracking')}
               />
             )}
 
@@ -311,14 +350,14 @@ export default function App() {
                 bids={bids}
                 onSubmitCounter={handleSubmitCounter}
                 onAcceptOffer={handleAcceptOffer}
-                onNavigateToTracking={() => setActiveTab('tracking')}
+                onNavigateToTracking={() => handleTabChange('tracking')}
               />
             )}
           </>
         )}
 
         {/* Worker Pro Interface View (Active ONLY if logged in as Worker Pro) */}
-        {currentUser?.role === 'worker_pro' && (activeTab === 'worker' || activeTab === 'discovery' || activeTab === 'radar' || activeTab === 'bidding') && activeJob && (
+        {currentUser?.role === 'worker_pro' && activeTab === 'worker' && activeJob && (
           <WorkerTerminalView
             job={activeJob}
             bids={bids}
@@ -363,7 +402,18 @@ export default function App() {
             <button onClick={() => showToast('Escrow Guarantee: Zero fee escrow vault backed by ₹25,000 30-day warranty.')} className="hover:text-white cursor-pointer">
               ₹ Escrow Guarantee
             </button>
-            <button onClick={() => handleRoleSwitch('worker_pro')} className="text-[#4edea3] hover:underline font-semibold cursor-pointer">
+            <button
+              onClick={() => {
+                if (currentUser?.role === 'customer') {
+                  showToast('To access the Technician Portal, please log out and sign in with a worker account.');
+                } else if (!currentUser) {
+                  setIsAuthModalOpen(true);
+                } else {
+                  handleTabChange('worker');
+                }
+              }}
+              className="text-[#4edea3] hover:underline font-semibold cursor-pointer"
+            >
               Technician Portal
             </button>
           </div>

@@ -96,24 +96,20 @@ app.post('/api/v1/auth/logout', (req: Request, res: Response) => {
   res.json({ success: true, message: 'Logged out successfully' });
 });
 
-app.post('/api/v1/auth/role', (req: Request, res: Response) => {
+// Helper: Extract authenticated user from Authorization header
+function getAuthUser(req: Request): any | null {
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Authentication required' });
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7);
+    return db.getUserByToken(token);
   }
-  const token = authHeader.substring(7);
-  const user = db.getUserByToken(token);
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid or expired session' });
-  }
+  return null;
+}
 
-  const { role } = req.body;
-  if (role === 'customer' || role === 'worker_pro') {
-    user.role = role;
-    db.users.set(user.id, user);
-    return res.json({ success: true, user });
-  }
-  return res.status(400).json({ error: 'Invalid role requested' });
+app.post('/api/v1/auth/role', (req: Request, res: Response) => {
+  return res.status(403).json({
+    error: 'Role modification on active accounts is prohibited. Please log out and sign in with a separate account.',
+  });
 });
 
 // Real Verified Indian Service Agencies & Business Hubs Directory
@@ -182,8 +178,21 @@ app.get('/api/v1/jobs', (req: Request, res: Response) => {
 });
 
 app.post('/api/v1/jobs', (req: Request, res: Response) => {
+  const user = getAuthUser(req);
+  if (!user) {
+    return res.status(401).json({ error: 'Authentication required. Please sign in.' });
+  }
+  if (user.role !== 'customer') {
+    return res.status(403).json({ error: 'Access denied. Only customer accounts can post new service job requests.' });
+  }
+
   try {
-    const job = db.createJob(req.body);
+    const job = db.createJob({
+      ...req.body,
+      customerId: user.id,
+      customerName: user.name,
+      customerPhone: user.phone,
+    });
     res.status(201).json({ job });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -205,14 +214,28 @@ app.get('/api/v1/jobs/:id/bids', (req: Request, res: Response) => {
 });
 
 app.post('/api/v1/jobs/:id/bids', (req: Request, res: Response) => {
+  const user = getAuthUser(req);
+  if (!user) {
+    return res.status(401).json({ error: 'Authentication required. Please sign in.' });
+  }
+
   const { proposedAmount, proposingParty, scopeNotes, workerId } = req.body;
+  const party = proposingParty || (user.role === 'worker_pro' ? 'WORKER' : 'CUSTOMER');
+
+  if (party === 'WORKER' && user.role !== 'worker_pro') {
+    return res.status(403).json({ error: 'Access denied. Worker Pro credentials required to submit worker bids.' });
+  }
+  if (party === 'CUSTOMER' && user.role !== 'customer') {
+    return res.status(403).json({ error: 'Access denied. Only customer accounts can submit customer counteroffers.' });
+  }
+
   try {
     const bid = db.submitCounteroffer(
       req.params.id,
       parseFloat(proposedAmount),
-      proposingParty || 'CUSTOMER',
+      party,
       scopeNotes || 'Proposed adjusted rate',
-      workerId
+      workerId || (user.role === 'worker_pro' ? user.id : undefined)
     );
     res.status(201).json({ bid });
   } catch (err: any) {
@@ -221,11 +244,24 @@ app.post('/api/v1/jobs/:id/bids', (req: Request, res: Response) => {
 });
 
 app.post('/api/v1/jobs/:id/bids/:bidId/accept', (req: Request, res: Response) => {
+  const user = getAuthUser(req);
+  if (!user) {
+    return res.status(401).json({ error: 'Authentication required. Please sign in.' });
+  }
+  if (user.role !== 'customer') {
+    return res.status(403).json({ error: 'Access denied. Only customer accounts can accept bids and lock escrow.' });
+  }
+
+  const job = db.jobs.find((j) => j.id === req.params.id);
+  if (job && job.customerId && job.customerId !== user.id) {
+    return res.status(403).json({ error: 'Access denied. You do not own this job request.' });
+  }
+
   try {
     const result = db.acceptOffer(req.params.id, req.params.bidId);
     res.json({
       success: true,
-      message: `Agreement locked at $${result.bid.proposedAmount.toFixed(2)}. Escrow funded & guaranteed.`,
+      message: `Agreement locked at ₹${result.bid.proposedAmount.toFixed(2)}. Escrow funded & guaranteed.`,
       job: result.job,
       bid: result.bid,
     });
@@ -236,10 +272,26 @@ app.post('/api/v1/jobs/:id/bids/:bidId/accept', (req: Request, res: Response) =>
 
 // 7. Job Phase Progress (1: Agreement Lock, 2: En Route, 3: Diagnostics & Repair, 4: Escrow Release)
 app.post('/api/v1/jobs/:id/phase', (req: Request, res: Response) => {
+  const user = getAuthUser(req);
+  if (!user) {
+    return res.status(401).json({ error: 'Authentication required. Please sign in.' });
+  }
+
+  const job = db.jobs.find((j) => j.id === req.params.id);
+  if (!job) {
+    return res.status(404).json({ error: 'Job not found' });
+  }
+
+  const isOwner = job.customerId === user.id;
+  const isAssignedWorker = job.assignedWorkerId === user.id || user.role === 'worker_pro';
+  if (!isOwner && !isAssignedWorker) {
+    return res.status(403).json({ error: 'Access denied. You are not an authorized participant in this job.' });
+  }
+
   const { phase, status } = req.body;
   try {
-    const job = db.updateJobPhase(req.params.id, parseInt(phase, 10), status);
-    res.json({ success: true, job });
+    const updatedJob = db.updateJobPhase(req.params.id, parseInt(phase, 10), status);
+    res.json({ success: true, job: updatedJob });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
@@ -252,12 +304,18 @@ app.get('/api/v1/jobs/:id/messages', (req: Request, res: Response) => {
 });
 
 app.post('/api/v1/jobs/:id/messages', (req: Request, res: Response) => {
-  const { senderRole, content } = req.body;
+  const user = getAuthUser(req);
+  if (!user) {
+    return res.status(401).json({ error: 'Authentication required. Please sign in.' });
+  }
+
+  const { content } = req.body;
   if (!content || !content.trim()) {
     return res.status(400).json({ error: 'Message content required' });
   }
+
   try {
-    const message = db.addChatMessage(req.params.id, senderRole || 'customer', content.trim());
+    const message = db.addChatMessage(req.params.id, user.role, content.trim());
     res.status(201).json({ message });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -282,9 +340,14 @@ app.get('/api/v1/jobs/:id/sos/status', (req: Request, res: Response) => {
 
 // 10. Ratings & Dual Sign-off
 app.post('/api/v1/jobs/:id/ratings', (req: Request, res: Response) => {
-  const { rating, comment, reviewerRole } = req.body;
+  const user = getAuthUser(req);
+  if (!user) {
+    return res.status(401).json({ error: 'Authentication required. Please sign in.' });
+  }
+
+  const { rating, comment } = req.body;
   try {
-    const review = db.submitReview(req.params.id, parseFloat(rating), comment || '', reviewerRole);
+    const review = db.submitReview(req.params.id, parseFloat(rating), comment || '', user.role);
     res.status(201).json({ success: true, review });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
