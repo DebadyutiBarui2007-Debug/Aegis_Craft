@@ -17,26 +17,20 @@ import { AuthModal } from './components/AuthModal.tsx';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
+  const [hasUserAccount, setHasUserAccount] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  const [currentUser, setCurrentUser] = useState<User>({
-    id: 'user-aditi-roy',
-    name: 'Aditi Roy',
-    email: 'aditi.roy@example.in',
-    role: 'customer',
-    phone: '+91 98450 12345',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
-    rating: 5.0,
-    completedJobsCount: 14,
-    location: {
-      lat: 12.9784,
-      lng: 77.6408,
-      address: '742 12th Main Road, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560038',
-      city: 'Bengaluru',
-      pincode: '560038',
-      sector: 'Indiranagar Sector 4',
-    },
-  });
+  // Default initial state is null until user creates/authenticates their account
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  const defaultLocation = {
+    lat: 12.9784,
+    lng: 77.6408,
+    address: '742 12th Main Road, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560038',
+    city: 'Bengaluru',
+    pincode: '560038',
+    sector: 'Indiranagar Sector 4',
+  };
 
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [workers, setWorkers] = useState<WorkerProfile[]>([]);
@@ -71,8 +65,11 @@ export default function App() {
 
         if (meRes.user) {
           setCurrentUser(meRes.user);
+          setHasUserAccount(true);
           if (meRes.user.role === 'worker_pro') {
             setActiveTab('worker');
+          } else {
+            setActiveTab('discovery');
           }
         }
         setCategories(catRes.categories);
@@ -121,17 +118,27 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  // 3. Splash completion handler
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+    // As soon as splash finishes, open the mandatory Account Creation popup if no user account exists yet
+    if (!hasUserAccount) {
+      setIsAuthModalOpen(true);
+    }
+  };
+
   // Handlers
   const handleRoleSwitch = async (role: 'customer' | 'worker_pro') => {
     try {
       const res = await api.setRole(role);
       setCurrentUser(res.user);
+      setHasUserAccount(true);
       if (role === 'worker_pro') {
         setActiveTab('worker');
-        showToast('Switched to Worker Pro Terminal (Rajesh Sharma - Master Electrician)');
+        showToast('Switched to Worker Pro Terminal Interface');
       } else {
         setActiveTab('discovery');
-        showToast('Switched to Customer View (Aditi Roy)');
+        showToast('Switched to Customer View Interface');
       }
     } catch (e: any) {
       console.error(e);
@@ -139,10 +146,16 @@ export default function App() {
   };
 
   const handleUpdateAddress = (newAddress: string) => {
-    setCurrentUser((prev) => ({
-      ...prev,
-      location: { ...prev.location, address: newAddress },
-    }));
+    if (currentUser) {
+      setCurrentUser((prev) =>
+        prev
+          ? {
+              ...prev,
+              location: { ...prev.location, address: newAddress },
+            }
+          : null
+      );
+    }
     showToast(`Service location updated to: ${newAddress}`);
   };
 
@@ -156,7 +169,7 @@ export default function App() {
         tradeCategory: category,
         urgency,
         situationSummary: summary || 'Emergency inspection requested via Fast Dispatch Terminal.',
-        location: currentUser.location,
+        location: currentUser?.location || defaultLocation,
       });
       setActiveJob(res.job);
       setActiveTab('radar');
@@ -187,7 +200,7 @@ export default function App() {
     try {
       await api.submitBid(activeJob.id, {
         proposedAmount,
-        proposingParty: currentUser.role === 'worker_pro' ? 'WORKER' : 'CUSTOMER',
+        proposingParty: currentUser?.role === 'worker_pro' ? 'WORKER' : 'CUSTOMER',
         scopeNotes,
       });
     } catch (e: any) {
@@ -221,7 +234,7 @@ export default function App() {
     if (!activeJob) return;
     try {
       await api.sendMessage(activeJob.id, {
-        senderRole: currentUser.role,
+        senderRole: currentUser?.role || 'customer',
         content,
       });
     } catch (e: any) {
@@ -232,7 +245,9 @@ export default function App() {
   const handleLogout = async () => {
     try {
       await api.logout();
-      showToast('Logged out of session');
+      setCurrentUser(null);
+      setHasUserAccount(false);
+      showToast('Session ended. Please create an account or sign in.');
       setIsAuthModalOpen(true);
     } catch (err: any) {
       showToast(err.message || 'Logout error');
@@ -240,9 +255,9 @@ export default function App() {
   };
 
   return (
-    <div className="bg-[#0b1326] font-body-default text-[#dae2fd] relative min-h-screen selection:bg-[#89ceff] selection:text-[#00344d]">
-      {/* Launch Splash Screen */}
-      {showSplash && <SplashLaunchScreen onComplete={() => setShowSplash(false)} />}
+    <div className="bg-[#0b1326] font-body-default text-[#dae2fd] relative min-h-screen selection:bg-[#89ceff] selection:text-[#00344d] overflow-x-hidden">
+      {/* Launch Splash Screen - Aperture Shutter Reveal */}
+      {showSplash && <SplashLaunchScreen onComplete={handleSplashComplete} />}
 
       {/* Toast Notification Banner */}
       {toastMessage && (
@@ -252,63 +267,58 @@ export default function App() {
         </div>
       )}
 
-      {/* Main Header */}
-      <Header
-        currentUser={currentUser}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onOpenSos={() => setIsSosOpen(true)}
-        onRoleSwitch={handleRoleSwitch}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-        onLogout={handleLogout}
-      />
+      {/* Main Header - STRICTLY HIDDEN during splash loading animation */}
+      {!showSplash && (
+        <Header
+          currentUser={currentUser}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onOpenSos={() => setIsSosOpen(true)}
+          onRoleSwitch={handleRoleSwitch}
+          onOpenAuth={() => setIsAuthModalOpen(true)}
+          onLogout={handleLogout}
+        />
+      )}
 
       {/* Main Application Content Body */}
       <main className="relative z-10 w-full pt-28 bg-[#0b1326] min-h-[calc(100vh-5rem)]">
-        {activeTab === 'discovery' && (
-          <ServiceDiscoveryView
-            categories={categories}
-            currentAddress={currentUser.location.address}
-            onOpenEditAddress={() => setIsAddressModalOpen(true)}
-            onOpenSos={() => setIsSosOpen(true)}
-            onSelectCategory={(catId) => {
-              setActiveTab('radar');
-            }}
-            onExecuteDispatchSearch={handleExecuteDispatchSearch}
-            onNavigateToTracking={() => setActiveTab('tracking')}
-          />
+        {/* Customer Interface Views (Active if Customer or guest before account creation) */}
+        {(!currentUser || currentUser.role === 'customer') && (
+          <>
+            {activeTab === 'discovery' && (
+              <ServiceDiscoveryView
+                categories={categories}
+                currentAddress={currentUser?.location.address || defaultLocation.address}
+                onOpenEditAddress={() => setIsAddressModalOpen(true)}
+                onOpenSos={() => setIsSosOpen(true)}
+                onSelectCategory={() => setActiveTab('radar')}
+                onExecuteDispatchSearch={handleExecuteDispatchSearch}
+                onNavigateToTracking={() => setActiveTab('tracking')}
+              />
+            )}
+
+            {activeTab === 'radar' && (
+              <RadarMatchingView
+                workers={workers}
+                onSelectWorkerForBid={handleSelectWorkerForBid}
+                onOpenSos={() => setIsSosOpen(true)}
+              />
+            )}
+
+            {activeTab === 'bidding' && activeJob && (
+              <LiveBiddingView
+                job={activeJob}
+                bids={bids}
+                onSubmitCounter={handleSubmitCounter}
+                onAcceptOffer={handleAcceptOffer}
+                onNavigateToTracking={() => setActiveTab('tracking')}
+              />
+            )}
+          </>
         )}
 
-        {activeTab === 'radar' && (
-          <RadarMatchingView
-            workers={workers}
-            onSelectWorkerForBid={handleSelectWorkerForBid}
-            onOpenSos={() => setIsSosOpen(true)}
-          />
-        )}
-
-        {activeTab === 'bidding' && activeJob && (
-          <LiveBiddingView
-            job={activeJob}
-            bids={bids}
-            onSubmitCounter={handleSubmitCounter}
-            onAcceptOffer={handleAcceptOffer}
-            onNavigateToTracking={() => setActiveTab('tracking')}
-          />
-        )}
-
-        {activeTab === 'tracking' && activeJob && (
-          <ActiveJobTrackingView
-            job={activeJob}
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            onAdvancePhase={handleAdvancePhase}
-            onOpenSos={() => setIsSosOpen(true)}
-            onOpenReviewModal={() => setIsReviewModalOpen(true)}
-          />
-        )}
-
-        {activeTab === 'worker' && activeJob && (
+        {/* Worker Pro Interface View (Active ONLY if logged in as Worker Pro) */}
+        {currentUser?.role === 'worker_pro' && (activeTab === 'worker' || activeTab === 'discovery' || activeTab === 'radar' || activeTab === 'bidding') && activeJob && (
           <WorkerTerminalView
             job={activeJob}
             bids={bids}
@@ -316,6 +326,18 @@ export default function App() {
             onSubmitCounter={handleSubmitCounter}
             onAdvancePhase={handleAdvancePhase}
             onSendMessage={handleSendMessage}
+            onOpenSos={() => setIsSosOpen(true)}
+            onOpenReviewModal={() => setIsReviewModalOpen(true)}
+          />
+        )}
+
+        {/* Common Views (Tracking & MCP Studio) */}
+        {activeTab === 'tracking' && activeJob && (
+          <ActiveJobTrackingView
+            job={activeJob}
+            messages={messages}
+            onSendMessage={handleSendMessage}
+            onAdvancePhase={handleAdvancePhase}
             onOpenSos={() => setIsSosOpen(true)}
             onOpenReviewModal={() => setIsReviewModalOpen(true)}
           />
@@ -358,23 +380,32 @@ export default function App() {
       <AddressModal
         isOpen={isAddressModalOpen}
         onClose={() => setIsAddressModalOpen(false)}
-        currentAddress={currentUser.location.address}
+        currentAddress={currentUser?.location.address || defaultLocation.address}
         onSaveAddress={handleUpdateAddress}
       />
 
+      {/* Mandatory Account Creation & Authentication Modal Overlay at Startup */}
       <AuthModal
         isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
+        onClose={() => {
+          if (hasUserAccount) {
+            setIsAuthModalOpen(false);
+          } else {
+            showToast('Please create an account or select a demo profile to enter AegisCraft.');
+          }
+        }}
         onSuccess={(user) => {
           setCurrentUser(user);
-          showToast(`Welcome back, ${user.name}!`);
+          setHasUserAccount(true);
+          setIsAuthModalOpen(false);
+          showToast(`Account Created & Authenticated! Welcome, ${user.name}`);
           if (user.role === 'worker_pro') {
             setActiveTab('worker');
           } else {
             setActiveTab('discovery');
           }
         }}
-        defaultRole={currentUser.role}
+        defaultRole={currentUser?.role || 'customer'}
       />
 
       {activeJob && (
@@ -386,7 +417,7 @@ export default function App() {
           agreedAmount={activeJob.agreedAmount}
           onCompletionSuccess={() => {
             showToast('INR Escrow released! Reciprocal 5-star ratings permanently registered.');
-            setActiveTab('discovery');
+            setActiveTab(currentUser?.role === 'worker_pro' ? 'worker' : 'discovery');
           }}
         />
       )}
