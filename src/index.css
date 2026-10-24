@@ -116,3 +116,106 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #3e4850;
 }
+
+/* Horizontal Marquee Animation - 60fps GPU Accelerated Composition */
+@keyframes marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 42s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  perspective: 1000px;
+  contain: layout style paint;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.marquee-glow-text {
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* Falling Stars & Glitter Animation - GPU Accelerated 3D Transforms */
+@keyframes fallGlitter {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--particle-opacity, 0.8);
+  }
+  88% {
+    opacity: var(--particle-opacity, 0.8);
+  }
+  100% {
+    transform: translate3d(var(--drift-x, 20px), 108vh, 0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes particleTwinkle {
+  0%, 100% {
+    filter: drop-shadow(0 0 3px currentColor) brightness(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 10px currentColor) brightness(1.7);
+  }
+}
+
+/* Eye-Catching Smooth Background Floating Orbs & Aurora Waves */
+@keyframes floatOrb1 {
+  0%, 100% { transform: translate3d(0px, 0px, 0) scale(1); opacity: 0.4; }
+  50% { transform: translate3d(120px, -90px, 0) scale(1.3); opacity: 0.7; }
+}
+
+@keyframes floatOrb2 {
+  0%, 100% { transform: translate3d(0px, 0px, 0) scale(1); opacity: 0.35; }
+  50% { transform: translate3d(-130px, 100px, 0) scale(1.35); opacity: 0.65; }
+}
+
+@keyframes bgAurora {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-float-orb-1 {
+  animation: floatOrb1 10s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-float-orb-2 {
+  animation: floatOrb2 14s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-aurora {
+  background-size: 250% 250%;
+  animation: bgAurora 12s ease infinite;
+}
+
+/* Accessibility: Reduced motion preference override */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-float-orb-1,
+  .animate-float-orb-2,
+  .animate-aurora {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+
+

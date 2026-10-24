@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User } from '../types/index.ts';
+import { MarqueeText } from './MarqueeText.tsx';
 
 interface HeaderProps {
   currentUser: User | null;
@@ -8,6 +9,7 @@ interface HeaderProps {
   onOpenSos: () => void;
   onOpenAuth?: () => void;
   onLogout?: () => void;
+  showMarquee?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -17,6 +19,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSos,
   onOpenAuth,
   onLogout,
+  showMarquee = true,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -303,32 +306,12 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       )}
 
-      {/* Real-Time Telemetry Bar */}
-      <div className="w-full bg-[#060e20]/95 backdrop-blur-md px-4 md:px-8 lg:px-12 py-1.5 border-t border-white/5">
-        <div className="max-w-[1440px] mx-auto flex items-center justify-between text-[#bec8d2] text-xs overflow-x-auto whitespace-nowrap gap-4">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1 text-[#4edea3]">
-              <span className="material-symbols-outlined text-sm">radar</span>
-              PostGIS Radar: Bengaluru Sector 4 (12.9784° N, 77.6408° E)
-            </span>
-            <span className="text-[#3e4850]">•</span>
-            <span className="flex items-center gap-1 text-[#89ceff]">
-              <span className="material-symbols-outlined text-sm">bolt</span>
-              SSE Live Sync: Connected (14ms)
-            </span>
-            <span className="text-[#3e4850]">•</span>
-            <span className="flex items-center gap-1 text-[#ffb95f]">
-              <span className="material-symbols-outlined text-sm">currency_rupee</span>
-              INR Escrow: Bank-Guaranteed Vault
-            </span>
-          </div>
-          <div className="hidden lg:flex items-center gap-3 text-[#88929b]">
-            <span className="text-emerald-400 font-mono">IST Node Online</span>
-            <span>•</span>
-            <span className="text-[#4edea3]">Police Verification: Passed</span>
-          </div>
+      {/* Dynamic Horizontally Moving Text Marquee Bar */}
+      {showMarquee && (
+        <div className="w-full border-t border-white/10 bg-[#060e20]/95 backdrop-blur-md">
+          <MarqueeText speedSeconds={42} className="border-none shadow-none bg-transparent" />
         </div>
-      </div>
+      )}
     </header>
   );
 };

@@ -14,6 +14,7 @@ import { AddressModal } from './components/AddressModal.tsx';
 import { ReviewModal } from './components/ReviewModal.tsx';
 import { SplashLaunchScreen } from './components/SplashLaunchScreen.tsx';
 import { AuthModal } from './components/AuthModal.tsx';
+import { FallingGlitterBackground } from './components/FallingGlitterBackground.tsx';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -256,6 +257,8 @@ export default function App() {
     }
   };
 
+  const showAuthModal = isAuthModalOpen || (!currentUser && !hasUserAccount);
+
   return (
     <div className="bg-[#0b1326] font-body-default text-[#dae2fd] relative min-h-screen selection:bg-[#89ceff] selection:text-[#00344d] overflow-x-hidden">
       {/* Launch Splash Screen - Aperture Shutter Reveal */}
@@ -269,7 +272,10 @@ export default function App() {
         </div>
       )}
 
-      {/* Main Header - STRICTLY HIDDEN during splash loading animation */}
+      {/* Falling Stars & Champagne-Gold Glitter Animated Background (Main interface only) */}
+      {!showSplash && !showAuthModal && <FallingGlitterBackground />}
+
+      {/* Main Header with Integrated Horizontal Scrolling Marquee */}
       {!showSplash && (
         <Header
           currentUser={currentUser}
@@ -278,11 +284,12 @@ export default function App() {
           onOpenSos={() => setIsSosOpen(true)}
           onOpenAuth={() => setIsAuthModalOpen(true)}
           onLogout={handleLogout}
+          showMarquee={!showAuthModal}
         />
       )}
 
       {/* Main Application Content Body */}
-      <main className="relative z-10 w-full pt-28 bg-[#0b1326] min-h-[calc(100vh-5rem)]">
+      <main className="relative z-10 w-full pt-28 md:pt-32 min-h-[calc(100vh-5rem)]">
         {/* Customer Access Denial Fallback Banner */}
         {currentUser?.role === 'customer' && activeTab === 'worker' && (
           <div className="max-w-2xl mx-auto my-12 p-8 rounded-2xl bg-[#171f33] border border-amber-500/30 text-center space-y-4">
