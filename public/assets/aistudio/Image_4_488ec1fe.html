@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>AegisCraft - Rescue &amp; Dispatch Ecosystem</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-container": "#d88a00", "background": "#0b1326", "outline-variant": "#3e4850", "on-error-container": "#ffdad6", "surface-container-highest": "#2d3449", "error": "#ffb4ab", "surface-container": "#171f33", "on-primary": "#00344d", "secondary-container": "#00a572", "on-surface-variant": "#bec8d2", "on-tertiary-fixed": "#2a1700", "inverse-surface": "#dae2fd", "surface": "#0b1326", "tertiary-fixed": "#ffddb8", "inverse-primary": "#006591", "surface-bright": "#31394d", "on-primary-container": "#003751", "on-secondary": "#003824", "secondary-fixed-dim": "#4edea3", "on-tertiary-fixed-variant": "#653e00", "on-secondary-fixed-variant": "#005236", "on-background": "#dae2fd", "primary": "#89ceff", "surface-container-low": "#131b2e", "inverse-on-surface": "#283044", "on-primary-fixed": "#001e2f", "outline": "#88929b", "primary-fixed": "#c9e6ff", "surface-container-lowest": "#060e20", "on-surface": "#dae2fd", "surface-container-high": "#222a3d", "tertiary": "#ffb95f", "secondary-fixed": "#6ffbbe", "primary-container": "#0ea5e9", "on-error": "#690005", "on-tertiary": "#472a00", "tertiary-fixed-dim": "#ffb95f", "secondary": "#4edea3", "on-primary-fixed-variant": "#004c6e", "error-container": "#93000a", "on-secondary-container": "#00311f", "surface-variant": "#2d3449", "on-tertiary-container": "#4a2c00", "surface-dim": "#0b1326", "primary-fixed-dim": "#89ceff", "on-secondary-fixed": "#002113", "surface-tint": "#89ceff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-tablet": "2rem", "gutter": "1rem", "margin": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "gutter-desktop": "2rem", "space-sm": "0.75rem", "gutter-tablet": "1.5rem", "space-xl": "2rem", "space-xs": "0.5rem", "space-md": "1rem", "space-2xs": "0.25rem", "margin-desktop": "3rem" }, "fontFamily": { "microcopy": ["Inter"], "display-mobile": ["Inter"], "title-screen": ["Inter"], "headline-card": ["Inter"], "label-default": ["Inter"], "caption-caps": ["Inter"], "body-medium": ["Inter"], "body-default": ["Inter"], "title-section": ["Inter"], "display": ["Inter"] }, "fontSize": { "microcopy": ["13px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }], "display-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "title-screen": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-card": ["16px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "label-default": ["14px", { "lineHeight": "20px", "letterSpacing": "0.005em", "fontWeight": "500" }], "caption-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }], "body-medium": ["15px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "500" }], "body-default": ["15px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "400" }], "title-section": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "600" }] } } } };</script></head><body class="bg-background font-body-default text-on-surface relative min-h-screen selection:bg-primary selection:text-on-primary"><div class="fixed inset-0 pointer-events-none z-0 overflow-hidden"><div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-secondary/10 blur-[120px]"></div><div class="absolute -top-32 -right-32 w-[30rem] h-[30rem] rounded-full bg-tertiary/10 blur-[140px]"></div></div><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-2xl shadow-[0_4px_24px_rgba(0,0,0,0.45)]"><div class="h-20 max-w-[1440px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm"><img alt="AegisCraft Brand Emblem" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTSuuaMiUCIMyEWfTtlngtE2QwX6KL6WiBXYRIJc8ALZljnaqpVEOT-cPjvGyrtIgT-F0_7f8uka9_ald8r7oUTaEyuoL4zxK8fyLoc_X_4kHrXSE9NscRc_AcAkwDZxrKBApfk__G6h916S07cEQOCUnTKvi2eQWV2kOUuSpAMQwZXrizTwaN7uWE8uyAb8zgMGRmQM-Si6ci9Db7EQeFne8hX-LqToPTA-QPnuj1JDMzZKX90iFsMg"/><span class="font-title-screen text-title-screen tracking-tight text-on-surface">AegisCraft</span></div><div class="hidden xl:flex items-center gap-space-xs"><div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase"><span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>KYC Verified Network</div><div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary/15 text-tertiary font-caption-caps text-caption-caps uppercase"><span class="w-1.5 h-1.5 rounded-full bg-tertiary shadow-[0_0_8px_rgba(255,185,95,0.8)]"></span>Dispatch Live</div></div></div><div class="hidden 2xl:flex items-center p-1 rounded-full bg-surface-container-high/90"><button class="px-3 py-1.5 rounded-full font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-colors" type="button">Customer View</button><button class="px-3 py-1.5 rounded-full bg-surface-container font-label-default text-label-default text-secondary shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center gap-1.5" type="button"><span class="w-2 h-2 rounded-full bg-secondary"></span>Worker Pro Terminal</button></div><nav class="hidden lg:flex items-center gap-1" data-active-classes="bg-surface-container-high text-primary font-body-medium shadow-[0_0_16px_rgba(14,165,233,0.25)] rounded-lg"><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="service-discovery" href="#">Service Discovery</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="radar-matching-and-jobs" href="#">Radar Matching &amp; Jobs</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="live-bidding-and-negotiation" href="#">Live Bidding &amp; Negotiation</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="active-job-and-gps-tracking" href="#">Active Job &amp; GPS Tracking</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="messages-and-comms" href="#">Messages &amp; Comms</a></nav><div class="flex items-center gap-space-sm"><div class="hidden sm:flex items-center gap-space-xs"><div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-error/15 text-error font-caption-caps text-caption-caps uppercase cursor-pointer hover:bg-error/25 transition-colors"><span class="w-2 h-2 rounded-full bg-error animate-ping"></span>SOS Ready</div><div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-tertiary-container/20 text-tertiary font-label-default text-label-default cursor-pointer hover:bg-tertiary-container/30 transition-colors"><span class="material-symbols-outlined text-base">support_agent</span>24/7 Hotline</div></div><div class="flex items-center gap-space-xs pl-2"><div class="hidden md:flex flex-col text-right"><span class="font-label-default text-label-default text-on-surface">Mark J.</span><span class="font-caption-caps text-caption-caps text-secondary">Master Tech • Online</span></div><div class="relative"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-secondary/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ"/><span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-secondary ring-2 ring-surface-container-lowest"></span></div></div></div></div><div class="w-full bg-surface-container-lowest/90 backdrop-blur-md px-margin md:px-margin-tablet lg:px-margin-desktop py-1.5"><div class="max-w-[1440px] mx-auto flex items-center justify-between text-on-surface-variant font-microcopy text-microcopy overflow-x-auto whitespace-nowrap gap-space-md"><div class="flex items-center gap-space-sm"><span class="flex items-center gap-1 text-secondary"><span class="material-symbols-outlined text-sm">radar</span>PostGIS Query: Active (3.2 km radius)</span><span class="text-outline-variant">•</span><span class="flex items-center gap-1 text-primary"><span class="material-symbols-outlined text-sm">bolt</span>Socket.IO: Connected</span><span class="text-outline-variant">•</span><span class="flex items-center gap-1 text-tertiary"><span class="material-symbols-outlined text-sm">satellite_alt</span>High-Precision GPS: Synchronized</span></div><div class="hidden lg:flex items-center gap-space-xs"><span class="text-outline-variant">Latency: 24ms</span><span class="text-outline-variant">•</span><span class="text-outline-variant">Escrow Vault: Verified</span></div></div></div></header><main class="relative z-10 w-full pt-28 bg-surface min-h-[calc(100vh-5rem)]"><div class="flex flex-col w-full">
+<section class="relative w-full px-margin md:px-margin-tablet lg:px-margin-desktop py-space-md">
+<div class="max-w-[1440px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-space-sm bg-surface-container-low/80 backdrop-blur-xl p-space-md rounded-xl shadow-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-3 h-3 rounded-full bg-secondary animate-ping"></div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-card text-headline-card text-on-surface">JOB #8842 • Active Real-Time Dispatch</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase">Telemetry Sync</span>
+</div>
+<p class="font-microcopy text-microcopy text-on-surface-variant">Live Dual-Vector GPS Tracking • PostGIS Spatial Lock • Springfield Sector 4</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-space-xs bg-surface-container px-space-md py-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-tertiary text-sm">lock_clock</span>
+<span class="font-microcopy text-microcopy text-on-surface-variant">Escrow Vault:</span>
+<span class="font-label-default text-label-default text-tertiary font-semibold">$80.00 Guaranteed</span>
+</div>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-full bg-error-container text-on-error-container hover:bg-error/30 transition-all shadow-md group" id="sosTopTrigger">
+<span class="material-symbols-outlined text-sm group-hover:rotate-12 transition-transform">e911_emergency</span>
+<span class="font-caption-caps text-caption-caps uppercase tracking-wider font-bold">SOS Rescue Armed</span>
+</button>
+</div>
+</div>
+</section>
+<section class="w-full px-margin md:px-margin-tablet lg:px-margin-desktop pb-space-2xl">
+<div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<div class="lg:col-span-8 flex flex-col gap-space-md">
+<div class="relative w-full h-[540px] rounded-xl overflow-hidden shadow-2xl bg-surface-container-lowest">
+<div class="absolute inset-0 w-full h-full bg-cover bg-center opacity-40 mix-blend-luminosity filter contrast-125" data-location="Springfield, 742 Evergreen Terrace" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDqASeUF_1KSYgr_5z0GGIyyiZ6mcqNtfXk6aO1sTsFMzDnu_tVLwrEn-JCZtcUcb5kJ5DDx7TdyvwHmYBFP-tg8Rv-9007Uv_MYNKMMmkzmuy7lpqhdWjsBJRDs9ooWZSMMbxHceJ7bPaeC8umsiI7G2tsuRd0YcmZyqFKoUifRGIY4Ly3_kN-f8KOLCosxP1ikX-e-FTK8vL0Fe_PBWU7DA4YOM9z8a6fMtQutSsRg9UzHO-HT4_AUA')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/60 pointer-events-none"></div>
+<svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="routeGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#4edea3" stop-opacity="0.9"></stop>
+<stop offset="60%" stop-color="#89ceff" stop-opacity="0.85"></stop>
+<stop offset="100%" stop-color="#ffb95f" stop-opacity="1"></stop>
+</lineargradient>
+<filter height="140%" id="glowRoute" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="4"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+</defs>
+<path d="M 220 380 Q 340 350, 410 260 T 620 190 T 780 140" fill="none" opacity="0.6" stroke="#171f33" stroke-linecap="round" stroke-width="12"></path>
+<path class="animate-pulse" d="M 220 380 Q 340 350, 410 260 T 620 190 T 780 140" fill="none" filter="url(#glowRoute)" id="activeRoutePath" stroke="url(#routeGrad)" stroke-dasharray="10 8" stroke-linecap="round" stroke-width="5"></path>
+<circle class="animate-ping" cx="220" cy="380" fill="#4edea3" opacity="0.12" r="32" style="animation-duration: 3s;"></circle>
+<circle cx="220" cy="380" fill="#003824" r="14" stroke="#4edea3" stroke-width="3"></circle>
+<circle cx="220" cy="380" fill="#4edea3" r="5"></circle>
+<circle class="animate-pulse" cx="780" cy="140" fill="#ffb95f" opacity="0.15" r="42"></circle>
+<circle cx="780" cy="140" fill="#472a00" r="18" stroke="#ffb95f" stroke-width="3"></circle>
+<circle cx="780" cy="140" fill="#ffb95f" r="7"></circle>
+</svg>
+<div class="absolute bottom-16 left-12 transform -translate-y-6 flex items-center gap-space-xs bg-surface-container-high/90 backdrop-blur-md px-space-sm py-1.5 rounded-lg shadow-xl pointer-events-none">
+<span class="material-symbols-outlined text-secondary text-base">home_pin</span>
+<div class="flex flex-col">
+<span class="font-caption-caps text-caption-caps text-secondary font-bold uppercase">Customer Safe Zone</span>
+<span class="font-microcopy text-microcopy text-on-surface">742 Evergreen Ter, Springfield</span>
+</div>
+</div>
+<div class="absolute top-16 right-16 md:right-28 flex items-center gap-space-sm bg-surface-container-highest/95 backdrop-blur-lg p-space-xs pr-space-md rounded-full shadow-2xl">
+<div class="relative">
+<img alt="Mark J. in mobile van" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ"/>
+<span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-secondary rounded-full"></span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="font-label-default text-label-default text-on-surface font-semibold">Mark J. (Service Van)</span>
+<span class="material-symbols-outlined text-tertiary text-sm">navigation</span>
+</div>
+<span class="font-microcopy text-microcopy text-secondary">Turning Elm St • 0.4 km away</span>
+</div>
+</div>
+<div class="absolute top-space-md left-space-md flex flex-wrap items-center gap-space-xs">
+<div class="flex items-center gap-2 bg-surface-container-lowest/85 backdrop-blur-md px-space-md py-2 rounded-full shadow-lg">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary animate-ping"></span>
+<span class="font-label-default text-label-default text-on-surface font-semibold">ETA: 4 Mins</span>
+<span class="text-outline-variant font-microcopy text-microcopy">•</span>
+<span class="font-microcopy text-microcopy text-secondary">Traffic: Light</span>
+</div>
+<div class="hidden sm:flex items-center gap-1.5 bg-surface-container-lowest/85 backdrop-blur-md px-3 py-2 rounded-full shadow-lg">
+<span class="material-symbols-outlined text-primary text-sm">satellite_alt</span>
+<span class="font-microcopy text-microcopy text-on-surface-variant">RTK GPS: ±1.4m Precision</span>
+</div>
+</div>
+<div class="absolute bottom-space-md right-space-md flex items-center gap-space-xs bg-surface-container-lowest/90 backdrop-blur-xl p-space-sm rounded-xl shadow-2xl">
+<div class="flex flex-col items-center px-space-sm">
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Speed</span>
+<span class="font-label-default text-label-default text-primary font-bold">32 <span class="font-microcopy text-microcopy text-on-surface-variant font-normal">km/h</span></span>
+</div>
+<div class="w-px h-6 bg-surface-container-highest"></div>
+<div class="flex flex-col items-center px-space-sm">
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Distance</span>
+<span class="font-label-default text-label-default text-secondary font-bold">420 <span class="font-microcopy text-microcopy text-on-surface-variant font-normal">m</span></span>
+</div>
+<div class="w-px h-6 bg-surface-container-highest"></div>
+<div class="flex flex-col items-center px-space-sm">
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Signal</span>
+<div class="flex items-center gap-0.5 text-secondary">
+<span class="material-symbols-outlined text-sm">network_cell</span>
+<span class="font-microcopy text-microcopy font-semibold">5G Safe</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low/90 backdrop-blur-xl p-space-lg rounded-xl shadow-xl flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-lg">alt_route</span>
+<span class="font-title-section text-title-section text-on-surface">Execution Sequence</span>
+</div>
+<span class="font-caption-caps text-caption-caps text-secondary uppercase bg-secondary/10 px-2.5 py-1 rounded-full">Phase 2 Active</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-sm relative">
+<div class="bg-surface-container p-space-md rounded-lg flex flex-col gap-space-2xs shadow-sm">
+<div class="flex items-center justify-between">
+<span class="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center font-caption-caps text-caption-caps font-bold">✓</span>
+<span class="font-microcopy text-microcopy text-secondary">10:19 AM</span>
+</div>
+<span class="font-headline-card text-headline-card text-on-surface mt-1">Agreement Lock</span>
+<p class="font-microcopy text-microcopy text-on-surface-variant">Scope confirmed • Escrow pre-authorized</p>
+</div>
+<div class="bg-surface-container-high p-space-md rounded-lg flex flex-col gap-space-2xs shadow-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-full bg-secondary animate-ping"></span>
+<span class="font-caption-caps text-caption-caps text-secondary font-bold uppercase">En Route</span>
+</div>
+<span class="font-microcopy text-microcopy text-secondary font-semibold">10:21 AM</span>
+</div>
+<span class="font-headline-card text-headline-card text-secondary mt-1">Technician Dispatched</span>
+<p class="font-microcopy text-microcopy text-on-surface">Telemetry broadcasting • ETA 4 mins</p>
+</div>
+<div class="bg-surface-container/60 p-space-md rounded-lg flex flex-col gap-space-2xs opacity-70">
+<div class="flex items-center justify-between">
+<span class="w-6 h-6 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-caption-caps text-caption-caps">3</span>
+<span class="font-microcopy text-microcopy text-outline">Stage 3</span>
+</div>
+<span class="font-headline-card text-headline-card text-on-surface-variant mt-1">Diagnostics &amp; Repair</span>
+<p class="font-microcopy text-microcopy text-outline">Digital work log • Part inspection</p>
+</div>
+<div class="bg-surface-container/60 p-space-md rounded-lg flex flex-col gap-space-2xs opacity-70">
+<div class="flex items-center justify-between">
+<span class="w-6 h-6 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-caption-caps text-caption-caps">4</span>
+<span class="font-microcopy text-microcopy text-outline">Stage 4</span>
+</div>
+<span class="font-headline-card text-headline-card text-on-surface-variant mt-1">Escrow Release</span>
+<p class="font-microcopy text-microcopy text-outline">Two-way sign-off • Verified review</p>
+</div>
+</div>
+</div>
+<div class="bg-gradient-to-r from-surface-container to-surface-container-low p-space-md rounded-xl shadow-lg flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-secondary/15 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-2xl">rate_review</span>
+</div>
+<div>
+<span class="font-headline-card text-headline-card text-on-surface">Mutual Satisfaction &amp; Credential Guarantee</span>
+<p class="font-microcopy text-microcopy text-on-surface-variant">Both parties review upon physical job completion to maintain 100% KYC platform trust.</p>
+</div>
+</div>
+<button class="whitespace-nowrap px-space-md py-2.5 rounded-lg bg-surface-container-high text-primary hover:bg-surface-container-highest font-label-default text-label-default transition-all shadow-sm flex items-center gap-2" id="previewReviewBtn">
+<span>Review Flow Preview</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="lg:col-span-4 flex flex-col gap-space-md">
+<div class="bg-surface-container-low/95 backdrop-blur-2xl p-space-lg rounded-xl shadow-xl flex flex-col gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex gap-space-md">
+<div class="relative">
+<img alt="Mark J. Master Tech Headshot" class="w-16 h-16 rounded-xl object-cover shadow-md" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ"/>
+<div class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-secondary text-on-secondary font-caption-caps text-caption-caps flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]">verified</span>
+                  PRO
+                </div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-card text-headline-card text-on-surface">Mark J.</span>
+<span class="font-microcopy text-microcopy text-secondary">Master Electrical Specialist</span>
+<div class="flex items-center gap-1 mt-1 text-tertiary font-microcopy text-microcopy">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-semibold text-on-surface">4.98</span>
+<span class="text-on-surface-variant">(214 verified jobs)</span>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-xs bg-surface-container p-space-xs rounded-lg text-center">
+<div class="flex flex-col py-1">
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Certification</span>
+<span class="font-microcopy text-microcopy text-on-surface font-medium">State Lic. #EL-8941</span>
+</div>
+<div class="flex flex-col py-1">
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Background</span>
+<span class="font-microcopy text-microcopy text-secondary font-medium">Clear • Insured $2M</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<a class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-default text-label-default transition-all shadow-sm" href="tel:5550192834">
+<span class="material-symbols-outlined text-primary text-base">call</span>
+<span>Encrypted Call</span>
+</a>
+<button class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary-container text-on-primary font-label-default text-label-default hover:opacity-90 transition-all shadow-md" id="focusChatBtn">
+<span class="material-symbols-outlined text-base">chat</span>
+<span>Live Chat</span>
+</button>
+</div>
+<div class="bg-surface-container p-space-md rounded-lg flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Escrow Locked Rate</span>
+<span class="font-title-screen text-title-screen text-tertiary font-semibold">$80.00</span>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/10 text-secondary font-microcopy text-microcopy">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+<span>Guaranteed</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low/95 backdrop-blur-xl p-space-md rounded-xl shadow-xl flex flex-col h-[340px]">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-sm">forum</span>
+<span class="font-headline-card text-headline-card text-on-surface">Dispatch Comms</span>
+</div>
+<span class="font-caption-caps text-caption-caps text-secondary uppercase bg-secondary/15 px-2 py-0.5 rounded-full">Active</span>
+</div>
+<div class="flex-1 overflow-y-auto flex flex-col gap-space-xs py-space-xs pr-1" id="chatStream">
+<div class="flex flex-col max-w-[85%] self-start bg-surface-container p-space-xs rounded-xl rounded-tl-none">
+<span class="font-caption-caps text-caption-caps text-secondary font-semibold">Mark J. • 10:24 AM</span>
+<p class="font-body-default text-microcopy text-on-surface mt-0.5">Just turned onto your block, will park in the driveway.</p>
+</div>
+<div class="flex flex-col max-w-[85%] self-end bg-surface-container-high p-space-xs rounded-xl rounded-tr-none">
+<span class="font-caption-caps text-caption-caps text-primary font-semibold text-right">You • 10:25 AM</span>
+<p class="font-body-default text-microcopy text-on-surface mt-0.5">Front door is unlocked, panel is in the basement right by the stairs.</p>
+</div>
+</div>
+<div class="flex items-center gap-1 overflow-x-auto py-1.5 no-scrollbar whitespace-nowrap">
+<button class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface font-caption-caps text-caption-caps transition-colors" onclick="sendQuickReply('Where are you?')">Where are you?</button>
+<button class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface font-caption-caps text-caption-caps transition-colors" onclick="sendQuickReply('Gate code is 4921')">Gate code is 4921</button>
+<button class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface font-caption-caps text-caption-caps transition-colors" onclick="sendQuickReply('Take your time')">Take your time</button>
+</div>
+<div class="flex items-center gap-space-xs pt-space-2xs">
+<input class="flex-1 bg-surface-container-highest px-space-sm py-2 rounded-lg font-body-default text-microcopy text-on-surface placeholder:text-outline-variant outline-none focus:ring-1 focus:ring-primary transition-all" id="chatInput" placeholder="Type instructions or safety notes..." type="text"/>
+<button class="p-2 rounded-lg bg-primary-container text-on-primary hover:opacity-90 transition-opacity" id="chatSendBtn">
+<span class="material-symbols-outlined text-base">send</span>
+</button>
+</div>
+</div>
+<div class="bg-gradient-to-br from-error-container/40 via-surface-container-low to-surface-container-lowest p-space-lg rounded-xl shadow-2xl relative overflow-hidden">
+<div class="flex items-start gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-error/20 flex items-center justify-center text-error shrink-0 animate-pulse">
+<span class="material-symbols-outlined text-2xl">e911_emergency</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-card text-headline-card text-error font-bold">Emergency SOS Guard</span>
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+</div>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1">Platform escalation triggers instant 911 dispatch, continuous ambient audio link, and locked GPS coordinate stream.</p>
+</div>
+</div>
+<div class="mt-space-md">
+<button class="w-full py-3.5 px-space-md rounded-xl bg-error hover:bg-error/90 text-on-error font-headline-card text-headline-card font-bold flex items-center justify-center gap-2 shadow-xl transition-all active:scale-[0.98]" id="activateSosModalBtn">
+<span class="material-symbols-outlined text-xl">fmd_bad</span>
+<span>EMERGENCY SOS: Platform Intervene</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="fixed inset-0 z-50 bg-background/85 backdrop-blur-2xl flex items-center justify-center p-space-md transition-opacity duration-300 opacity-0 pointer-events-none" id="sosModalOverlay">
+<div class="relative w-full max-w-lg bg-surface-container-lowest p-space-xl rounded-2xl shadow-2xl flex flex-col items-center text-center">
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-error-container/30 text-error font-caption-caps text-caption-caps uppercase tracking-wider mb-space-md">
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+        Platform Safety Protocol Initiated
+      </div>
+<div class="relative w-36 h-36 my-space-sm flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="transparent" r="42" stroke="#2d3449" stroke-width="8"></circle>
+<circle class="transition-all duration-1000 ease-linear" cx="50" cy="50" fill="transparent" id="sosCountdownCircle" r="42" stroke="#ffb4ab" stroke-dasharray="264" stroke-dashoffset="0" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display text-display text-error font-bold" id="sosCountdownNumber">3</span>
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Seconds</span>
+</div>
+</div>
+<span class="font-title-screen text-title-screen text-on-surface mt-space-xs font-bold">Transmitting Emergency Beacon</span>
+<p class="font-body-default text-microcopy text-on-surface-variant mt-space-2xs max-w-sm">
+        Dispatcher intervention team and local emergency services are being dialed with encrypted telemetry at <span class="text-on-surface font-semibold">Springfield, 742 Evergreen</span>.
+      </p>
+<div class="w-full bg-surface-container p-space-sm rounded-xl mt-space-md flex flex-col gap-1 text-left font-microcopy text-microcopy">
+<div class="flex items-center justify-between text-on-surface">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-secondary text-sm">location_searching</span>Live GPS Vector:</span>
+<span class="text-secondary font-mono">44.0462° N, 123.0220° W</span>
+</div>
+<div class="flex items-center justify-between text-on-surface">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-primary text-sm">mic</span>Ambient Audio Stream:</span>
+<span class="text-primary">Encrypted Standby</span>
+</div>
+</div>
+<div class="w-full flex flex-col gap-space-xs mt-space-lg">
+<button class="w-full py-3.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-default text-label-default font-semibold transition-all" id="cancelSosBtn">
+          Cancel Immediately (False Alarm)
+        </button>
+<button class="w-full py-2.5 rounded-lg bg-error text-on-error font-microcopy text-microcopy font-bold uppercase tracking-wider hover:opacity-90 transition-opacity" id="forceTriggerSosBtn">
+          Escalate Right Now Without Waiting
+        </button>
+</div>
+</div>
+</div>
+<div class="fixed inset-0 z-50 bg-background/80 backdrop-blur-xl flex items-center justify-center p-space-md transition-opacity duration-300 opacity-0 pointer-events-none" id="reviewPreviewModal">
+<div class="relative w-full max-w-md bg-surface-container-low p-space-xl rounded-2xl shadow-2xl flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-xl">verified</span>
+<span class="font-headline-card text-headline-card text-on-surface">Completion &amp; Review</span>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface" id="closeReviewModal">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<div class="flex items-center gap-space-md bg-surface-container p-space-sm rounded-xl">
+<img alt="Mark J. Thumbnail" class="w-12 h-12 rounded-lg object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ"/>
+<div>
+<span class="font-label-default text-label-default text-on-surface font-semibold">Mark J.</span>
+<p class="font-microcopy text-microcopy text-secondary">Master Electrical Specialist</p>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs text-center py-space-xs">
+<span class="font-label-default text-label-default text-on-surface">Rate Technician Performance</span>
+<div class="flex items-center justify-center gap-2 text-tertiary">
+<button class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">star</button>
+<button class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">star</button>
+<button class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">star</button>
+<button class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">star</button>
+<button class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">star</button>
+</div>
+<span class="font-microcopy text-microcopy text-secondary font-semibold">5.0 - Flawless Diagnostics</span>
+</div>
+<div class="bg-surface-container p-space-sm rounded-lg flex flex-col gap-1">
+<div class="flex items-center justify-between text-microcopy">
+<span class="text-on-surface-variant">Escrow Release:</span>
+<span class="text-on-surface font-bold">$80.00</span>
+</div>
+<div class="flex items-center justify-between text-microcopy">
+<span class="text-on-surface-variant">Client Reciprocal Rating:</span>
+<span class="text-secondary font-semibold">Mark J. gave you ★ 5.0</span>
+</div>
+</div>
+<button class="w-full py-3 rounded-lg bg-secondary-container text-on-secondary-container font-label-default text-label-default font-bold hover:opacity-90 transition-opacity" id="confirmReviewDemo">
+        Release Escrow &amp; Complete Job
+      </button>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    // SOS Logic
+    const sosOverlay = document.getElementById('sosModalOverlay');
+    const openSosBtn = document.getElementById('activateSosModalBtn');
+    const openTopSosBtn = document.getElementById('sosTopTrigger');
+    const cancelSosBtn = document.getElementById('cancelSosBtn');
+    const forceSosBtn = document.getElementById('forceTriggerSosBtn');
+    const countdownNumber = document.getElementById('sosCountdownNumber');
+    const countdownCircle = document.getElementById('sosCountdownCircle');
+
+    let sosTimer = null;
+    let secondsLeft = 3;
+    const totalCircumference = 264;
+
+    function openSosModal() {
+      sosOverlay.classList.remove('opacity-0', 'pointer-events-none');
+      sosOverlay.classList.add('opacity-100');
+      secondsLeft = 3;
+      countdownNumber.textContent = secondsLeft;
+      countdownCircle.style.strokeDashoffset = '0';
+
+      clearInterval(sosTimer);
+      sosTimer = setInterval(() => {
+        secondsLeft--;
+        if (secondsLeft >= 0) {
+          countdownNumber.textContent = secondsLeft;
+          const offset = totalCircumference - ((3 - secondsLeft) / 3) * totalCircumference;
+          countdownCircle.style.strokeDashoffset = offset;
+        }
+        if (secondsLeft <= 0) {
+          clearInterval(sosTimer);
+          countdownNumber.textContent = '!';
+          alert('PLATFORM INTERVENTION ESCALATED: Emergency Dispatchers notified with real-time GPS coordinates.');
+          closeSosModal();
+        }
+      }, 1000);
+    }
+
+    function closeSosModal() {
+      clearInterval(sosTimer);
+      sosOverlay.classList.add('opacity-0', 'pointer-events-none');
+      sosOverlay.classList.remove('opacity-100');
+    }
+
+    openSosBtn?.addEventListener('click', openSosModal);
+    openTopSosBtn?.addEventListener('click', openSosModal);
+    cancelSosBtn?.addEventListener('click', closeSosModal);
+    forceSosBtn?.addEventListener('click', () => {
+      clearInterval(sosTimer);
+      alert('PLATFORM INTERVENTION ESCALATED IMMEDIATELY: Local Dispatch Connected.');
+      closeSosModal();
+    });
+
+    // Review Modal Logic
+    const reviewModal = document.getElementById('reviewPreviewModal');
+    const previewReviewBtn = document.getElementById('previewReviewBtn');
+    const closeReviewModal = document.getElementById('closeReviewModal');
+    const confirmReviewDemo = document.getElementById('confirmReviewDemo');
+
+    previewReviewBtn?.addEventListener('click', () => {
+      reviewModal.classList.remove('opacity-0', 'pointer-events-none');
+      reviewModal.classList.add('opacity-100');
+    });
+
+    closeReviewModal?.addEventListener('click', () => {
+      reviewModal.classList.add('opacity-0', 'pointer-events-none');
+      reviewModal.classList.remove('opacity-100');
+    });
+
+    confirmReviewDemo?.addEventListener('click', () => {
+      alert('Escrow payment released to Mark J. Both reciprocal 5-star ratings logged into decentralized trust register.');
+      reviewModal.classList.add('opacity-0', 'pointer-events-none');
+      reviewModal.classList.remove('opacity-100');
+    });
+
+    // Chat functionality
+    const chatInput = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+    const chatStream = document.getElementById('chatStream');
+    const focusChatBtn = document.getElementById('focusChatBtn');
+
+    focusChatBtn?.addEventListener('click', () => {
+      chatInput.focus();
+    });
+
+    window.sendQuickReply = function(text) {
+      appendChatMessage('You', text, true);
+    };
+
+    function appendChatMessage(sender, text, isSelf) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const msgDiv = document.createElement('div');
+      
+      if (isSelf) {
+        msgDiv.className = 'flex flex-col max-w-[85%] self-end bg-surface-container-high p-space-xs rounded-xl rounded-tr-none animate-fadeIn';
+        msgDiv.innerHTML = `
+          <span class="font-caption-caps text-caption-caps text-primary font-semibold text-right">${sender} &bull; ${timeStr}</span>
+          <p class="font-body-default text-microcopy text-on-surface mt-0.5">${escapeHTML(text)}</p>
+        `;
+      } else {
+        msgDiv.className = 'flex flex-col max-w-[85%] self-start bg-surface-container p-space-xs rounded-xl rounded-tl-none animate-fadeIn';
+        msgDiv.innerHTML = `
+          <span class="font-caption-caps text-caption-caps text-secondary font-semibold">${sender} &bull; ${timeStr}</span>
+          <p class="font-body-default text-microcopy text-on-surface mt-0.5">${escapeHTML(text)}</p>
+        `;
+      }
+
+      chatStream.appendChild(msgDiv);
+      chatStream.scrollTop = chatStream.scrollHeight;
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+
+    chatSendBtn?.addEventListener('click', () => {
+      const val = chatInput.value.trim();
+      if (val) {
+        appendChatMessage('You', val, true);
+        chatInput.value = '';
+        setTimeout(() => {
+          appendChatMessage('Mark J.', 'Received! Walking up the pathway now.', false);
+        }, 1500);
+      }
+    });
+
+    chatInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        chatSendBtn.click();
+      }
+    });
+  })();
+</script></main><footer class="relative z-10 w-full bg-surface-container-lowest py-space-xl"><div class="max-w-[1440px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><img alt="AegisCraft Brand Emblem" class="h-6 w-auto object-contain opacity-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTSuuaMiUCIMyEWfTtlngtE2QwX6KL6WiBXYRIJc8ALZljnaqpVEOT-cPjvGyrtIgT-F0_7f8uka9_ald8r7oUTaEyuoL4zxK8fyLoc_X_4kHrXSE9NscRc_AcAkwDZxrKBApfk__G6h916S07cEQOCUnTKvi2eQWV2kOUuSpAMQwZXrizTwaN7uWE8uyAb8zgMGRmQM-Si6ci9Db7EQeFne8hX-LqToPTA-QPnuj1JDMzZKX90iFsMg"/><span class="font-headline-card text-headline-card text-on-surface-variant">AegisCraft Dispatch Infrastructure</span></div><p class="font-microcopy text-microcopy text-outline">© 2025 AegisCraft Network. Real-Time Blue-Collar Bidding, Geolocation &amp; Verified Escrow Operations.</p><div class="flex items-center gap-space-md"><a class="font-microcopy text-microcopy text-on-surface-variant hover:text-primary transition-colors" href="#">Security Protocols</a><a class="font-microcopy text-microcopy text-on-surface-variant hover:text-primary transition-colors" href="#">Escrow Guarantee</a><a class="font-microcopy text-microcopy text-on-surface-variant hover:text-primary transition-colors" href="#">Technician Portal</a></div></div></footer></body></html>

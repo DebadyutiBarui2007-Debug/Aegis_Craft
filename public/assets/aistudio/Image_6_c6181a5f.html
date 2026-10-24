@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>AegisCraft - Rescue &amp; Dispatch Ecosystem</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-container": "#d88a00", "background": "#0b1326", "outline-variant": "#3e4850", "on-error-container": "#ffdad6", "surface-container-highest": "#2d3449", "error": "#ffb4ab", "surface-container": "#171f33", "on-primary": "#00344d", "secondary-container": "#00a572", "on-surface-variant": "#bec8d2", "on-tertiary-fixed": "#2a1700", "inverse-surface": "#dae2fd", "surface": "#0b1326", "tertiary-fixed": "#ffddb8", "inverse-primary": "#006591", "surface-bright": "#31394d", "on-primary-container": "#003751", "on-secondary": "#003824", "secondary-fixed-dim": "#4edea3", "on-tertiary-fixed-variant": "#653e00", "on-secondary-fixed-variant": "#005236", "on-background": "#dae2fd", "primary": "#89ceff", "surface-container-low": "#131b2e", "inverse-on-surface": "#283044", "on-primary-fixed": "#001e2f", "outline": "#88929b", "primary-fixed": "#c9e6ff", "surface-container-lowest": "#060e20", "on-surface": "#dae2fd", "surface-container-high": "#222a3d", "tertiary": "#ffb95f", "secondary-fixed": "#6ffbbe", "primary-container": "#0ea5e9", "on-error": "#690005", "on-tertiary": "#472a00", "tertiary-fixed-dim": "#ffb95f", "secondary": "#4edea3", "on-primary-fixed-variant": "#004c6e", "error-container": "#93000a", "on-secondary-container": "#00311f", "surface-variant": "#2d3449", "on-tertiary-container": "#4a2c00", "surface-dim": "#0b1326", "primary-fixed-dim": "#89ceff", "on-secondary-fixed": "#002113", "surface-tint": "#89ceff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-tablet": "2rem", "gutter": "1rem", "margin": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "gutter-desktop": "2rem", "space-sm": "0.75rem", "gutter-tablet": "1.5rem", "space-xl": "2rem", "space-xs": "0.5rem", "space-md": "1rem", "space-2xs": "0.25rem", "margin-desktop": "3rem" }, "fontFamily": { "microcopy": ["Inter"], "display-mobile": ["Inter"], "title-screen": ["Inter"], "headline-card": ["Inter"], "label-default": ["Inter"], "caption-caps": ["Inter"], "body-medium": ["Inter"], "body-default": ["Inter"], "title-section": ["Inter"], "display": ["Inter"] }, "fontSize": { "microcopy": ["13px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }], "display-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "title-screen": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-card": ["16px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "label-default": ["14px", { "lineHeight": "20px", "letterSpacing": "0.005em", "fontWeight": "500" }], "caption-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }], "body-medium": ["15px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "500" }], "body-default": ["15px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "400" }], "title-section": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "600" }] } } } };</script></head><body class="bg-background font-body-default text-on-surface relative min-h-screen selection:bg-primary selection:text-on-primary"><div class="fixed inset-0 pointer-events-none z-0 overflow-hidden"><div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-secondary/10 blur-[120px]"></div><div class="absolute -top-32 -right-32 w-[30rem] h-[30rem] rounded-full bg-tertiary/10 blur-[140px]"></div></div><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-2xl shadow-[0_4px_24px_rgba(0,0,0,0.45)]"><div class="h-20 max-w-[1440px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm"><img alt="AegisCraft Brand Emblem" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTSuuaMiUCIMyEWfTtlngtE2QwX6KL6WiBXYRIJc8ALZljnaqpVEOT-cPjvGyrtIgT-F0_7f8uka9_ald8r7oUTaEyuoL4zxK8fyLoc_X_4kHrXSE9NscRc_AcAkwDZxrKBApfk__G6h916S07cEQOCUnTKvi2eQWV2kOUuSpAMQwZXrizTwaN7uWE8uyAb8zgMGRmQM-Si6ci9Db7EQeFne8hX-LqToPTA-QPnuj1JDMzZKX90iFsMg"/><span class="font-title-screen text-title-screen tracking-tight text-on-surface">AegisCraft</span></div><div class="hidden xl:flex items-center gap-space-xs"><div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase"><span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>KYC Verified Network</div><div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary/15 text-tertiary font-caption-caps text-caption-caps uppercase"><span class="w-1.5 h-1.5 rounded-full bg-tertiary shadow-[0_0_8px_rgba(255,185,95,0.8)]"></span>Dispatch Live</div></div></div><div class="hidden 2xl:flex items-center p-1 rounded-full bg-surface-container-high/90"><button class="px-3 py-1.5 rounded-full font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-colors" type="button">Customer View</button><button class="px-3 py-1.5 rounded-full bg-surface-container font-label-default text-label-default text-secondary shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center gap-1.5" type="button"><span class="w-2 h-2 rounded-full bg-secondary"></span>Worker Pro Terminal</button></div><nav class="hidden lg:flex items-center gap-1" data-active-classes="bg-surface-container-high text-primary font-body-medium shadow-[0_0_16px_rgba(14,165,233,0.25)] rounded-lg"><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="service-discovery" href="#">Service Discovery</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="radar-matching-and-jobs" href="#">Radar Matching &amp; Jobs</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="live-bidding-and-negotiation" href="#">Live Bidding &amp; Negotiation</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="active-job-and-gps-tracking" href="#">Active Job &amp; GPS Tracking</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="messages-and-comms" href="#">Messages &amp; Comms</a></nav><div class="flex items-center gap-space-sm"><div class="hidden sm:flex items-center gap-space-xs"><div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-error/15 text-error font-caption-caps text-caption-caps uppercase cursor-pointer hover:bg-error/25 transition-colors"><span class="w-2 h-2 rounded-full bg-error animate-ping"></span>SOS Ready</div><div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-tertiary-container/20 text-tertiary font-label-default text-label-default cursor-pointer hover:bg-tertiary-container/30 transition-colors"><span class="material-symbols-outlined text-base">support_agent</span>24/7 Hotline</div></div><div class="flex items-center gap-space-xs pl-2"><div class="hidden md:flex flex-col text-right"><span class="font-label-default text-label-default text-on-surface">Mark J.</span><span class="font-caption-caps text-caption-caps text-secondary">Master Tech • Online</span></div><div class="relative"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-secondary/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ"/><span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-secondary ring-2 ring-surface-container-lowest"></span></div></div></div></div><div class="w-full bg-surface-container-lowest/90 backdrop-blur-md px-margin md:px-margin-tablet lg:px-margin-desktop py-1.5"><div class="max-w-[1440px] mx-auto flex items-center justify-between text-on-surface-variant font-microcopy text-microcopy overflow-x-auto whitespace-nowrap gap-space-md"><div class="flex items-center gap-space-sm"><span class="flex items-center gap-1 text-secondary"><span class="material-symbols-outlined text-sm">radar</span>PostGIS Query: Active (3.2 km radius)</span><span class="text-outline-variant">•</span><span class="flex items-center gap-1 text-primary"><span class="material-symbols-outlined text-sm">bolt</span>Socket.IO: Connected</span><span class="text-outline-variant">•</span><span class="flex items-center gap-1 text-tertiary"><span class="material-symbols-outlined text-sm">satellite_alt</span>High-Precision GPS: Synchronized</span></div><div class="hidden lg:flex items-center gap-space-xs"><span class="text-outline-variant">Latency: 24ms</span><span class="text-outline-variant">•</span><span class="text-outline-variant">Escrow Vault: Verified</span></div></div></div></header><main class="relative z-10 w-full pt-28 bg-surface min-h-[calc(100vh-5rem)]"><div class="flex flex-col w-full">
+<div class="w-full max-w-[1440px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop py-space-md flex flex-col gap-space-lg">
+<!-- Top Job Summary Glass Banner -->
+<section class="relative w-full rounded-xl bg-surface-container/85 backdrop-blur-2xl shadow-xl overflow-hidden p-space-md md:p-space-lg">
+<div class="absolute -right-24 -top-24 w-72 h-72 rounded-full bg-tertiary/10 blur-[90px] pointer-events-none"></div>
+<div class="absolute -left-20 -bottom-20 w-64 h-64 rounded-full bg-secondary/10 blur-[80px] pointer-events-none"></div>
+<div class="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs max-w-3xl">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-caption-caps text-caption-caps uppercase tracking-wider">#JOB-8842</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary/15 text-tertiary font-caption-caps text-caption-caps uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping"></span>
+              Live Negotiation in Progress • Real-time Socket.IO Synchronized
+            </span>
+<span class="px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">verified</span>
+              Escrow Guaranteed
+            </span>
+</div>
+<h1 class="font-title-screen text-title-screen text-on-surface tracking-tight mt-1">
+            Emergency Electrical Panel Tripping &amp; Surge Protection
+          </h1>
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-1 font-body-default text-body-default text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-base">person</span>
+<span>Customer: <strong class="text-on-surface font-body-medium">Sarah Jenkins</strong></span>
+</div>
+<span class="text-outline-variant">•</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-base">near_me</span>
+<span>742 Evergreen Terrace <span class="text-secondary font-body-medium">(0.8 km from your unit)</span></span>
+</div>
+<span class="text-outline-variant">•</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-tertiary text-base">timer</span>
+<span>Urgent Dispatch ETA: ~12 Mins</span>
+</div>
+</div>
+<p class="font-microcopy text-microcopy text-on-surface-variant/90 mt-1 line-clamp-2 md:line-clamp-none">
+            Scope: Main breaker burning smell, circuit breaker 30A fault, requires immediate multimeter diagnostics, circuit thermal imaging check, &amp; Eaton breaker replacement.
+          </p>
+</div>
+<div class="flex flex-row xl:flex-col items-center xl:items-end justify-between gap-space-sm pt-space-xs xl:pt-0">
+<div class="flex items-center gap-space-xs bg-surface-container-low/90 px-3 py-2 rounded-lg">
+<div class="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></div>
+<div class="flex flex-col">
+<span class="font-caption-caps text-caption-caps text-outline uppercase">Handshake Ping</span>
+<span class="font-microcopy text-microcopy text-on-surface font-body-medium">18ms • Node #US-EAST-4</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-default text-label-default flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-base">call</span>
+              Direct Audio
+            </button>
+<button class="px-3 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-default text-label-default flex items-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-base">photo_library</span>
+              Photos (3)
+            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Split-Screen Negotiation Console -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- Left Column: Chronological Bid Stream & Offer Timeline (7 Cols) -->
+<section class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Market Benchmark Widget -->
+<div class="rounded-xl bg-surface-container-low/95 p-space-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm shadow-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-xl">analytics</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-caption-caps text-caption-caps uppercase text-primary">PostGIS MCP Pricing Radar</span>
+<span class="font-microcopy text-microcopy text-outline-variant">• 42 Nearby Dispatches</span>
+</div>
+<p class="font-headline-card text-headline-card text-on-surface">Regional Fair Market Value: <span class="text-secondary">$65.00 – $85.00</span></p>
+</div>
+</div>
+<div class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-microcopy text-microcopy shrink-0">
+<span class="material-symbols-outlined text-sm text-secondary">trending_flat</span>
+            Within Safe Escrow Corridor
+          </div>
+</div>
+<!-- Bid Stream Timeline Cards -->
+<div class="relative pl-6 md:pl-8 flex flex-col gap-space-md before:content-[''] before:absolute before:left-3 md:before:left-4 before:top-4 before:bottom-4 before:w-0.5 before:bg-surface-container-highest">
+<!-- Event 1: Initial Customer Request Offer -->
+<div class="relative flex flex-col gap-2 rounded-xl bg-surface-container/70 p-space-md shadow-sm transition-all hover:bg-surface-container/90">
+<div class="absolute -left-6 md:-left-8 top-5 w-3 h-3 rounded-full bg-primary ring-4 ring-background"></div>
+<div class="flex items-center justify-between gap-space-xs">
+<div class="flex items-center gap-2">
+<span class="font-label-default text-label-default text-primary font-body-medium">Initial Customer Offer</span>
+<span class="font-caption-caps text-caption-caps text-outline uppercase px-2 py-0.5 rounded bg-surface-container-lowest">Step 1</span>
+</div>
+<span class="font-microcopy text-microcopy text-on-surface-variant">10:14 AM</span>
+</div>
+<div class="flex items-baseline justify-between">
+<span class="font-title-screen text-title-screen text-on-surface">$70.00</span>
+<span class="font-microcopy text-microcopy text-on-surface-variant">Customer Budget Ceiling: $75.00</span>
+</div>
+<p class="font-microcopy text-microcopy text-on-surface-variant">
+              “Smelled electrical smoke near the main basement circuit. Need technician to diagnose cause promptly.”
+            </p>
+</div>
+<!-- Event 2: Technician Mark J. Counteroffer (Amber Highlighted) -->
+<div class="relative flex flex-col gap-2 rounded-xl bg-surface-container-high/90 p-space-md shadow-xl transition-all hover:shadow-[0_0_24px_rgba(255,185,95,0.2)]">
+<div class="absolute -left-6 md:-left-8 top-5 w-3.5 h-3.5 rounded-full bg-tertiary shadow-[0_0_12px_rgba(255,185,95,0.9)] ring-4 ring-background"></div>
+<div class="flex items-center justify-between gap-space-xs">
+<div class="flex items-center gap-2">
+<span class="font-label-default text-label-default text-tertiary font-body-medium flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">build</span>
+                  Tech Mark J. Pro Counteroffer
+                </span>
+<span class="font-caption-caps text-caption-caps text-tertiary bg-tertiary/15 px-2 py-0.5 rounded-full uppercase">Counter #1</span>
+</div>
+<span class="font-microcopy text-microcopy text-on-surface-variant">10:16 AM</span>
+</div>
+<div class="flex items-baseline justify-between mt-1">
+<div class="flex items-baseline gap-2">
+<span class="font-display text-display text-tertiary font-title-screen">$85.00</span>
+<span class="font-microcopy text-microcopy text-on-surface-variant line-through">$110 Standard</span>
+</div>
+<span class="font-caption-caps text-caption-caps px-2 py-1 rounded bg-tertiary/10 text-tertiary uppercase">Includes Eaton Unit</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest/80 text-on-surface-variant font-microcopy text-microcopy flex flex-col gap-1.5">
+<div class="flex items-center gap-1 text-on-surface font-body-medium">
+<span class="material-symbols-outlined text-sm text-tertiary">notes</span>
+                Technician Scope Note:
+              </div>
+<p class="italic text-on-surface-variant">
+                “Includes OEM 30A Eaton breaker replacement and FLIR thermal imaging diagnostic to verify panel busbar integrity. Fast on-site turnaround.”
+              </p>
+</div>
+</div>
+<!-- Event 3: Customer Counteroffer (Pending Current State) -->
+<div class="relative flex flex-col gap-2 rounded-xl bg-surface-container/95 p-space-md shadow-md">
+<div class="absolute -left-6 md:-left-8 top-5 w-3 h-3 rounded-full bg-secondary ring-4 ring-background animate-pulse"></div>
+<div class="flex items-center justify-between gap-space-xs">
+<div class="flex items-center gap-2">
+<span class="font-label-default text-label-default text-secondary font-body-medium">Customer Active Counteroffer</span>
+<span class="font-caption-caps text-caption-caps text-secondary bg-secondary/15 px-2 py-0.5 rounded-full uppercase">Active Floor</span>
+</div>
+<span class="font-microcopy text-microcopy text-on-surface-variant">10:18 AM (2m ago)</span>
+</div>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-display text-display text-on-surface font-title-screen" id="currentOfferDisplayLeft">$80.00</span>
+<span class="font-caption-caps text-caption-caps px-2 py-1 rounded bg-secondary/15 text-secondary uppercase font-body-medium">Mutual Sweetspot</span>
+</div>
+<p class="font-microcopy text-microcopy text-on-surface-variant">
+              “Can we meet at $80.00? Happy to confirm and lock escrow right away so you can dispatch immediately.”
+            </p>
+</div>
+</div>
+<!-- Live Status Bar: Mark J. Reviewing -->
+<div class="rounded-xl bg-surface-container-low p-space-sm flex items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="relative w-8 h-8 rounded-full overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait of master electrician Mark J wearing a navy utility uniform with safety badge, warm atmospheric workshop light in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_T47UdzSRCa5y7nquOcy1SyPZXeRQDIjzykKCbSNMTrbmRJIDo4s9C-B3s1GlUh1wcWiBJDB2CH7QRQYdvbdgE25dk5RlMjt3rfi4YTPrU4sr5Q_c7IaGhIHwN6gWLgQYRymPN3YiwwbZ4caXoZzPyoF0E4FsSlwes5JLakDwLeUzvRNFwDVA5-sAtuOyuhnSdG5tkZsZ_1YongRvWoy60R4-OYi8SObBiwZSmkr6JmzRX645r8F9qQ"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-label-default text-label-default text-on-surface font-body-medium">Mark J.</span>
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-bounce"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-bounce [animation-delay:0.2s]"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-bounce [animation-delay:0.4s]"></span>
+</div>
+</div>
+<span class="font-microcopy text-microcopy text-on-surface-variant">Reviewing your $80.00 counteroffer in dispatch queue...</span>
+</div>
+</div>
+<div class="hidden sm:flex items-center gap-1.5 text-secondary font-caption-caps text-caption-caps uppercase">
+<span class="material-symbols-outlined text-sm">wifi_tethering</span>
+            Direct Socket Live
+          </div>
+</div>
+<!-- Visual Signal Graph Component -->
+<div class="rounded-xl bg-surface-container/60 p-space-md flex flex-col gap-space-xs">
+<div class="flex items-center justify-between font-caption-caps text-caption-caps text-outline uppercase">
+<span>Dynamic Bidding Convergence Curve</span>
+<span>Spread: -$5.00 delta</span>
+</div>
+<div class="w-full h-12 flex items-center">
+<svg class="w-full h-full text-outline-variant" fill="none" preserveaspectratio="none" viewbox="0 0 400 48">
+<path d="M0 40 C 80 40, 100 12, 200 12 C 280 12, 320 22, 400 22" opacity="0.3" stroke="currentColor" stroke-dasharray="4 4" stroke-width="2"></path>
+<path class="text-tertiary" d="M0 38 C 90 35, 140 28, 220 25 C 280 23, 340 24, 400 24" stroke="currentColor" stroke-width="2"></path>
+<circle class="text-secondary" cx="220" cy="25" fill="currentColor" r="4"></circle>
+<circle class="text-tertiary animate-pulse" cx="340" cy="24" fill="currentColor" r="5"></circle>
+</svg>
+</div>
+<div class="flex items-center justify-between font-microcopy text-microcopy text-on-surface-variant">
+<span>Customer Start ($70)</span>
+<span class="text-secondary font-body-medium">Target Match ($80)</span>
+<span>Tech Offer ($85)</span>
+</div>
+</div>
+</section>
+<!-- Right Column: Counteroffer Interactive Control Surface (5 Cols) -->
+<section class="lg:col-span-5 flex flex-col gap-space-md">
+<div class="rounded-xl bg-surface-container/90 backdrop-blur-2xl shadow-2xl p-space-md md:p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex flex-col">
+<span class="font-caption-caps text-caption-caps text-outline uppercase tracking-wider">Control Surface</span>
+<h2 class="font-title-section text-title-section text-on-surface">Agreed Job Target</h2>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-caption-caps text-caption-caps uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">lock</span>
+              Protected Escrow
+            </div>
+</div>
+<!-- Large Numeric Price Display -->
+<div class="rounded-xl bg-surface-container-lowest/90 p-space-md flex flex-col items-center justify-center text-center gap-1 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-tertiary/5 via-transparent to-transparent pointer-events-none"></div>
+<span class="font-caption-caps text-caption-caps text-outline uppercase">Proposed Mutual Total</span>
+<div class="flex items-baseline justify-center gap-1">
+<span class="font-display text-display text-tertiary font-title-screen" id="priceDisplay">$80.00</span>
+<span class="font-microcopy text-microcopy text-on-surface-variant">USD</span>
+</div>
+<div class="flex items-center gap-1.5 text-secondary font-caption-caps text-caption-caps mt-0.5">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+              Both parties within $5.00 threshold
+            </div>
+</div>
+<!-- Interactive Price Slider -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<div class="flex justify-between items-center font-caption-caps text-caption-caps text-outline uppercase">
+<span>Min Escrow ($50)</span>
+<span class="text-tertiary font-body-medium">Market Mean ($75)</span>
+<span>Max Safe ($150)</span>
+</div>
+<div class="relative py-2 flex items-center">
+<input class="w-full h-2 rounded-lg appearance-none cursor-pointer bg-surface-container-highest accent-primary focus:outline-none transition-all" id="negotiationSlider" max="150" min="50" step="1" type="range" value="80"/>
+</div>
+<div class="flex justify-between text-microcopy font-microcopy text-on-surface-variant">
+<span>$50.00</span>
+<span class="text-tertiary font-body-medium">▲ Eaton OEM Tier ($85)</span>
+<span>$150.00</span>
+</div>
+</div>
+<!-- Quick Adjustment Buttons -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-caption-caps text-caption-caps text-outline uppercase">Quick Delta Increment</label>
+<div class="grid grid-cols-4 gap-2">
+<button class="py-2.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-default text-label-default transition-all active:scale-95 text-center" onclick="adjustBid(-5)" type="button">
+                -$5
+              </button>
+<button class="py-2.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-default text-label-default transition-all active:scale-95 text-center" onclick="adjustBid(5)" type="button">
+                +$5
+              </button>
+<button class="py-2.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-default text-label-default transition-all active:scale-95 text-center" onclick="adjustBid(10)" type="button">
+                +$10
+              </button>
+<button class="py-2.5 rounded-lg bg-tertiary/20 hover:bg-tertiary/30 text-tertiary font-label-default text-label-default transition-all active:scale-95 text-center font-body-medium" onclick="setBid(85)" type="button">
+                Match $85
+              </button>
+</div>
+</div>
+<!-- Breakdown Transparency Box -->
+<div class="rounded-xl bg-surface-container-low p-space-md flex flex-col gap-space-xs">
+<div class="flex items-center justify-between font-caption-caps text-caption-caps text-outline uppercase pb-1">
+<span>Transparent Itemization</span>
+<span class="text-secondary font-body-medium">Zero Hidden Fees</span>
+</div>
+<div class="flex items-center justify-between font-microcopy text-microcopy text-on-surface-variant">
+<span>Master Electrical Diagnostic &amp; Labor</span>
+<span class="text-on-surface font-body-medium" id="laborPrice">$65.00</span>
+</div>
+<div class="flex items-center justify-between font-microcopy text-microcopy text-on-surface-variant">
+<span>Hardware Parts Allowance (30A Breaker)</span>
+<span class="text-on-surface font-body-medium" id="partsPrice">$15.00</span>
+</div>
+<div class="flex items-center justify-between font-microcopy text-microcopy text-on-surface-variant">
+<span>AegisCraft Escrow Fee (Covered by platform)</span>
+<span class="text-secondary font-body-medium">$0.00</span>
+</div>
+<div class="mt-2 pt-2 flex items-center justify-between font-headline-card text-headline-card text-on-surface">
+<span>Guaranteed Total</span>
+<span class="text-tertiary font-title-screen" id="breakdownTotal">$80.00</span>
+</div>
+</div>
+<!-- Dual Primary Action Buttons -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<button class="w-full min-h-[48px] py-3.5 px-space-md rounded-lg bg-secondary-container hover:bg-secondary text-on-secondary font-label-default text-label-default flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(78,222,163,0.3)] hover:shadow-[0_0_24px_rgba(78,222,163,0.5)] transition-all font-body-medium cursor-pointer" id="acceptOfferBtn" onclick="toggleConfirmationSheet(true)" type="button">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+              Accept Offer (<span id="btnAcceptLabel">$80.00</span>) &amp; Lock Escrow
+            </button>
+<button class="w-full min-h-[48px] py-3 px-space-md rounded-lg bg-primary/20 hover:bg-primary/30 text-primary font-label-default text-label-default flex items-center justify-center gap-2 transition-all font-body-medium cursor-pointer" id="submitCounterBtn" onclick="submitNewCounter()" type="button">
+<span class="material-symbols-outlined text-lg">sync_alt</span>
+              Transmit Counteroffer to Mark J.
+            </button>
+<button class="w-full py-2 px-space-md rounded-lg bg-transparent hover:bg-surface-container-high text-on-surface-variant font-microcopy text-microcopy text-center transition-colors" type="button">
+              Decline &amp; Re-open Radar Dispatch Network
+            </button>
+</div>
+</div>
+</section>
+</div>
+<!-- Agreement Confirmation Bottom Sheet / Modal Demo -->
+<section class="relative w-full rounded-xl bg-surface-container-high/95 backdrop-blur-2xl shadow-2xl p-space-md md:p-space-lg flex flex-col gap-space-md mt-space-sm overflow-hidden" id="agreementConfirmationModal">
+<div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary via-primary to-tertiary"></div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm pb-space-xs">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-secondary/20 text-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl">gavel</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption-caps text-caption-caps text-secondary uppercase tracking-wider">Ready for Execution</span>
+<h3 class="font-headline-card text-headline-card text-on-surface">Binding Service Agreement &amp; Auto-Dispatch Protocols</h3>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-caption-caps text-caption-caps uppercase">
+            Contract #AC-2025-8842-E
+          </span>
+</div>
+</div>
+<!-- Voice Quote Transcription Snippet -->
+<div class="rounded-xl bg-surface-container-lowest/90 p-space-md flex flex-col sm:flex-row items-start sm:items-center gap-space-md">
+<div class="relative w-12 h-12 rounded-full overflow-hidden shrink-0 ring-2 ring-tertiary">
+<img class="w-full h-full object-cover" data-alt="Technician Mark J profile avatar smiling calmly wearing safety glasses and electrician uniform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOgtKOt1xjIEWq1BJ3tkSvO_7-upe0ewUC9hYe_FdhvKaaizFhx2worJQ30jknQdEIJ2a8NTr421_nG9MQHCcfba0CLQ5eXXyZtZiQOOMUVuYOlQlTg634vzHu8CPmL857MY3RdPFfF3xE0d7dDdmpyfVXSoCLVYj8bZZnsiUpTrQJDlgaz4t4gtURP7qZBsUQXdAUkmrISGKM8Sndqjcw-uvmFNYnAa-meXwZucDyNwIWMKYQAo_qtA"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-secondary ring-2 ring-surface-container-lowest"></span>
+</div>
+<div class="flex flex-col gap-1 w-full">
+<div class="flex flex-wrap items-center justify-between gap-1">
+<div class="flex items-center gap-2">
+<span class="font-label-default text-label-default text-on-surface font-body-medium">Worker Mark J.</span>
+<span class="font-caption-caps text-caption-caps text-tertiary bg-tertiary/15 px-2 py-0.5 rounded-full uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">mic</span>
+                Voice-to-Text Verified
+              </span>
+</div>
+<span class="font-microcopy text-microcopy text-outline">Transcribed at 10:16 AM</span>
+</div>
+<p class="font-body-default text-body-default text-on-surface italic">
+            “I've reviewed the panel photos and can fix the burnt contact within 45 minutes. Replacement 30A Eaton breaker is already in my service van.”
+          </p>
+</div>
+</div>
+<!-- Binding Escrow Term Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm pt-space-xs">
+<div class="p-space-sm rounded-lg bg-surface-container/70 flex flex-col gap-1">
+<div class="flex items-center gap-1.5 text-secondary font-label-default text-label-default">
+<span class="material-symbols-outlined text-base">lock</span>
+            Smart Escrow Lock
+          </div>
+<p class="font-microcopy text-microcopy text-on-surface-variant">
+            Funds are locked in high-security isolation. The technician is only disbursed upon your physical sign-off and panel surge verification.
+          </p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container/70 flex flex-col gap-1">
+<div class="flex items-center gap-1.5 text-primary font-label-default text-label-default">
+<span class="material-symbols-outlined text-base">near_me</span>
+            Automated GPS Tracking
+          </div>
+<p class="font-microcopy text-microcopy text-on-surface-variant">
+            Upon mutual acceptance, Mark J.'s service van turns live on satellite radar with turn-by-turn proximity notifications straight to your console.
+          </p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container/70 flex flex-col gap-1">
+<div class="flex items-center gap-1.5 text-tertiary font-label-default text-label-default">
+<span class="material-symbols-outlined text-base">format_image_left</span>
+            Craftsmanship Warranty
+          </div>
+<p class="font-microcopy text-microcopy text-on-surface-variant">
+            Backed by the AegisCraft 30-Day Zero-Fault Protection Guarantee covering parts and labor up to $2,500.
+          </p>
+</div>
+</div>
+<!-- Modal Footer Execution Row -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-sm">
+<div class="flex items-center gap-2 text-on-surface-variant font-microcopy text-microcopy">
+<span class="material-symbols-outlined text-base text-secondary">verified</span>
+<span>Clicking ‘Execute Service Agreement’ triggers cryptographic handshake and dispatch alarm.</span>
+</div>
+<div class="flex items-center gap-space-sm w-full sm:w-auto">
+<button class="w-full sm:w-auto px-space-md py-2.5 rounded-lg bg-surface-container hover:bg-surface-bright text-on-surface font-label-default text-label-default transition-colors" onclick="toggleConfirmationSheet(false)" type="button">
+            Dismiss Sheet
+          </button>
+<button class="w-full sm:w-auto px-space-lg py-2.5 rounded-lg bg-secondary text-on-secondary font-label-default text-label-default flex items-center justify-center gap-2 shadow-[0_0_16px_rgba(78,222,163,0.4)] transition-all font-body-medium" onclick="confirmDispatch()" type="button">
+<span class="material-symbols-outlined text-base">electric_bolt</span>
+            Execute Service Agreement
+          </button>
+</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+  let currentBidValue = 80;
+
+  function updateInterface(val) {
+    currentBidValue = Math.max(50, Math.min(150, Math.round(val)));
+    
+    // Sliders and inputs
+    const slider = document.getElementById('negotiationSlider');
+    if (slider) slider.value = currentBidValue;
+
+    // Text elements
+    const formatted = '$' + currentBidValue.toFixed(2);
+    const priceDisplay = document.getElementById('priceDisplay');
+    const breakdownTotal = document.getElementById('breakdownTotal');
+    const btnAcceptLabel = document.getElementById('btnAcceptLabel');
+    const currentOfferDisplayLeft = document.getElementById('currentOfferDisplayLeft');
+
+    if (priceDisplay) priceDisplay.innerText = formatted;
+    if (breakdownTotal) breakdownTotal.innerText = formatted;
+    if (btnAcceptLabel) btnAcceptLabel.innerText = formatted;
+    if (currentOfferDisplayLeft) currentOfferDisplayLeft.innerText = formatted;
+
+    // Itemization logic
+    const partsVal = 15;
+    const laborVal = Math.max(0, currentBidValue - partsVal);
+    const laborElem = document.getElementById('laborPrice');
+    const partsElem = document.getElementById('partsPrice');
+    if (laborElem) laborElem.innerText = '$' + laborVal.toFixed(2);
+    if (partsElem) partsElem.innerText = '$' + partsVal.toFixed(2);
+  }
+
+  function adjustBid(delta) {
+    updateInterface(currentBidValue + delta);
+  }
+
+  function setBid(exact) {
+    updateInterface(exact);
+  }
+
+  const sliderElem = document.getElementById('negotiationSlider');
+  if (sliderElem) {
+    sliderElem.addEventListener('input', function(e) {
+      updateInterface(parseFloat(e.target.value));
+    });
+  }
+
+  function toggleConfirmationSheet(show) {
+    const modal = document.getElementById('agreementConfirmationModal');
+    if (!modal) return;
+    if (show) {
+      modal.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      modal.classList.add('ring-2', 'ring-secondary');
+      setTimeout(() => modal.classList.remove('ring-2', 'ring-secondary'), 1600);
+    } else {
+      modal.style.display = 'none';
+    }
+  }
+
+  function submitNewCounter() {
+    const btn = document.getElementById('submitCounterBtn');
+    if (!btn) return;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">refresh</span> Broadcasting to Mark J...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.innerHTML = '<span class="material-symbols-outlined text-lg">done</span> Counteroffer Transmitted!';
+      btn.classList.add('bg-secondary/20', 'text-secondary');
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        btn.classList.remove('bg-secondary/20', 'text-secondary');
+      }, 2000);
+    }, 1000);
+  }
+
+  function confirmDispatch() {
+    alert('Agreement confirmed! $80.00 escrow locked. Mark J. is en route (ETA 12 minutes).');
+  }
+</script></main><footer class="relative z-10 w-full bg-surface-container-lowest py-space-xl"><div class="max-w-[1440px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><img alt="AegisCraft Brand Emblem" class="h-6 w-auto object-contain opacity-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTSuuaMiUCIMyEWfTtlngtE2QwX6KL6WiBXYRIJc8ALZljnaqpVEOT-cPjvGyrtIgT-F0_7f8uka9_ald8r7oUTaEyuoL4zxK8fyLoc_X_4kHrXSE9NscRc_AcAkwDZxrKBApfk__G6h916S07cEQOCUnTKvi2eQWV2kOUuSpAMQwZXrizTwaN7uWE8uyAb8zgMGRmQM-Si6ci9Db7EQeFne8hX-LqToPTA-QPnuj1JDMzZKX90iFsMg"/><span class="font-headline-card text-headline-card text-on-surface-variant">AegisCraft Dispatch Infrastructure</span></div><p class="font-microcopy text-microcopy text-outline">© 2025 AegisCraft Network. Real-Time Blue-Collar Bidding, Geolocation &amp; Verified Escrow Operations.</p><div class="flex items-center gap-space-md"><a class="font-microcopy text-microcopy text-on-surface-variant hover:text-primary transition-colors" href="#">Security Protocols</a><a class="font-microcopy text-microcopy text-on-surface-variant hover:text-primary transition-colors" href="#">Escrow Guarantee</a><a class="font-microcopy text-microcopy text-on-surface-variant hover:text-primary transition-colors" href="#">Technician Portal</a></div></div></footer></body></html>

@@ -1,0 +1,1849 @@
+# MASTER FULL-STACK ENGINEERING PROMPT — BLUE-COLLAR MANAGEMENT PLATFORM
+## Production-Oriented Backend, Secure Authentication, MCP Server, Real-Time Infrastructure, Database, and Complete Frontend Integration
+
+You are an autonomous senior full-stack software engineer, backend architect, database engineer, API specialist, cybersecurity engineer, MCP (Model Context Protocol) engineer, real-time systems developer, and performance optimization expert.
+
+Your task is to **take my already-generated Blue-Collar Management Platform frontend and turn it into a fully connected, functional, secure, testable, deployable full-stack application.**
+
+I will provide the existing frontend project and the architecture reference images containing the complete product requirements, execution roadmap, MCP server design, database architecture, technology choices, job workflow, UI design system, and feature specifications.
+
+Use the existing frontend screens as the source of truth for the user experience. Study the supplied architecture images carefully before implementing anything.
+
+**IMPORTANT: Do not stop after producing a plan, architecture diagram, code snippets, API documentation, or a demonstration. Inspect the actual project, implement the working backend, connect the existing frontend, configure the infrastructure, run the available tests, fix errors, and verify the entire application.**
+
+The target is a complete, integrated application in which every relevant screen, button, form, tab, action, status indicator, and real-time interaction behaves according to the actual business logic.
+
+Do not unnecessarily redesign the completed frontend. Preserve its existing visual identity, liquid-glass treatment, nature-inspired golden-rescue color system, typography, spacing, responsiveness, and component structure while making the product fully functional.
+
+Do not claim that a feature works unless its implementation and observable behavior support that claim.
+
+---
+
+# 1. PRODUCT OBJECTIVE
+
+Build a Blue-Collar Management Platform that connects customers with nearby, eligible, verified blue-collar workers.
+
+The product must support:
+
+- Customer authentication and profiles.
+- Worker authentication and profiles.
+- Worker service categories and availability.
+- Worker verification/KYC status.
+- Geospatial worker matching.
+- Customer service requests.
+- Real-time job dispatch.
+- Worker acceptance and counteroffers.
+- Dynamic bid negotiation.
+- Customer acceptance of offers.
+- Job agreement creation.
+- Real-time job status updates.
+- Worker location updates and authorized live GPS tracking.
+- Real-time customer-worker chat.
+- Emergency SOS workflows.
+- Job completion.
+- Two-way customer-worker ratings.
+- Job history.
+- Transaction records and statuses.
+- In-app notifications.
+- Worker earnings information based on available transaction data.
+- Secure AI-agent integration through an MCP server.
+- Responsive frontend-backend integration.
+- Application monitoring, error handling, and performance testing.
+
+Build only the features supported by the supplied architecture and the existing product screens. Do not add unrelated modules, unnecessary enterprise dashboards, social feeds, subscriptions, gamification, unsupported payment features, or new business functionality merely to make the project larger.
+
+The application must remain understandable, lightweight, accessible, and pleasant to use on ordinary mobile devices.
+
+# 2. FIRST ACTION: INSPECT THE EXISTING PROJECT
+
+Before writing new code, inspect the repository thoroughly.
+
+Determine:
+
+- The frontend framework and version.
+- The application's actual entry points.
+- Existing routes and navigation.
+- The existing customer and worker screens.
+- Every clickable component and its current behavior.
+- Existing form fields and validation.
+- Existing state management.
+- Existing API utilities or service layers.
+- Existing mock data.
+- Existing authentication assumptions.
+- Existing environment variables.
+- Installed dependencies.
+- Existing design tokens and reusable components.
+- Current build and test commands.
+- Whether any backend, database, or API implementation already exists.
+- Whether the project is a monorepo or a frontend-only repository.
+- Whether the frontend targets a browser, mobile device, or both.
+
+Use the supplied architecture reference images to understand the intended data model, job workflow, MCP tools, Redis behavior, PostGIS matching, Socket.IO/WebSocket architecture, and emergency functionality.
+
+Do not assume the frontend framework without inspecting the files.
+
+Do not overwrite working application components or replace the existing product with a generic starter template.
+
+Do not delete existing screens or features simply because they are not yet connected to an API.
+
+Create a feature inventory mapping each existing screen and interactive control to the backend operation or local UI action it requires.
+
+Preserve the current frontend structure as much as possible. Implement the backend around the frontend's real requirements rather than forcing an unrelated template architecture onto it.
+
+If the project contains reusable frontend components or partial integrations, extend them instead of creating unnecessary duplicates.
+
+If something is unspecified, choose the simplest secure and maintainable implementation that satisfies the existing product requirements. Do not stop and ask questions that can reasonably be answered by inspecting the repository.
+
+# 3. REQUIRED TARGET ARCHITECTURE
+
+Use a modular, maintainable architecture appropriate for a small production-oriented application that may grow over time.
+
+Prefer the following stack unless an existing, functional project architecture provides a compelling reason to retain an alternative:
+
+**Backend**
+- Node.js with TypeScript.
+- Fastify for HTTP APIs.
+- Zod or an equivalent runtime schema validator.
+- PostgreSQL with PostGIS for persistent and geospatial data.
+- Redis for caching, short-lived location data where appropriate, and publish/subscribe.
+- Socket.IO or a compatible authenticated WebSocket implementation for real-time features.
+- Official Model Context Protocol TypeScript SDK for the MCP server.
+- OpenAPI documentation for REST endpoints.
+- A structured logging library and centralized error handling.
+
+**Frontend**
+- Keep the existing framework and screen implementations.
+- Introduce a typed API integration layer compatible with the current frontend.
+- Use the project's existing state-management approach where practical.
+- If a server-state library already exists, extend it. Otherwise, select a lightweight, maintained approach appropriate to the framework.
+- Implement typed API responses, safe authentication handling, loading states, and real-time event subscriptions.
+
+**Infrastructure**
+- Environment-based configuration.
+- Database migrations and development seed data.
+- Docker Compose for reproducible local development where supported.
+- Automated tests.
+- CI/build verification where the repository supports it.
+- Deployment instructions for the chosen hosting environment.
+
+Choose mutually compatible, currently supported dependency versions. Consult current official documentation before adopting framework-specific APIs, especially for the MCP SDK, database packages, and authentication libraries.
+
+Do not blindly copy obsolete SDK examples or install unnecessary libraries.
+
+Do not introduce microservices for every feature. Start with a modular backend and a separately runnable MCP integration service where practical. Keep the architecture straightforward to develop, test, and deploy.
+
+If the existing project already uses FastAPI or another compatible backend, assess whether retaining it provides a better integration path. Avoid creating two competing backend systems.
+
+# 4. PROJECT STRUCTURE
+
+Organize the application according to the actual repository and deployment needs.
+
+Where appropriate, use a structure similar to:
+
+```text
+blue-collar-platform/
+├── apps/
+│   ├── web-or-mobile/
+│   ├── api/
+│   └── mcp-server/
+├── packages/
+│   ├── shared-types/
+│   ├── validation/
+│   └── shared-contracts/
+├── database/
+│   ├── migrations/
+│   └── seeds/
+├── tests/
+│   ├── integration/
+│   └── e2e/
+├── docker-compose.yml
+├── .env.example
+├── .gitignore
+└── README.md
+```
+
+This is a structural reference, not a requirement to move a working frontend unnecessarily.
+
+Create clear boundaries between:
+
+- HTTP route handlers.
+- Authentication and authorization.
+- Request validation.
+- Business logic.
+- Database operations.
+- Geospatial queries.
+- Real-time event handling.
+- MCP tools and resources.
+- External-service adapters.
+- Frontend presentation.
+- Frontend API integration.
+- Tests and development utilities.
+
+Keep business logic reusable by REST endpoints, background operations, real-time handlers, and MCP tools. Do not duplicate the same business rules in each layer.
+
+# 5. DATABASE IMPLEMENTATION
+
+Build a properly normalized PostgreSQL database with PostGIS enabled.
+
+Create real migrations, indexes, foreign keys, uniqueness constraints, sensible delete behavior, and transaction boundaries.
+
+Use UUIDs or another consistent, robust identifier strategy.
+
+At minimum, assess and implement the following entities.
+
+## 5.1 Users
+
+Store appropriate account fields:
+
+- ID.
+- Display name.
+- Email and/or phone, according to the existing authentication interface.
+- Password hash where password authentication is used.
+- Account role or explicitly modeled role assignments.
+- Account status.
+- Email/phone verification status as applicable.
+- Created and updated timestamps.
+
+Do not store plaintext passwords, authentication secrets, or raw refresh tokens.
+
+Prevent duplicate verified account identifiers according to the authentication design.
+
+## 5.2 Worker profiles
+
+Store:
+
+- User relationship.
+- Worker profile information.
+- Service categories.
+- Availability.
+- Verification/KYC status.
+- Rating aggregates or efficient rating references.
+- Relevant profile timestamps.
+
+Model worker eligibility as actual backend data. Do not infer that a worker is verified merely because the frontend contains a verification badge.
+
+Keep verification statuses explicit, such as pending, verified, rejected, or another justified set of states.
+
+A worker must not be able to approve their own verification status.
+
+## 5.3 Service categories
+
+Create persistent service-category records that match the existing frontend.
+
+Include the category identifier, display name, applicable activation state, and other fields genuinely required by the application.
+
+Expose categories through the backend so the frontend does not rely on hardcoded production data.
+
+## 5.4 Worker locations
+
+Use an appropriate PostGIS geography or geometry representation with a spatial index.
+
+Store the latest legitimate worker location, its update timestamp, and any required location metadata.
+
+Support efficient proximity matching and distance calculations.
+
+Never expose unnecessary exact worker coordinates to unrelated customers.
+
+Use approximate distances in pre-acceptance discovery where appropriate. Restrict precise live locations to authorized participants in the relevant accepted or active job.
+
+Expire or ignore stale location information.
+
+Do not continue advertising workers as currently available solely because their last recorded location remains in a cache.
+
+## 5.5 Jobs
+
+Model customer requests and the job lifecycle.
+
+Include:
+
+- Job ID.
+- Customer ID.
+- Service category.
+- Task description where supplied.
+- Job location.
+- Appropriate urgency information.
+- Job status.
+- Agreed amount and currency where applicable.
+- Accepted worker or accepted offer relationship.
+- Created, updated, accepted, started, and completed timestamps where relevant.
+- Cancellation information where applicable.
+
+Use an explicit job state machine consistent with the existing product.
+
+The core states should cover:
+
+`PENDING → MATCHING/BIDDING → ACCEPTED → IN_PROGRESS → COMPLETED`
+
+Support cancellation where appropriate.
+
+Do not allow arbitrary status changes. Define permitted transitions and validate them in business logic and, where useful, database constraints.
+
+If the frontend distinguishes matching from bidding, preserve those distinct states.
+
+## 5.6 Bids and counteroffers
+
+Build a persistent, auditable offer history.
+
+Each proposal should capture, as applicable:
+
+- Offer ID.
+- Job ID.
+- Worker ID.
+- Proposed amount.
+- Currency.
+- Proposing participant.
+- Offer status.
+- Previous offer or parent-offer relationship.
+- Relevant creation and decision timestamps.
+- An idempotency reference where appropriate.
+
+Use clear statuses such as pending, accepted, rejected, superseded, withdrawn, or expired according to the implemented workflow.
+
+Support multiple workers proposing offers for one job while preventing conflicting accepted agreements.
+
+Make offer acceptance transactional. If two participants attempt conflicting actions simultaneously, only a valid transition may succeed.
+
+Once a job has an accepted offer, prevent another offer from being accepted for the same job.
+
+Represent negotiation history accurately rather than silently overwriting all previous offers.
+
+Never permit a worker to submit a bid for a job they are not authorized to access or manipulate another worker's offers.
+
+Store money using integer minor units and an explicit currency code. Do not use floating-point arithmetic for monetary business logic.
+
+## 5.7 Transactions
+
+Create transaction records only for financial operations the actual application supports.
+
+Include the job relationship, relevant participants, amount, currency, current status, and timestamps when available.
+
+Keep the transaction ledger separate from the mere existence of an accepted bid.
+
+**Do not claim that money was charged, transferred, refunded, or paid out unless a real payment integration has performed and confirmed that operation.**
+
+The initial implementation can support honest transaction-history records without inventing a wallet or payment system.
+
+## 5.8 Messages
+
+Persist job-related customer-worker messages.
+
+Include sender, recipient or conversation context, job relationship, message content, timestamps, and any necessary delivery-state fields.
+
+Enforce conversation membership before allowing access to messages.
+
+Validate message lengths and content. Do not expose one customer's conversations to another.
+
+## 5.9 Job events and audit records
+
+Persist important business events, such as:
+
+- Job created.
+- Worker matched.
+- Offer submitted.
+- Counteroffer made.
+- Offer accepted.
+- Agreement established.
+- Job started.
+- Job completed.
+- Job cancelled.
+- Rating submitted.
+- SOS action initiated or its delivery status updated.
+
+Keep records consistent with actual operations.
+
+For critical status changes and real-time broadcasts, use transactional event handling or an equivalent reliable pattern so database changes and notification delivery do not become irreconcilably inconsistent.
+
+Do not store unnecessary sensitive personal information in logs or audit messages.
+
+## 5.10 Ratings
+
+Support the actual two-way review requirement.
+
+Persist the job, reviewer, review recipient, rating value, optional review text, and timestamps.
+
+Validate rating bounds and participant eligibility.
+
+Prevent unauthorized reviews and duplicate reviews where the business rules require one review per participant per job.
+
+## 5.11 Notifications
+
+Persist relevant notifications so important events are not dependent solely on an open WebSocket connection.
+
+Support read/unread state and references to the relevant job, offer, message, or SOS event where appropriate.
+
+## 5.12 Authentication sessions and security records
+
+Implement persistent refresh-token/session records or an equivalent secure session strategy.
+
+Store refresh tokens in a non-reversible form where applicable. Support rotation, expiry, revocation, and logout.
+
+Add supporting records for idempotency or reliable event processing where necessary.
+
+## 5.13 Schema requirements
+
+Do not create all tables without relationships or constraints.
+
+Use:
+- Foreign keys.
+- Appropriate unique constraints.
+- Indexes on frequently queried ownership and status fields.
+- GIST indexes for spatial queries.
+- Efficient pagination indexes.
+- Database transactions for multi-record state changes.
+
+Create realistic development seed data for customer accounts, workers, service categories, jobs, and offers.
+
+Clearly mark seed data as development-only. Never use predictable seeded credentials in production.
+
+---
+
+# 6. AUTHENTICATION AND AUTHORIZATION
+
+Implement secure, functioning authentication matched to the existing frontend's sign-in and registration screens.
+
+Support the actual account-entry flow present in the UI. Do not invent a provider integration that has not been configured.
+
+## Authentication requirements
+
+Implement:
+
+- Registration.
+- Sign-in.
+- Sign-out.
+- Current-user retrieval.
+- Session refresh.
+- Session expiry.
+- Password hashing with a maintained, strong password-hashing algorithm.
+- Account and role checks.
+- Rate limiting for sensitive authentication operations.
+- Safe validation messages.
+- Authentication error states.
+- Session revocation where applicable.
+
+Use short-lived access tokens and securely rotated refresh sessions, or an appropriate secure-session alternative.
+
+For browser clients, use secure, HTTP-only cookies where compatible with the existing architecture, with appropriate SameSite, Secure, and CSRF protections.
+
+For native mobile clients, use the platform's secure storage for persistent credentials. Do not persist sensitive authentication tokens in ordinary browser local storage without a justified security design.
+
+If bearer tokens are used, do not blindly attach them to every outgoing request regardless of destination.
+
+Implement refresh handling so that multiple simultaneous API failures do not trigger a stampede of competing refresh requests.
+
+Do not redirect users into an infinite login/refresh loop.
+
+When the session expires permanently, preserve recoverable form data where practical, clear sensitive state, and send the user through an understandable sign-in flow.
+
+If email or phone verification is required by the existing UI, build the appropriate provider abstraction and real verification flow when credentials are available. Development-only verification shortcuts must never be enabled in production.
+
+Never log passwords, access tokens, refresh tokens, OTPs, or secret values.
+
+## Authorization requirements
+
+Implement authorization on the backend, not only by hiding buttons in the frontend.
+
+A customer may access only their authorized customer data and jobs.
+
+A worker may access only their own worker profile, authorized job requests, their bids, and the jobs for which they are an authorized participant.
+
+An accepted job's customer and assigned worker may access only the relevant job information and permitted live updates.
+
+Protect:
+- Profile updates.
+- Availability changes.
+- Location updates.
+- Bid creation and acceptance.
+- Job status changes.
+- Chat history.
+- Ratings.
+- Transaction data.
+- Notifications.
+- SOS records.
+
+Use deny-by-default permission checks for sensitive operations.
+
+Do not trust a `user_id`, role, worker identity, amount, verification state, or job ownership field supplied by the browser when that value must come from the authenticated identity or authoritative database.
+
+Use least privilege for every operation.
+
+---
+
+# 7. REST API IMPLEMENTATION
+
+Create a consistent, versioned API, for example:
+
+`/api/v1`
+
+Use the existing frontend's expected payloads where possible. If the frontend has inconsistent mock data, establish clean shared API contracts and migrate the frontend integration layer to those contracts.
+
+Document every endpoint with OpenAPI.
+
+Use validated request schemas, consistent response schemas, meaningful HTTP status codes, centralized exceptions, pagination, and authorization checks.
+
+The following endpoint families should be implemented or adapted to match the existing screens.
+
+## 7.1 Authentication
+
+- `POST /api/v1/auth/register`
+- `POST /api/v1/auth/login`
+- `POST /api/v1/auth/refresh`
+- `POST /api/v1/auth/logout`
+- `GET /api/v1/auth/me`
+
+Add verification or password-recovery endpoints only where required by the existing UI and implement their associated security correctly.
+
+## 7.2 Services
+
+- `GET /api/v1/services/categories`
+- Relevant authorized category or profile-management operations only if required.
+
+## 7.3 Worker profile and availability
+
+- `GET /api/v1/workers/me`
+- `PATCH /api/v1/workers/me`
+- `PATCH /api/v1/workers/me/availability`
+- `PUT /api/v1/workers/me/location`
+- `GET /api/v1/workers/nearby`
+
+The nearby-worker query should validate the service category, latitude, longitude, radius, result limits, and caller permissions.
+
+Do not accept unreasonable search radii or unlimited result sizes.
+
+## 7.4 Jobs
+
+- `POST /api/v1/jobs`
+- `GET /api/v1/jobs`
+- `GET /api/v1/jobs/:jobId`
+- `POST /api/v1/jobs/:jobId/cancel`
+- `POST /api/v1/jobs/:jobId/start`
+- `POST /api/v1/jobs/:jobId/complete`
+
+The job creation endpoint must validate all required fields and initialize the correct state.
+
+All status-changing endpoints must enforce role permissions and legal state transitions.
+
+If the existing interface requires separate request-to-match transitions, implement them as explicit business operations rather than performing hidden, arbitrary changes.
+
+## 7.5 Bidding and negotiation
+
+- `GET /api/v1/jobs/:jobId/bids`
+- `POST /api/v1/jobs/:jobId/bids`
+- `POST /api/v1/bids/:bidId/counter`
+- `POST /api/v1/bids/:bidId/accept`
+- `POST /api/v1/bids/:bidId/reject`
+
+Use the actual negotiation model consistently.
+
+Validate the proposal amount, worker eligibility, job status, ownership, offer expiration where implemented, currency, and idempotency.
+
+Acceptance must use a transaction or equivalent concurrency-safe operation so competing requests cannot produce conflicting agreements.
+
+Never return an accepted status before the database confirms that the transaction succeeded.
+
+## 7.6 Tracking and location
+
+- `PUT /api/v1/workers/me/location`
+- `GET /api/v1/jobs/:jobId/tracking`
+
+Add other location endpoints only when needed by the existing client.
+
+Apply suitable request limits, stale-location detection, authorization, and privacy restrictions.
+
+## 7.7 Messaging
+
+- `GET /api/v1/jobs/:jobId/messages`
+- `POST /api/v1/jobs/:jobId/messages`
+
+Support pagination and durable message persistence. Use WebSockets for low-latency delivery, not as the sole permanent record.
+
+## 7.8 Ratings and history
+
+- `POST /api/v1/jobs/:jobId/ratings`
+- `GET /api/v1/ratings` where required.
+- Job history using an authorized, paginated jobs endpoint.
+
+Enforce the two-way rating rules in the backend.
+
+## 7.9 Transactions and notifications
+
+- `GET /api/v1/transactions`
+- `GET /api/v1/notifications`
+- `PATCH /api/v1/notifications/:notificationId/read`
+
+Return only records the authenticated caller is permitted to see.
+
+Use meaningful empty states in the frontend when these endpoints return no data.
+
+## 7.10 SOS
+
+- `POST /api/v1/jobs/:jobId/sos`
+- `GET /api/v1/jobs/:jobId/sos/status` or an equivalent authorized status endpoint.
+
+Implement the actual emergency state machine, audit records, and configured delivery mechanism.
+
+If no emergency delivery provider or contact configuration exists, report that limitation clearly and expose the true delivery state. Do not pretend that an alert has reached emergency contacts when only a database record has been created.
+
+## 7.11 Standard API behavior
+
+Adopt a consistent error envelope, for example:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Please check the submitted information.",
+    "details": {},
+    "requestId": "request-correlation-id"
+  }
+}
+```
+
+Use the same general structure throughout the API while ensuring validation details never expose stack traces, SQL statements, or internal secrets.
+
+Implement appropriate support for:
+
+- Request IDs.
+- Input validation.
+- Pagination.
+- Maximum payload sizes.
+- Timeouts.
+- Rate limits.
+- Safe retries.
+- Idempotency for consequential writes.
+- Consistent date/time formatting.
+- A documented money representation.
+- Database-backed truth for important state changes.
+
+Do not add unnecessary requests that repeat the same information on every screen.
+
+---
+
+# 8. GEOSPATIAL WORKER MATCHING WITH POSTGIS
+
+The geospatial matching system is a core feature. Implement it properly rather than approximating every search using hardcoded distances.
+
+Use PostgreSQL and PostGIS as the authoritative source for eligible nearby-worker queries.
+
+Implement a spatially indexed query that:
+
+1. Receives a validated customer/job location, category, and radius.
+2. Finds workers who satisfy the actual eligibility rules.
+3. Restricts results to the appropriate service category.
+4. Checks current worker availability.
+5. Checks genuine verification status where required.
+6. Excludes invalid or sufficiently stale location records.
+7. Filters candidates by the requested radius.
+8. Computes distance accurately.
+9. Sorts results by an appropriate supported criterion, such as distance.
+10. Returns a bounded result set.
+11. Returns only the fields the client is authorized to receive.
+
+Use appropriate PostGIS geographic distance functions, such as `ST_DWithin` and `ST_Distance`, with a matching spatial index.
+
+Make all SQL parameterized. Never interpolate user-supplied coordinates, category names, or radius values into raw SQL strings.
+
+The architecture images describe a default radius around 3 km. Use that default where consistent with the existing UI, and permit only validated adjustments supported by the interface.
+
+Redis may be used as a performance-oriented cache for recent worker positions and active-worker metadata.
+
+However, **Redis must not become an uncontrolled substitute for the authoritative database state**. If Redis and PostGIS disagree, the final matching result must respect current eligibility and authoritative records.
+
+Use Redis GEO commands where they provide a measurable advantage, and use currently supported commands rather than reproducing obsolete examples without checking current Redis documentation.
+
+Implement safe cache invalidation, location freshness rules, and graceful fallback behavior.
+
+Never return a stale or unavailable worker as an eligible worker simply because a cached result exists.
+
+Do not expose precise pre-acceptance worker locations unless the product's authorization rules explicitly permit it.
+
+Create tests for radius boundaries, sorting, category filtering, stale locations, unavailable workers, invalid coordinates, and concurrent location updates.
+
+---
+
+# 9. REAL-TIME INFRASTRUCTURE: REDIS + SOCKET.IO/WEBSOCKETS
+
+Implement real-time behavior for the features that require it.
+
+Use Socket.IO or the compatible real-time technology already selected by the project. Use Redis pub/sub and an appropriate adapter when necessary to support events across multiple server processes.
+
+Authenticate WebSocket connections. Validate access to rooms and events before allowing subscriptions.
+
+Never trust a room name, job ID, sender ID, or worker ID provided by a client without checking authorization.
+
+## 9.1 Event architecture
+
+Establish clear, versioned or documented event contracts.
+
+Representative event types include:
+
+- `job.created`
+- `job.matching_started`
+- `worker.location_updated`
+- `job.offer_received`
+- `bid.created`
+- `bid.updated`
+- `bid.accepted`
+- `job.agreement_created`
+- `job.status_updated`
+- `message.created`
+- `notification.created`
+- `sos.status_updated`
+- `rating.created`
+
+Use naming conventions consistently throughout the backend and frontend.
+
+The events above are a proposed contract; adapt naming to the existing application and document the final contract.
+
+## 9.2 Reliable delivery
+
+Persist important business state before publishing its corresponding event.
+
+Use a transactional outbox or equivalent reliable publication mechanism for critical state changes where appropriate.
+
+Do not assume WebSocket delivery succeeded merely because a socket write returned without an immediate error.
+
+Persist messages and important notifications so clients can retrieve missed events after reconnecting.
+
+Use stable event IDs or version information to help clients handle duplicates and out-of-order updates.
+
+Make subscriptions and handlers idempotent where practical.
+
+## 9.3 Reconnection
+
+Implement:
+- Bounded reconnect backoff with jitter.
+- Connection state indicators.
+- Recovery through authenticated API requests.
+- Re-subscription to authorized job channels.
+- Deduplication of repeated events where necessary.
+- Graceful behavior when Redis or WebSocket infrastructure is temporarily unavailable.
+
+Do not continuously reconnect without limits or freeze the UI while waiting for a connection.
+
+## 9.4 Location updates
+
+Support worker location updates at an appropriate cadence, approximately every 10 seconds while the worker is actively sharing location where the platform supports it.
+
+Avoid needless location collection while offline or when the feature is not in use.
+
+Validate coordinates and timestamps. Handle device permission denial, background restrictions, stale updates, and network interruptions.
+
+Distinguish a successful location submission from the mere fact that the frontend attempted one.
+
+Do not fabricate current coordinates, route progress, or arrival estimates.
+
+---
+
+# 10. MCP SERVER IMPLEMENTATION
+
+Build a genuine MCP server using the official, currently supported MCP SDK for the chosen implementation language.
+
+The MCP server must expose selected platform business capabilities as secure, structured resources and tools that authorized AI agents can use.
+
+**MCP is an integration layer for agents. It is not a replacement for the REST API, the database, authentication, or business logic.**
+
+All critical business rules must exist in the shared backend service layer.
+
+MCP tools must invoke those same services rather than implementing their own competing version of bid acceptance, worker matching, job creation, or authorization.
+
+## 10.1 MCP architecture
+
+Use an architecture conceptually equivalent to:
+
+```text
+Authorized AI Agent
+        |
+        | Authenticated MCP protocol
+        v
+MCP Server
+        |
+        | Validated tool/resource request
+        v
+Shared Application Services
+        |
+        +--------------------+
+        |                    |
+        v                    v
+PostgreSQL + PostGIS       Redis
+        |
+        v
+REST API / Socket.IO / Frontend
+```
+
+Use an appropriate transport for the operating environment.
+
+For local command-line integrations, use the supported local transport where appropriate.
+
+For remote agent integrations, use the currently supported remote transport, with explicit authentication, authorization, TLS, and request limits.
+
+Do not expose an unauthenticated MCP endpoint to the public internet.
+
+If the platform's MCP clients require a specific transport, implement and document it accordingly.
+
+## 10.2 MCP resources
+
+Expose the resources needed by the supplied architecture, such as:
+
+- `pricing://market-averages`
+- `workers://active-count`
+- `workers://status` or an appropriate authorized worker-status resource.
+- `jobs://active` only for authorized, appropriately scoped requests.
+
+Each resource must have a clear schema and documented purpose.
+
+Market averages must come from actual stored pricing data or a clearly defined, configured source. Do not invent market rates and present them as real.
+
+Active-worker counts must use valid worker availability and freshness rules.
+
+Scope resources to the caller's authorization. Do not expose private worker profiles, customer information, exact private locations, private messages, or unrestricted records through broad resource queries.
+
+Provide appropriate behavior when data is missing or the database is unavailable.
+
+## 10.3 MCP tools
+
+Implement the tools required by the architecture and the real product workflow, such as:
+
+### `match_hyperlocal_workers`
+
+Inputs:
+- Service category.
+- Latitude.
+- Longitude.
+- Optional validated search radius.
+
+Behavior:
+- Validate input.
+- Apply actual authorization and search limits.
+- Use the shared PostGIS matching service.
+- Return eligible matching workers and appropriate distance information.
+- Exclude unauthorized private fields.
+
+### `evaluate_bid`
+
+Inputs:
+- Relevant job and offer identifiers, or a validated proposed amount where the operation calls for it.
+
+Behavior:
+- Confirm that the caller is authorized to access the relevant job.
+- Read authoritative pricing and offer information.
+- Apply documented pricing rules.
+- Return an explanation of the available pricing context.
+
+This tool must not automatically accept an offer or commit a new financial transaction unless a separately authorized action explicitly requires it.
+
+Clearly distinguish a recommendation from an actual business decision.
+
+### `submit_dynamic_bid`
+
+Inputs:
+- Authorized job identifier.
+- Proposed amount.
+- Necessary offer-history reference if applicable.
+
+Behavior:
+- Obtain the actual caller identity from the authenticated MCP context.
+- Validate worker/customer permissions and current job state.
+- Apply the same price and negotiation rules as the REST API.
+- Persist the offer transactionally.
+- Enforce idempotency.
+- Publish a relevant event using the shared real-time infrastructure.
+- Return the actual backend result.
+
+Do not trust an arbitrary `worker_id` supplied by an AI model to represent the authenticated user.
+
+### `get_worker_verification_status`
+
+Read the authoritative verification state.
+
+Do not let the tool mark a worker verified without an actual authorized verification workflow.
+
+### SOS-related functionality
+
+Emergency-related status information may be exposed when useful and authorized.
+
+A tool must not autonomously dispatch emergency alerts merely because an LLM inferred that it would be appropriate.
+
+If an SOS tool is genuinely required, gate it using the same authenticated active-job checks, explicit user confirmation, one-time authorization or confirmation token, idempotency, auditing, and delivery-status handling required by the REST endpoint.
+
+An AI-generated action must never bypass the application's emergency confirmation flow.
+
+## 10.4 MCP security
+
+Implement:
+- Authentication for remote MCP access.
+- Tool-level authorization.
+- Strict input schema validation.
+- Output minimization.
+- Timeouts.
+- Rate limits.
+- Audit logging for consequential actions.
+- Proper handling of malformed requests.
+- Tool result error handling.
+- Permission checks against actual platform data.
+
+Never expose database credentials or unrestricted database queries to MCP tools.
+
+Do not allow arbitrary model-provided SQL.
+
+Do not trust instructions, unvalidated content, or identifiers taken from resource data as authorization.
+
+Do not reveal private data merely because an authorized agent requests it.
+
+## 10.5 MCP testing and documentation
+
+Verify the MCP server using the SDK's supported testing and inspection tools.
+
+Test resource reads, tool inputs, malformed parameters, authentication failure, unauthorized job access, database errors, and successful tool execution.
+
+Document:
+- Startup commands.
+- Environment configuration.
+- Transport choice.
+- Authentication requirements.
+- Available resources.
+- Available tools.
+- Input/output schemas.
+- Error handling.
+- Connection instructions for compatible agents.
+
+A server that merely starts without exposing working tools and useful resources is not complete.
+
+---
+
+# 11. CUSTOMER SERVICE-REQUEST WORKFLOW
+
+Implement the real customer workflow from screen to database and back.
+
+The workflow must support:
+
+1. The customer signs in.
+2. The customer selects a service category.
+3. The customer provides a valid location and relevant task information.
+4. The frontend submits a validated request.
+5. The backend creates the job transactionally.
+6. The system begins matching or enters the correct bidding state.
+7. The matching service queries eligible nearby workers.
+8. The relevant eligible workers receive dispatch-related notifications through the supported channels.
+9. The customer sees genuine matching progress.
+10. The worker can inspect the request and accept it or submit a counteroffer as permitted.
+11. The customer receives offers as they are actually submitted.
+12. The customer can respond through the real bidding interface.
+13. The accepted offer creates the authoritative agreement and assigned-worker relationship.
+14. The customer and assigned worker see the updated status.
+15. The worker begins the job through a valid status transition.
+16. The frontend displays available GPS information and messaging.
+17. The worker completes the job through a validated operation.
+18. The eligible participants complete the two-way rating process.
+19. The customer and worker can access their authorized job history and available transaction records.
+
+A service request must not appear successful if its database transaction has failed.
+
+Do not simulate a worker acceptance in production mode.
+
+If no eligible workers exist, return a legitimate no-results state and allow the customer to retry or adjust a supported search parameter.
+
+Do not automatically invent substitute workers, fake offers, or artificial activity.
+
+# 12. BIDDING, AGREEMENTS, AND CONCURRENCY
+
+Treat bidding as a financial-adjacent business operation even if actual payments are not yet integrated.
+
+Implement explicit business rules for:
+- Who may submit an offer.
+- Which job states permit bidding.
+- Which participants can accept or reject offers.
+- How counteroffers reference previous offers.
+- Whether an offer expires and how expiry is determined.
+- Which offer wins when a customer accepts one.
+- What happens to competing offers after acceptance.
+- How duplicate submissions are prevented.
+- How concurrent requests are resolved.
+
+Use database transactions and appropriate row-level locking or equivalent concurrency controls.
+
+Enforce the accepted-offer constraint at the database level as well as in application logic where possible.
+
+If two workers are bidding simultaneously, both legitimate pending offers may exist.
+
+If the customer accepts one offer, only that valid offer can become the accepted agreement.
+
+If a second acceptance races with the first, reject the invalid transition and return an understandable conflict response.
+
+Use HTTP 409 or an equivalent documented conflict response for stale or competing state changes.
+
+Every accepted agreement must have an identifiable source offer, an accepted amount, an accepted participant, and authoritative timestamps.
+
+The customer and worker interfaces must update from the backend's actual accepted state rather than guessing that a button click succeeded.
+
+# 13. SOS AND EMERGENCY HANDLING
+
+Implement emergency interactions as a dedicated, high-priority workflow.
+
+The frontend already specifies an SOS action with a 3-second confirmation countdown. Preserve that interaction while ensuring the backend enforces the actual emergency rules.
+
+Build the backend to:
+
+1. Authenticate the caller.
+2. Verify that the caller is an authorized participant in the relevant active job, subject to the intended emergency policy.
+3. Validate the explicit confirmation and request token where applicable.
+4. Ensure that repeated clicks or network retries do not produce multiple unintended alerts.
+5. Persist an emergency event and its status.
+6. Initiate notification to the configured emergency contacts and/or platform support through an explicitly configured delivery mechanism.
+7. Track the actual result.
+8. Notify authorized parties of the result.
+9. Preserve a safe retry path when delivery fails.
+10. Record the result for auditing without logging unnecessary sensitive information.
+
+Use explicit delivery states, such as:
+
+- Awaiting confirmation.
+- Received by backend.
+- Delivery in progress.
+- Confirmed by configured provider.
+- Failed.
+- Retry required.
+
+Use only states the implementation can actually establish.
+
+Do not treat an HTTP request reaching the backend as proof that emergency contacts received the alert.
+
+Do not display a success state before the backend confirms the corresponding operation.
+
+Do not fabricate emergency contact details or guarantee contact with public emergency services when no supported integration exists.
+
+If the configured provider is unavailable, preserve the SOS record, clearly report delivery uncertainty, and offer the supported escalation or retry mechanism.
+
+# 14. FRONTEND-BACKEND CONNECTION
+
+This is one of the most important parts of the assignment.
+
+The existing frontend screens have already been generated. Your responsibility is to connect them properly without destroying their visual quality.
+
+## 14.1 Audit all screens
+
+Visit every route and screen in the current frontend.
+
+For each interactive element, identify:
+- Its intended action.
+- Its current implementation.
+- Whether it needs a backend request.
+- Whether it needs only local UI state.
+- The endpoint or operation responsible.
+- Its loading state.
+- Its success state.
+- Its error state.
+- Its authorization requirements.
+- Its expected navigation behavior.
+
+Create a practical control-to-functionality mapping and use it to drive implementation and testing.
+
+## 14.2 Build a centralized API client
+
+Implement a reusable client that matches the existing frontend framework.
+
+Centralize:
+- Base URL configuration.
+- Authentication.
+- Request headers.
+- Request cancellation.
+- Response validation where appropriate.
+- Error normalization.
+- Correlation IDs where applicable.
+- Refresh-token handling.
+- Timeouts.
+- Retry policies.
+- Logging that does not expose secrets.
+
+Use a configurable API base URL rather than hardcoded local development addresses.
+
+Provide an `.env.example` with safe placeholders.
+
+Never expose database credentials, private API keys, backend secrets, or privileged MCP credentials through client-side environment variables.
+
+## 14.3 Loading and user feedback
+
+Every asynchronous action must have a meaningful pending state.
+
+Disable duplicate submissions where appropriate.
+
+Display concise errors and recovery options.
+
+Update data only after a legitimate successful response, except for carefully chosen optimistic interactions that can be reliably rolled back.
+
+Use optimistic UI sparingly for safe operations. Never show an unconfirmed bid acceptance, successful transaction, job completion, or SOS delivery as final merely to make the interface seem fast.
+
+Preserve form data after recoverable errors where possible.
+
+Avoid flickering cards and resetting unrelated parts of the screen after a small data update.
+
+## 14.4 Button-level requirements
+
+Check every existing button and make it functional.
+
+This includes, where present:
+- Sign-in and registration buttons.
+- Navigation tabs.
+- Service-category cards.
+- Search and filter controls.
+- Service request submission.
+- Location selection and editing.
+- Nearby-worker results.
+- Worker profile actions.
+- Accept-offer controls.
+- Counteroffer controls.
+- Counteroffer amount sliders and numeric fields.
+- Chat submission.
+- Active-job actions.
+- SOS confirmation and cancellation.
+- Job start and completion.
+- Rating submission.
+- History and transaction navigation.
+- Notification read actions.
+- Profile editing.
+- Availability controls.
+- Microphone controls.
+- Back buttons.
+- Cancel buttons.
+- Dialog actions.
+- Theme controls.
+- Retry buttons.
+- Empty-state actions.
+
+Not every interaction requires an API request. Theme switching, modal opening, tab selection, sliders, and microphone UI states can contain legitimate local behavior. However, every action must produce its intended observable outcome.
+
+A button that does nothing, a form that silently fails, or a tab that leads to an empty dead end is not acceptable.
+
+If a feature's external dependency is not configured, expose an honest unsupported or unavailable state instead of pretending that the integration works.
+
+## 14.5 Real-time integration
+
+Connect the live bidding, messaging, notification, job-status, tracking, and SOS-status screens to the appropriate real-time event channels.
+
+The frontend must:
+- Authenticate the connection.
+- Subscribe only to authorized resources.
+- Handle reconnection.
+- Recover missed updates.
+- Avoid duplicate event processing.
+- Update relevant components efficiently.
+- Reflect authoritative backend state.
+- Remove listeners when leaving a screen or ending a session.
+
+Do not create a new socket connection for every button click or duplicate subscription every time a component rerenders.
+
+Use REST APIs to recover authoritative state after reconnecting.
+
+## 14.6 UI consistency
+
+Keep the existing design system.
+
+Do not replace the nature-inspired golden-rescue liquid-glass theme with a default admin dashboard.
+
+Maintain consistent typography, color tokens, card treatments, navigation, spacing, and accessibility.
+
+Prefer adding API hooks, service functions, and focused state updates rather than rewriting visual components.
+
+---
+
+# 15. VOICE INTERACTION
+
+Implement the worker voice-first experience to the extent supported by the actual platform.
+
+If the existing UI includes a microphone button, provide real behavior for that button.
+
+Where supported, use a suitable browser speech-recognition capability or a compatible native/platform service.
+
+Implement:
+- Microphone permission handling.
+- Listening status.
+- Speech recognition or transcription.
+- Transcribed text preview.
+- Editing before submission.
+- Cancel and retry.
+- Unsupported-browser fallback.
+- Permission-denied behavior.
+- Recognition-error handling.
+- User confirmation before submitting any consequential information.
+
+Use ordinary text input as the fallback.
+
+Do not pretend that transcription is occurring if no speech-recognition implementation is active.
+
+Never automatically submit a bid simply because speech recognition has returned text.
+
+# 16. REAL-TIME NOTIFICATIONS AND BACKGROUND WORK
+
+Implement only background jobs required by the product.
+
+Use a lightweight, maintainable background-processing strategy for operations such as reliable event publication, notification delivery, or controlled offer-expiration tasks where they are genuinely needed.
+
+Choose a queue only if the workload and architecture justify it.
+
+Do not introduce complex distributed infrastructure unnecessarily.
+
+Implement:
+- Retry limits.
+- Idempotent processing.
+- Dead-letter or failed-job handling where appropriate.
+- Duplicate-notification protection.
+- Structured logs.
+- Recovery after a worker restart.
+- Clear status tracking for consequential operations.
+
+A Redis publish/subscribe event must not be treated as durable storage.
+
+Persist important notifications and state changes before using ephemeral real-time messages to update currently connected clients.
+
+# 17. SECURITY REQUIREMENTS
+
+Treat security as a fundamental implementation requirement.
+
+Apply relevant OWASP guidance to the actual architecture.
+
+Implement:
+- Input validation.
+- Parameterized database access.
+- Strong password hashing.
+- Secure token/session management.
+- Authorization checks on every protected operation.
+- Request body and result-size limits.
+- Authentication rate limits.
+- Appropriate CORS policies.
+- Secure HTTP headers.
+- CSRF protection where cookie-based authentication requires it.
+- Protection against SQL injection.
+- Protection against insecure direct object references.
+- Safe file and URL handling if the existing application includes such features.
+- Restricted error output.
+- Secret management.
+- Sensitive-data redaction.
+- Appropriate database connection limits.
+- Safe WebSocket authentication and room authorization.
+- Audit records for sensitive business operations.
+- Dependency vulnerability checks where available.
+
+Validate origins instead of allowing all origins by default in production.
+
+Never commit real `.env` files or private credentials.
+
+Do not write secrets into source code, frontend bundles, sample data, screenshots, or test logs.
+
+Do not log exact personal locations, tokens, passwords, or full sensitive message content unnecessarily.
+
+Use TLS in deployment and document secure reverse-proxy requirements where applicable.
+
+Apply privacy-conscious location access. The platform should not expose a worker's precise position to an arbitrary user.
+
+MCP tools must enforce the same data authorization boundaries as the REST API.
+
+# 18. ERROR HANDLING AND FAULT TOLERANCE
+
+Make backend failures and dependency outages recoverable where possible.
+
+Implement centralized error handling and structured logs with request correlation IDs.
+
+Handle:
+- Database unavailability.
+- Redis failure.
+- WebSocket disconnections.
+- Invalid input.
+- Expired authentication.
+- Unauthorized requests.
+- Concurrent status changes.
+- Duplicate submissions.
+- Stale worker locations.
+- External notification-provider errors.
+- Unavailable map-related data.
+- MCP transport failures.
+- Voice recognition errors.
+
+Use timeouts for database and external calls where appropriate.
+
+Use bounded retries with exponential backoff and jitter only where retries are safe.
+
+Do not repeatedly retry consequential operations unless idempotency makes the retry safe.
+
+Do not blindly retry non-idempotent writes.
+
+Use circuit breakers only where they address a real external-dependency failure mode.
+
+Keep the rest of the interface usable when a nonessential component fails.
+
+Do not convert every error to a generic success response.
+
+Do not swallow errors silently.
+
+Return clear user-facing messages while preserving technical detail in protected logs.
+
+# 19. PERFORMANCE AND LOW-LATENCY DESIGN
+
+The backend must be responsive, but never sacrifice correctness, authorization, or transaction safety to appear faster.
+
+Optimize the actual user-visible critical paths:
+
+1. Authentication and session recovery.
+2. Service-category loading.
+3. Job creation.
+4. Hyperlocal worker matching.
+5. Offer submission and acceptance.
+6. Live job-status updates.
+7. Chat delivery.
+8. Location refresh.
+9. Notification updates.
+10. Job history and transaction queries.
+
+## Database performance
+
+Use appropriate indexes, query plans, connection pooling, bounded result sets, and paginated reads.
+
+Avoid N+1 query behavior.
+
+Use PostGIS indexes and validated spatial queries.
+
+Avoid requesting every worker, every message, or every transaction just to render an initial screen.
+
+Use Redis only where it helps. Never rely on cache speed at the cost of stale or incorrect business state.
+
+## Frontend performance
+
+Preserve the current interface while ensuring:
+- Fast initial rendering.
+- Lazy loading for large lists.
+- Incremental updates.
+- Request cancellation when appropriate.
+- Avoidance of duplicate API requests.
+- Stable loading placeholders.
+- Efficient real-time subscriptions.
+- No unnecessary full-page rerenders.
+- No continuously running heavy animations.
+- No excessive map refreshes.
+
+## Request strategies
+
+Use idempotency keys for relevant consequential writes.
+
+Use bounded API timeouts.
+
+Use appropriate caching for public or non-sensitive data.
+
+Do not publicly cache personalized responses or sensitive live-location data.
+
+Use request deduplication for repeated read requests where the frontend supports it.
+
+Keep API response payloads focused on what each screen needs.
+
+## Measurable performance
+
+Establish performance targets and test them under a documented environment.
+
+Use initial engineering goals such as:
+- Common database-backed read endpoints: p95 under 300 ms.
+- Typical business mutations: p95 under 500 ms, excluding external-provider delays.
+- Nearby-worker matching: p95 under 1 second for the defined pilot dataset and deployment environment.
+
+These are targets, not claims of guaranteed performance. Measure the actual implementation and adjust thresholds to realistic load, hardware, data volumes, and deployment conditions.
+
+Document the test dataset, concurrent request count, measurement method, and observed results.
+
+Never claim the system is lag-free or guaranteed to have no failures without evidence.
+
+# 20. DATABASE AND INFRASTRUCTURE SETUP
+
+Provide a reproducible local development environment.
+
+Configure:
+- PostgreSQL.
+- PostGIS.
+- Redis.
+- API server.
+- MCP server where required.
+- Frontend development server.
+- Database migrations.
+- Seed scripts.
+
+Use environment variables and validate required configuration at startup.
+
+Create an `.env.example` containing all required variable names and safe placeholders.
+
+The exact variables should reflect the implemented design, but may include:
+
+```text
+NODE_ENV=
+PORT=
+DATABASE_URL=
+REDIS_URL=
+APP_ORIGIN=
+CORS_ORIGINS=
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+MCP_TRANSPORT=
+MCP_ALLOWED_ORIGINS=
+MAP_PROVIDER_KEY=
+EMAIL_PROVIDER_CONFIG=
+SMS_PROVIDER_CONFIG=
+SOS_PROVIDER_CONFIG=
+```
+
+Only include variables that the implementation genuinely needs.
+
+Do not leave placeholder names that are silently ignored by production code.
+
+Validate configuration and fail fast on missing mandatory secrets or invalid production settings.
+
+Optional providers must be configurable, and their absence must lead to an honest unavailable state rather than a fabricated success.
+
+Create:
+- Database migration commands.
+- Seed commands.
+- Development startup commands.
+- Test commands.
+- Production build commands.
+- Health-check endpoints.
+- Basic readiness checks.
+- Clear shutdown behavior.
+- Deployment documentation.
+
+Use the deployment conventions of the selected platform. Do not hardcode a local machine's IP address or require the frontend and backend to run in one process unless that architecture is intentional.
+
+Keep credentials and secrets out of version control.
+
+# 21. AUTOMATED TESTING
+
+Do not consider implementation complete simply because the frontend builds or the server starts.
+
+Add appropriate unit, integration, and end-to-end tests.
+
+## Unit tests
+
+Test business rules, such as:
+- Authentication validation.
+- Authorization policies.
+- Job state transitions.
+- Offer validation.
+- Bidding rules.
+- Location freshness checks.
+- Rating eligibility.
+- Idempotency.
+- Error mapping.
+
+## Database integration tests
+
+Test:
+- Database migrations.
+- Foreign-key constraints.
+- PostGIS queries.
+- Nearby-worker matching.
+- Valid and invalid job transitions.
+- Concurrent bid acceptance.
+- Offer-history consistency.
+- Transaction creation.
+- Participant authorization.
+- Duplicate submission prevention.
+
+## API integration tests
+
+Test:
+- Registration and sign-in.
+- Authentication expiry and refresh.
+- Unauthorized access.
+- Job creation.
+- Nearby-worker discovery.
+- Bid submission.
+- Counteroffers.
+- Offer acceptance.
+- Chat persistence.
+- Ratings.
+- Transaction-history retrieval.
+- SOS creation and delivery states.
+- Validation errors.
+
+## Real-time tests
+
+Test:
+- Authenticated socket connections.
+- Unauthorized room access.
+- Relevant event publication.
+- Message persistence.
+- Reconnection and recovery.
+- Duplicate events.
+- Permission changes.
+- Job updates after disconnect/reconnect.
+
+## MCP tests
+
+Test:
+- Resource access.
+- Tool registration and invocation.
+- Invalid arguments.
+- Unauthorized job access.
+- Worker matching.
+- Pricing evaluation.
+- Bid submission.
+- Error propagation.
+- Identity and permission enforcement.
+- Correct behavior when dependencies are unavailable.
+
+## Frontend tests
+
+Test the existing UI's real interactions.
+
+Confirm that:
+- Forms submit the correct payloads.
+- Buttons show loading feedback.
+- Errors are displayed clearly.
+- Successful actions update the right screens.
+- Navigation remains intact.
+- Authentication changes the available actions.
+- Bidding updates use authoritative server results.
+- The application handles empty data.
+- Notifications and chat recover from disconnection.
+- The SOS interface distinguishes pending and confirmed results.
+- No relevant control is left nonfunctional.
+
+Use the repository's existing testing framework where practical. Add Playwright or an equivalent browser-testing tool for web journeys where suitable.
+
+For Flutter or React Native, use the equivalent component/integration testing approach supported by the project.
+
+## Full workflow tests
+
+Demonstrate at minimum these journeys:
+
+**Customer booking:** Sign in → select service → submit request → find nearby workers → view offers → accept a valid offer → view agreement → track job → complete job → submit rating.
+
+**Worker negotiation:** Sign in → change availability → receive an eligible job → inspect details → submit counteroffer → receive updated offer status → start accepted job → complete job.
+
+**Messaging:** Open an authorized job conversation → submit message → persist message → deliver real-time update → recover missed data after reconnecting.
+
+**SOS:** Trigger explicit confirmation → submit the authorized request → persist the event → process the configured notification workflow → show the actual delivery status.
+
+**MCP:** Authenticate → read authorized resource → perform worker matching → evaluate a bid → submit a permitted bid → inspect resulting persisted state.
+
+Use local development data and clearly documented configurations for these tests.
+
+Run the tests, fix the errors, and rerun them. Report any tests that could not be executed rather than pretending they passed.
+
+# 22. FRONTEND SCREEN-TO-API CONTRACT
+
+Generate a clear mapping between the existing screens and the backend operations.
+
+For example:
+
+| Frontend area | Required integration |
+|---|---|
+| Authentication | Authentication/session APIs |
+| Customer Home | Profile, categories, active-job summary |
+| Service Discovery | Categories and validated search |
+| Request Creation | Job creation |
+| Nearby Workers | PostGIS matching API |
+| Worker Profile | Authorized profile API |
+| Bidding | Bid and counteroffer APIs + real-time events |
+| Job Agreement | Accepted offer and job details |
+| Live Tracking | Authorized tracking API + location events |
+| Chat | Message APIs + Socket.IO |
+| SOS | Emergency API + delivery-status updates |
+| Job Completion | Validated job-status API |
+| Ratings | Rating API |
+| Customer History | Authorized jobs and transaction APIs |
+| Worker Home | Profile, availability, nearby requests |
+| Incoming Request | Dispatch event + job details |
+| Worker Counteroffer | Bid API + bid events |
+| Worker Active Jobs | Assigned jobs and status APIs |
+| Voice Input | Speech recognition + explicit submission |
+| Worker Earnings | Actual transaction data |
+| Notifications | Notification API + real-time events |
+| Profile Settings | Profile and preference APIs |
+
+Adapt this mapping to the actual routes and controls in the provided frontend.
+
+Do not leave parts of the interface using permanent mock data while equivalent real endpoints already exist.
+
+Replace hardcoded user, job, bid, and transaction values with API-backed state where applicable.
+
+Development seed data may remain available behind a clear development setup.
+
+When the database is empty, the application must display the relevant empty state rather than silently falling back to fabricated production results.
+
+# 23. API TYPES AND CONTRACT CONSISTENCY
+
+Ensure the frontend and backend agree on every data contract.
+
+Avoid mismatches in:
+- Identifier formats.
+- Required and optional fields.
+- Role values.
+- Job status values.
+- Bid status values.
+- Monetary units.
+- Date/time serialization.
+- Coordinates.
+- Error codes.
+- Pagination formats.
+- Authentication responses.
+- WebSocket event payloads.
+
+Use shared TypeScript types and schemas where feasible.
+
+Where code generation from OpenAPI is practical, use it to reduce accidental frontend-backend contract drift.
+
+Do not duplicate interface definitions across multiple files without a reason.
+
+Establish one authoritative representation of important states.
+
+When the backend reports a conflict or rejected transition, the frontend must refresh or reconcile the affected data rather than displaying an invalid local state indefinitely.
+
+# 24. OBSERVABILITY AND OPERATIONAL READINESS
+
+Add basic production-appropriate observability.
+
+Include:
+- Structured application logs.
+- Request IDs.
+- Response/error metrics where practical.
+- Database health checks.
+- Redis health checks.
+- API readiness and liveness endpoints.
+- WebSocket error reporting.
+- MCP connection/tool error reporting.
+- Background-task failure reporting where applicable.
+
+Do not expose detailed stack traces or infrastructure information through public health endpoints.
+
+Log consequential failures with enough context to diagnose them without leaking credentials or private information.
+
+Implement graceful shutdown for active connections and database pools.
+
+Provide clear instructions for inspecting errors during local development.
+
+Avoid adding expensive monitoring products unless the deployment environment requires them.
+
+# 25. DEPLOYMENT AND ENVIRONMENT MANAGEMENT
+
+Prepare the app for development, testing, and deployment.
+
+Separate:
+- Local development configuration.
+- Automated testing configuration.
+- Production configuration.
+
+Ensure migrations can run reproducibly.
+
+Ensure the frontend receives its public API base URL through appropriate client-safe configuration.
+
+Ensure private credentials are loaded only on the server.
+
+Document the deployment sequence so the database, Redis, backend API, MCP server, and frontend initialize in the correct order.
+
+Provide guidance for:
+- Creating production secrets.
+- Configuring allowed origins.
+- Configuring TLS.
+- Applying database migrations.
+- Seeding only development environments.
+- Configuring external providers.
+- Configuring MCP access.
+- Checking API health.
+- Running tests.
+- Recovering from a failed deployment.
+
+Do not assume that local file paths, local environment variables, or the development database will exist in production.
+
+# 26. SCOPE DISCIPLINE
+
+The objective is to implement the existing product completely—not to create unnecessary features.
+
+Do not add these unless the actual codebase and supplied specifications require them:
+
+- A new administrative dashboard.
+- An unrequested payment gateway.
+- A wallet.
+- Unsupported withdrawals or payouts.
+- Unspecified subscriptions.
+- Promotional systems.
+- AI chat features unrelated to the MCP integration.
+- Video calls.
+- Unrequested file-sharing systems.
+- Unverified background-check claims.
+- Unnecessary analytics dashboards.
+- Complex infrastructure without a functional need.
+
+If a screen contains a control tied to a service that requires an external provider, integrate a real provider when credentials and scope permit.
+
+If that provider is not available, implement the appropriate configuration interface or explicit unavailable/error state. Never fake the provider's successful response.
+
+Respect the existing visual design. Do not replace the frontend just because a completely different UI would be easier to scaffold.
+
+# 27. REQUIRED IMPLEMENTATION ORDER
+
+Execute the work in the following order without stopping after any phase.
+
+**Phase A — Audit**
+Inspect the repository, screenshots, routes, components, mock data, existing dependencies, environment configuration, and current working behavior.
+
+Create a screen-to-functionality inventory.
+
+**Phase B — Architecture and data contracts**
+Establish the backend module structure, database schema, migration strategy, common API response format, authentication model, and shared types.
+
+**Phase C — Database and infrastructure**
+Enable PostGIS, configure Redis, create migrations, add indexes, and create development seed data.
+
+**Phase D — Authentication and authorization**
+Implement the real authentication/session flow, role checks, ownership enforcement, and security protections.
+
+**Phase E — Core APIs**
+Implement profiles, service categories, locations, jobs, worker matching, bids, counteroffers, agreements, history, transactions, notifications, messaging, and ratings as required by the existing screens.
+
+**Phase F — Real-time services**
+Implement authenticated WebSocket connections, Socket.IO events, Redis integration where appropriate, reconnection, and persistent update recovery.
+
+**Phase G — MCP server**
+Implement the secure MCP resources and tools that invoke the same validated business services.
+
+**Phase H — Frontend integration**
+Replace production mock data with live API-backed state. Connect relevant controls, forms, navigation, error handling, and real-time subscriptions while preserving the visual design.
+
+**Phase I — Security and fault handling**
+Verify permissions, concurrency controls, idempotency, location privacy, failure behavior, secret handling, and SOS delivery semantics.
+
+**Phase J — Testing and optimization**
+Run backend tests, frontend tests, integration tests, and relevant full-user-flow tests. Fix issues. Profile the main performance paths and optimize actual bottlenecks.
+
+**Phase K — Deployment preparation**
+Provide startup scripts, migrations, seed instructions, environment documentation, health checks, deployment instructions, and the final verified feature inventory.
+
+Do not stop at an architecture plan. Continue through implementation and testing within the capabilities of the environment.
+
+# 28. DEFINITION OF DONE
+
+The application is complete only when the following checks have been performed and the results documented.
+
+### Frontend
+- All relevant existing screens remain available.
+- Visual design and responsive behavior have been preserved.
+- Relevant buttons have real handlers.
+- Forms validate and communicate submission results.
+- Navigation has no dead ends for the required journeys.
+- API loading and error states are present.
+- Permanent production mock data has been replaced where APIs exist.
+- No interface displays fabricated success states.
+
+### Backend
+- The server starts using documented instructions.
+- Environment variables are validated.
+- Database migrations run successfully on a clean database.
+- Database indexes and constraints are installed.
+- Authentication and authorization work.
+- Core job and bid rules are enforced.
+- Worker matching uses real PostGIS queries.
+- API documentation reflects the implementation.
+- Errors are handled consistently.
+- Health checks reflect actual service readiness.
+
+### Real-time infrastructure
+- Authorized events reach the correct recipients.
+- Unauthorized clients cannot join protected rooms.
+- Critical state transitions are persisted.
+- Reconnection and recovery work.
+- Duplicate messages and operations are controlled.
+- Disconnections do not cause permanent inconsistent UI states.
+
+### MCP
+- The server starts through documented commands.
+- Resources return actual authorized data.
+- Tools have valid schemas.
+- Tools call shared backend services.
+- Authorization is enforced.
+- Invalid parameters and unavailable dependencies produce useful errors.
+- Consequential operations cannot bypass required confirmation.
+
+### Security
+- No secrets are committed.
+- No plaintext passwords or raw refresh tokens are stored.
+- Unauthorized users cannot access another participant's private data.
+- Input and role validation are enforced on the server.
+- SOS and offer acceptance are protected against duplicate and conflicting operations.
+- Location access follows the intended privacy boundaries.
+
+### Testing
+- Relevant automated tests run.
+- Failed tests are fixed or documented with the exact blocker.
+- Concurrency and geospatial edge cases are covered.
+- Major customer and worker journeys have been tested.
+- Builds and type checks succeed where supported.
+
+### Deployment
+- A clear `.env.example` exists.
+- Startup commands are documented.
+- Database setup and migrations are documented.
+- Local development is reproducible.
+- External-provider requirements are listed.
+- The deployment architecture is explained.
+- No false claims of production readiness are made.
+
+Do not report a check as passed merely because code appears to implement it. Verify it through an actual test, observable execution, or clearly described inspection method.
+
+# 29. FINAL DELIVERABLES
+
+When implementation is finished, leave the actual project in a usable state and provide:
+
+1. The working backend source code.
+2. The fully integrated existing frontend.
+3. PostgreSQL/PostGIS migrations.
+4. Database seed scripts for development.
+5. Redis and real-time event implementation.
+6. The MCP server with working resources and tools.
+7. Authentication and authorization implementation.
+8. Environment configuration templates.
+9. REST API documentation.
+10. Frontend-to-backend integration documentation.
+11. Automated tests.
+12. Docker Compose or equivalent supported local infrastructure setup.
+13. Startup and deployment scripts.
+14. A README with exact setup and execution instructions.
+15. A list of all completed features.
+16. A list of tests actually executed and their results.
+17. A list of any unimplemented integration that requires external credentials or services.
+18. A list of any known limitations that remain.
+19. A concise explanation of how to connect a compatible AI agent to the secured MCP server.
+
+Do not paste the entire project into a text response when you can modify the actual working repository.
+
+Make code changes in the available project and verify that the resulting files exist.
+
+Do not claim that a backend has been deployed to a public URL unless deployment actually occurred and the endpoint was verified.
+
+Do not claim that external credentials are configured unless they were actually supplied and tested.
+
+If the environment cannot access an external service, complete the integration code and configuration interface to the extent possible, document the limitation, and never simulate a successful production operation.
+
+---
+
+# 30. FINAL EXECUTION INSTRUCTION
+
+**START NOW. INSPECT THE ACTUAL FRONTEND AND SUPPLIED ARCHITECTURE REFERENCES, THEN IMPLEMENT THE COMPLETE INTEGRATION.**
+
+Do not merely explain how the application should be built.
+
+Do not generate a separate generic frontend and ignore the existing one.
+
+Do not stop after creating files.
+
+Do not leave buttons disconnected from their required actions.
+
+Do not make every endpoint return static sample data.
+
+Do not bypass authentication, authorization, validation, or database constraints for convenience.
+
+Do not implement MCP as an unauthenticated collection of mock tools.
+
+Do not fake GPS, bidding, transaction, chat, verification, or emergency success.
+
+Do not sacrifice business correctness to make an operation look instantaneous.
+
+**Deliver a real, integrated, testable application.**
+
+My existing frontend defines the visual experience. The supplied images define the product's core architecture and intended behavior. Your implementation must bring them together into one coherent system, with strong frontend-backend contracts, secure authentication, efficient geospatial matching, correct offer negotiation, reliable real-time updates, a functional MCP server, robust error handling, and measurable performance.
+
+Every important action must reach its correct destination. Every state change must reflect authoritative application data. Every failure must be handled honestly and safely.
+
+**Prioritize correctness, security, real functionality, performance, and seamless integration. Preserve the premium nature-inspired golden liquid-glass frontend, and make the entire Blue-Collar Management Platform work as one unified product.**

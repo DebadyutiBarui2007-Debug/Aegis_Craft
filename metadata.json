@@ -1,0 +1,6 @@
+{
+  "name": "AegisCraft - Verified Blue-Collar Rapid Dispatch & Escrow Platform",
+  "description": "Hyperlocal geospatial blue-collar trades dispatch platform with PostGIS spatial indexing, dynamic live bidding, escrow vault guarantees, and real-time RTK GPS tracking.",
+  "requestFramePermissions": ["geolocation", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

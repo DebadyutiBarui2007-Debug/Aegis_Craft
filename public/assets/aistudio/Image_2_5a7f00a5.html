@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>AegisCraft - Rescue &amp; Dispatch Ecosystem</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-container": "#d88a00", "background": "#0b1326", "outline-variant": "#3e4850", "on-error-container": "#ffdad6", "surface-container-highest": "#2d3449", "error": "#ffb4ab", "surface-container": "#171f33", "on-primary": "#00344d", "secondary-container": "#00a572", "on-surface-variant": "#bec8d2", "on-tertiary-fixed": "#2a1700", "inverse-surface": "#dae2fd", "surface": "#0b1326", "tertiary-fixed": "#ffddb8", "inverse-primary": "#006591", "surface-bright": "#31394d", "on-primary-container": "#003751", "on-secondary": "#003824", "secondary-fixed-dim": "#4edea3", "on-tertiary-fixed-variant": "#653e00", "on-secondary-fixed-variant": "#005236", "on-background": "#dae2fd", "primary": "#89ceff", "surface-container-low": "#131b2e", "inverse-on-surface": "#283044", "on-primary-fixed": "#001e2f", "outline": "#88929b", "primary-fixed": "#c9e6ff", "surface-container-lowest": "#060e20", "on-surface": "#dae2fd", "surface-container-high": "#222a3d", "tertiary": "#ffb95f", "secondary-fixed": "#6ffbbe", "primary-container": "#0ea5e9", "on-error": "#690005", "on-tertiary": "#472a00", "tertiary-fixed-dim": "#ffb95f", "secondary": "#4edea3", "on-primary-fixed-variant": "#004c6e", "error-container": "#93000a", "on-secondary-container": "#00311f", "surface-variant": "#2d3449", "on-tertiary-container": "#4a2c00", "surface-dim": "#0b1326", "primary-fixed-dim": "#89ceff", "on-secondary-fixed": "#002113", "surface-tint": "#89ceff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-tablet": "2rem", "gutter": "1rem", "margin": "1rem", "space-2xl": "3rem", "space-lg": "1.5rem", "gutter-desktop": "2rem", "space-sm": "0.75rem", "gutter-tablet": "1.5rem", "space-xl": "2rem", "space-xs": "0.5rem", "space-md": "1rem", "space-2xs": "0.25rem", "margin-desktop": "3rem" }, "fontFamily": { "microcopy": ["Inter"], "display-mobile": ["Inter"], "title-screen": ["Inter"], "headline-card": ["Inter"], "label-default": ["Inter"], "caption-caps": ["Inter"], "body-medium": ["Inter"], "body-default": ["Inter"], "title-section": ["Inter"], "display": ["Inter"] }, "fontSize": { "microcopy": ["13px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }], "display-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "title-screen": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-card": ["16px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "label-default": ["14px", { "lineHeight": "20px", "letterSpacing": "0.005em", "fontWeight": "500" }], "caption-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }], "body-medium": ["15px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "500" }], "body-default": ["15px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "400" }], "title-section": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "display": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.025em", "fontWeight": "600" }] } } } };</script></head><body class="bg-background font-body-default text-on-surface relative min-h-screen selection:bg-primary selection:text-on-primary"><div class="fixed inset-0 pointer-events-none z-0 overflow-hidden"><div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-secondary/10 blur-[120px]"></div><div class="absolute -top-32 -right-32 w-[30rem] h-[30rem] rounded-full bg-tertiary/10 blur-[140px]"></div></div><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-2xl shadow-[0_4px_24px_rgba(0,0,0,0.45)]"><div class="h-20 max-w-[1440px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm"><img alt="AegisCraft Brand Emblem" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTSuuaMiUCIMyEWfTtlngtE2QwX6KL6WiBXYRIJc8ALZljnaqpVEOT-cPjvGyrtIgT-F0_7f8uka9_ald8r7oUTaEyuoL4zxK8fyLoc_X_4kHrXSE9NscRc_AcAkwDZxrKBApfk__G6h916S07cEQOCUnTKvi2eQWV2kOUuSpAMQwZXrizTwaN7uWE8uyAb8zgMGRmQM-Si6ci9Db7EQeFne8hX-LqToPTA-QPnuj1JDMzZKX90iFsMg"/><span class="font-title-screen text-title-screen tracking-tight text-on-surface">AegisCraft</span></div><div class="hidden xl:flex items-center gap-space-xs"><div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase"><span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>KYC Verified Network</div><div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary/15 text-tertiary font-caption-caps text-caption-caps uppercase"><span class="w-1.5 h-1.5 rounded-full bg-tertiary shadow-[0_0_8px_rgba(255,185,95,0.8)]"></span>Dispatch Live</div></div></div><div class="hidden 2xl:flex items-center p-1 rounded-full bg-surface-container-high/90"><button class="px-3 py-1.5 rounded-full font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-colors" type="button">Customer View</button><button class="px-3 py-1.5 rounded-full bg-surface-container font-label-default text-label-default text-secondary shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center gap-1.5" type="button"><span class="w-2 h-2 rounded-full bg-secondary"></span>Worker Pro Terminal</button></div><nav class="hidden lg:flex items-center gap-1" data-active-classes="bg-surface-container-high text-primary font-body-medium shadow-[0_0_16px_rgba(14,165,233,0.25)] rounded-lg"><a aria-current="page" class="px-3 py-2 transition-all bg-surface-container-high text-primary font-body-medium shadow-[0_0_16px_rgba(14,165,233,0.25)] rounded-lg" data-path="service-discovery" href="#">Service Discovery</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="radar-matching-and-jobs" href="#">Radar Matching &amp; Jobs</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="live-bidding-and-negotiation" href="#">Live Bidding &amp; Negotiation</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="active-job-and-gps-tracking" href="#">Active Job &amp; GPS Tracking</a><a class="px-3 py-2 font-label-default text-label-default text-on-surface-variant hover:text-on-surface transition-all" data-path="messages-and-comms" href="#">Messages &amp; Comms</a></nav><div class="flex items-center gap-space-sm"><div class="hidden sm:flex items-center gap-space-xs"><div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-error/15 text-error font-caption-caps text-caption-caps uppercase cursor-pointer hover:bg-error/25 transition-colors"><span class="w-2 h-2 rounded-full bg-error animate-ping"></span>SOS Ready</div><div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-tertiary-container/20 text-tertiary font-label-default text-label-default cursor-pointer hover:bg-tertiary-container/30 transition-colors"><span class="material-symbols-outlined text-base">support_agent</span>24/7 Hotline</div></div><div class="flex items-center gap-space-xs pl-2"><div class="hidden md:flex flex-col text-right"><span class="font-label-default text-label-default text-on-surface">Mark J.</span><span class="font-caption-caps text-caption-caps text-secondary">Master Tech • Online</span></div><div class="relative"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-secondary/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ"/><span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-secondary ring-2 ring-surface-container-lowest"></span></div></div></div></div><div class="w-full bg-surface-container-lowest/90 backdrop-blur-md px-margin md:px-margin-tablet lg:px-margin-desktop py-1.5"><div class="max-w-[1440px] mx-auto flex items-center justify-between text-on-surface-variant font-microcopy text-microcopy overflow-x-auto whitespace-nowrap gap-space-md"><div class="flex items-center gap-space-sm"><span class="flex items-center gap-1 text-secondary"><span class="material-symbols-outlined text-sm">radar</span>PostGIS Query: Active (3.2 km radius)</span><span class="text-outline-variant">•</span><span class="flex items-center gap-1 text-primary"><span class="material-symbols-outlined text-sm">bolt</span>Socket.IO: Connected</span><span class="text-outline-variant">•</span><span class="flex items-center gap-1 text-tertiary"><span class="material-symbols-outlined text-sm">satellite_alt</span>High-Precision GPS: Synchronized</span></div><div class="hidden lg:flex items-center gap-space-xs"><span class="text-outline-variant">Latency: 24ms</span><span class="text-outline-variant">•</span><span class="text-outline-variant">Escrow Vault: Verified</span></div></div></div></header><main class="relative z-10 w-full pt-28 bg-surface min-h-[calc(100vh-5rem)]"><div class="flex flex-col w-full">
+<div class="relative w-full overflow-hidden pb-space-2xl">
+<div class="absolute top-10 left-1/4 w-[38rem] h-[38rem] bg-secondary/5 rounded-full blur-[140px] pointer-events-none"></div>
+<div class="absolute top-48 right-10 w-[30rem] h-[30rem] bg-tertiary/10 rounded-full blur-[150px] pointer-events-none"></div>
+<div class="max-w-[1440px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex flex-col gap-space-xl">
+<!-- Top Geolocation Precision Pill Bar -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm bg-surface-container-high/60 backdrop-blur-xl p-space-sm rounded-xl shadow-lg shadow-surface-container-lowest/40">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-9 h-9 rounded-lg bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-title-section" style="font-variation-settings: 'FILL' 1;">my_location</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-caption-caps text-caption-caps uppercase text-secondary tracking-wider">PostGIS Lock Active</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-microcopy text-microcopy text-on-surface-variant hidden md:inline">RTK Satellite Sync (±4m Accuracy)</span>
+</div>
+<p class="font-headline-card text-headline-card text-on-surface truncate">
+              742 Evergreen Terrace, Springfield
+              <span class="font-body-default text-body-default text-on-surface-variant font-normal hidden lg:inline">— Metro Sector 4</span>
+</p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs shrink-0 self-end sm:self-auto">
+<button class="px-3.5 py-1.5 rounded-lg bg-surface-container text-on-surface hover:text-primary hover:bg-surface-container-highest transition-all font-label-default text-label-default flex items-center gap-1.5 shadow-sm" id="editPinBtn" type="button">
+<span class="material-symbols-outlined text-base text-primary">edit_location_alt</span>
+<span>Edit Pin</span>
+</button>
+<div class="h-6 w-px bg-surface-container-highest mx-1 hidden sm:block"></div>
+<div class="px-3 py-1 rounded-full bg-secondary-container/20 text-secondary font-caption-caps text-caption-caps uppercase hidden sm:flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">shield</span>
+            Geofence Verified
+          </div>
+</div>
+</div>
+<!-- Hero Header & Emergency SOS Banner Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-stretch">
+<!-- Main Pitch & Live Telemetry -->
+<div class="lg:col-span-7 flex flex-col justify-between bg-surface-container-low/70 backdrop-blur-2xl p-space-lg md:p-space-xl rounded-xl shadow-xl shadow-surface-container-lowest/60 relative overflow-hidden">
+<div class="absolute -right-16 -top-16 w-56 h-56 bg-primary/10 rounded-full blur-[80px] pointer-events-none"></div>
+<div class="flex flex-col gap-space-sm relative z-10">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container text-secondary font-caption-caps text-caption-caps uppercase w-fit">
+<span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(78,222,163,0.8)]"></span>
+              Immediate Dispatch Network • 182 Verified Pro Units
+            </div>
+<h1 class="font-display text-display text-on-surface tracking-tight">
+              Verified Blue-Collar Professionals at Your Doorstep in <span class="text-secondary">Minutes</span>.
+            </h1>
+<p class="font-body-default text-body-default text-on-surface-variant max-w-xl">
+              PostGIS-orchestrated rapid dispatch for certified master trades. Secure milestone escrow, bi-directional background validation, and real-time radar telemetry.
+            </p>
+</div>
+<div class="mt-space-lg pt-space-md flex flex-wrap items-center gap-space-md relative z-10">
+<div class="flex items-center gap-3 bg-surface-container/60 px-4 py-2.5 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-primary text-title-screen">verified_user</span>
+<div class="flex flex-col">
+<span class="font-label-default text-label-default text-on-surface">100% Identity Checked</span>
+<span class="font-microcopy text-microcopy text-on-surface-variant">State License &amp; Insurance Bonded</span>
+</div>
+</div>
+<div class="flex items-center gap-3 bg-surface-container/60 px-4 py-2.5 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-secondary text-title-screen">lock</span>
+<div class="flex flex-col">
+<span class="font-label-default text-label-default text-on-surface">Vault Escrow</span>
+<span class="font-microcopy text-microcopy text-on-surface-variant">Funds locked until sign-off</span>
+</div>
+</div>
+<div class="flex items-center gap-3 bg-surface-container/60 px-4 py-2.5 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-tertiary text-title-screen">avg_time</span>
+<div class="flex flex-col">
+<span class="font-label-default text-label-default text-on-surface">14 Min Median Arrival</span>
+<span class="font-microcopy text-microcopy text-on-surface-variant">PostGIS 3.2km radius</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Golden Urgent SOS Rescue Banner -->
+<div class="lg:col-span-5 bg-gradient-to-br from-tertiary-container/30 via-surface-container-high/90 to-surface-container-lowest backdrop-blur-2xl p-space-lg rounded-xl shadow-2xl shadow-tertiary/10 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-8 -bottom-8 w-44 h-44 bg-tertiary/20 rounded-full blur-[70px] pointer-events-none"></div>
+<div class="flex flex-col gap-space-xs relative z-10">
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error/20 text-error font-caption-caps text-caption-caps uppercase">
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+                Emergency Broadcast Channel
+              </div>
+<span class="font-caption-caps text-caption-caps text-tertiary uppercase tracking-widest">&lt;4 Min Dispatch</span>
+</div>
+<h2 class="font-title-screen text-title-screen text-tertiary-fixed tracking-tight mt-1">
+              Immediate Rescue Protocol
+            </h2>
+<p class="font-microcopy text-microcopy text-on-surface-variant leading-relaxed">
+              Electrical fire risk, blown main pipes, or dangerous lockout. Bypasses normal quote queue and activates all certified tier-1 master units within 3km immediately.
+            </p>
+</div>
+<!-- SOS Big Button Trigger -->
+<div class="mt-space-lg pt-space-sm flex flex-col gap-space-xs relative z-10">
+<button class="w-full h-14 bg-error text-on-error hover:bg-error-container rounded-lg font-label-default text-label-default flex items-center justify-center gap-space-sm shadow-xl shadow-error/30 transition-all active:scale-[0.98]" id="sosEmergencyTrigger" type="button">
+<span class="material-symbols-outlined text-2xl animate-pulse">crisis_alert</span>
+<span class="tracking-wide uppercase font-semibold">Broadcast Emergency SOS Now</span>
+</button>
+<div class="flex items-center justify-between text-on-surface-variant font-microcopy text-microcopy px-1">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-secondary">check_circle</span>Automatic Video Dispatch Ready</span>
+<span>Fixed Emergency Surcharge $35</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Job In-Flight Teaser Strip -->
+<div class="bg-surface-container/70 backdrop-blur-xl p-space-md rounded-xl shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="relative shrink-0">
+<img class="w-12 h-12 rounded-lg object-cover" data-alt="Portrait of a licensed master electrician in safety gear with protective hard hat and friendly confident smile, high contrast warm golden cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYBnB6mvZt7gK4X9I3KY9548e4WL4wNcBtnKSAGXYd2JDd1zNwLz-1yEZZ5ivNYVSL9pAFYfeKemNw0xTAXnEI2QVomb8QFKGYmQWNw-E8KZ8Chjxmz-Lgzcx41izkbv-oLHWd_VV0x_Pg-tbg-fqw3QR2Fjs4sNp8JD517aQ_cI6jeZdm0GJsX_okVsMdx3S6ufUjC8ObXh1-1zm-bVa5g2ujXs-KR41hzv9Y8g_GM7qtu1318g9i9Q"/>
+<span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-secondary ring-2 ring-surface-container-high"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-caption-caps text-caption-caps uppercase text-secondary">Active Dispatch Stream</span>
+<span class="text-on-surface-variant">•</span>
+<span class="font-microcopy text-microcopy text-tertiary">Job #ELEC-8812</span>
+</div>
+<p class="font-headline-card text-headline-card text-on-surface truncate">
+              Electrical Service Panel Inspection • <span class="text-primary">Mark J. (Master Electrician)</span>
+</p>
+<p class="font-microcopy text-microcopy text-on-surface-variant">
+              En Route in Ford Transit Service Van • 1.4 km away (Est. 6 mins arrival)
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs self-stretch md:self-auto justify-end">
+<button class="px-4 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-default text-label-default transition-all flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-sm text-primary">navigation</span>
+            Live GPS Track
+          </button>
+<button class="px-4 py-2 rounded-lg bg-primary text-on-primary hover:bg-primary-container font-label-default text-label-default transition-all flex items-center gap-1.5 shadow-md shadow-primary/20" type="button">
+<span class="material-symbols-outlined text-sm">phone_in_talk</span>
+            Contact Pro
+          </button>
+</div>
+</div>
+<!-- Search & Category Header Area -->
+<div class="flex flex-col gap-space-md pt-space-xs">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-secondary font-caption-caps text-caption-caps uppercase">
+<span class="material-symbols-outlined text-sm">construction</span>
+              Verified Trades Directory
+            </div>
+<h2 class="font-title-screen text-title-screen text-on-surface tracking-tight">
+              Select Required Trade Specialty
+            </h2>
+</div>
+<!-- Instant Filter & Search Pill -->
+<div class="w-full md:w-96 relative">
+<div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="w-full h-11 bg-surface-container-high/70 backdrop-blur-md rounded-lg pl-10 pr-4 font-body-default text-body-default text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/40 shadow-inner" id="serviceSearchInput" placeholder="Search service (e.g. leaking faucet, rewiring, lock)..." type="text"/>
+<button class="hidden absolute inset-y-0 right-3 flex items-center text-on-surface-variant hover:text-on-surface" id="clearSearchBtn" type="button">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+</div>
+<!-- Filter Chips Carousel -->
+<div class="flex items-center gap-space-xs overflow-x-auto pb-1 no-scrollbar text-label-default">
+<button class="category-filter-btn px-4 py-1.5 rounded-full bg-primary text-on-primary font-label-default shadow-md shadow-primary/20 shrink-0" data-filter="all" type="button">All Specialties (182)</button>
+<button class="category-filter-btn px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant hover:text-on-surface hover:bg-surface-bright font-label-default shrink-0 transition-all" data-filter="emergency" type="button">Emergency Ready (48)</button>
+<button class="category-filter-btn px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant hover:text-on-surface hover:bg-surface-bright font-label-default shrink-0 transition-all" data-filter="commercial" type="button">Commercial Certified</button>
+<button class="category-filter-btn px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant hover:text-on-surface hover:bg-surface-bright font-label-default shrink-0 transition-all" data-filter="low-rate" type="button">Under $45/hr</button>
+<button class="category-filter-btn px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant hover:text-on-surface hover:bg-surface-bright font-label-default shrink-0 transition-all" data-filter="top-rated" type="button">★ 4.9+ Master Tier</button>
+</div>
+</div>
+<!-- 8 Nature-Styled Glass Category Bento Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md" id="serviceCardsGrid">
+<!-- Card 1: Electrical -->
+<div class="category-card group bg-surface-container-low/70 hover:bg-surface-container/90 backdrop-blur-xl p-space-md rounded-xl shadow-lg transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden" data-category="electrical" data-name="Electrical &amp; Wiring" data-rate="45">
+<div class="flex items-start justify-between gap-2">
+<div class="w-12 h-12 rounded-xl bg-amber-500/15 text-tertiary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-display" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              34 Pros Online
+            </div>
+</div>
+<div class="mt-space-md">
+<h3 class="font-headline-card text-headline-card text-on-surface group-hover:text-primary transition-colors">Electrical &amp; Wiring</h3>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 line-clamp-2">
+              Panel replacement, short circuit diagnostics, lighting installation &amp; EV chargers.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-headline-card text-headline-card text-tertiary">From $45<span class="font-microcopy text-microcopy text-on-surface-variant font-normal">/hr</span></span>
+<span class="font-label-default text-label-default text-primary flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+              Dispatch
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Card 2: Plumbing -->
+<div class="category-card group bg-surface-container-low/70 hover:bg-surface-container/90 backdrop-blur-xl p-space-md rounded-xl shadow-lg transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden" data-category="plumbing" data-name="Plumbing &amp; Pipe Rescue" data-rate="50">
+<div class="flex items-start justify-between gap-2">
+<div class="w-12 h-12 rounded-xl bg-primary/15 text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-display" style="font-variation-settings: 'FILL' 1;">plumbing</span>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              28 Pros Online
+            </div>
+</div>
+<div class="mt-space-md">
+<h3 class="font-headline-card text-headline-card text-on-surface group-hover:text-primary transition-colors">Plumbing &amp; Pipe Rescue</h3>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 line-clamp-2">
+              High-pressure hydro-jetting, leak detection, water heater burst repair &amp; drain clearance.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-headline-card text-headline-card text-tertiary">From $50<span class="font-microcopy text-microcopy text-on-surface-variant font-normal">/hr</span></span>
+<span class="font-label-default text-label-default text-primary flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+              Dispatch
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Card 3: HVAC -->
+<div class="category-card group bg-surface-container-low/70 hover:bg-surface-container/90 backdrop-blur-xl p-space-md rounded-xl shadow-lg transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden" data-category="hvac" data-name="HVAC &amp; Climate Control" data-rate="55">
+<div class="flex items-start justify-between gap-2">
+<div class="w-12 h-12 rounded-xl bg-secondary/15 text-secondary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-display" style="font-variation-settings: 'FILL' 1;">mode_fan</span>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              19 Pros Online
+            </div>
+</div>
+<div class="mt-space-md">
+<h3 class="font-headline-card text-headline-card text-on-surface group-hover:text-primary transition-colors">HVAC &amp; Climate Control</h3>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 line-clamp-2">
+              Furnace recovery, freon leak containment, condenser coil repair &amp; smart thermostat setup.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-headline-card text-headline-card text-tertiary">From $55<span class="font-microcopy text-microcopy text-on-surface-variant font-normal">/hr</span></span>
+<span class="font-label-default text-label-default text-primary flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+              Dispatch
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Card 4: Roofing -->
+<div class="category-card group bg-surface-container-low/70 hover:bg-surface-container/90 backdrop-blur-xl p-space-md rounded-xl shadow-lg transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden" data-category="roofing" data-name="Roofing &amp; Storm Damage" data-rate="60">
+<div class="flex items-start justify-between gap-2">
+<div class="w-12 h-12 rounded-xl bg-orange-500/15 text-tertiary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-display" style="font-variation-settings: 'FILL' 1;">roofing</span>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              12 Pros Online
+            </div>
+</div>
+<div class="mt-space-md">
+<h3 class="font-headline-card text-headline-card text-on-surface group-hover:text-primary transition-colors">Roofing &amp; Storm Damage</h3>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 line-clamp-2">
+              Emergency tarping, shingle replacement, flashing leaks &amp; structural gutter overflow.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-headline-card text-headline-card text-tertiary">From $60<span class="font-microcopy text-microcopy text-on-surface-variant font-normal">/hr</span></span>
+<span class="font-label-default text-label-default text-primary flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+              Dispatch
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Card 5: Locksmith -->
+<div class="category-card group bg-surface-container-low/70 hover:bg-surface-container/90 backdrop-blur-xl p-space-md rounded-xl shadow-lg transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden" data-category="locksmith" data-name="Locksmith &amp; Security" data-rate="40">
+<div class="flex items-start justify-between gap-2">
+<div class="w-12 h-12 rounded-xl bg-teal-500/15 text-secondary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-display" style="font-variation-settings: 'FILL' 1;">lock_open</span>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              15 Pros Online
+            </div>
+</div>
+<div class="mt-space-md">
+<h3 class="font-headline-card text-headline-card text-on-surface group-hover:text-primary transition-colors">Locksmith &amp; Security</h3>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 line-clamp-2">
+              Smart deadbolt re-keying, emergency house lockouts, high-security cylinder extraction.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-headline-card text-headline-card text-tertiary">From $40<span class="font-microcopy text-microcopy text-on-surface-variant font-normal">/hr</span></span>
+<span class="font-label-default text-label-default text-primary flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+              Dispatch
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Card 6: Carpentry -->
+<div class="category-card group bg-surface-container-low/70 hover:bg-surface-container/90 backdrop-blur-xl p-space-md rounded-xl shadow-lg transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden" data-category="carpentry" data-name="Carpentry &amp; Structural" data-rate="42">
+<div class="flex items-start justify-between gap-2">
+<div class="w-12 h-12 rounded-xl bg-amber-600/15 text-tertiary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-display" style="font-variation-settings: 'FILL' 1;">handyman</span>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              22 Pros Online
+            </div>
+</div>
+<div class="mt-space-md">
+<h3 class="font-headline-card text-headline-card text-on-surface group-hover:text-primary transition-colors">Carpentry &amp; Structural</h3>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 line-clamp-2">
+              Door frame reinforcement, weight-bearing header repair, decking &amp; subfloor stabilization.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-headline-card text-headline-card text-tertiary">From $42<span class="font-microcopy text-microcopy text-on-surface-variant font-normal">/hr</span></span>
+<span class="font-label-default text-label-default text-primary flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+              Dispatch
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Card 7: Masonry -->
+<div class="category-card group bg-surface-container-low/70 hover:bg-surface-container/90 backdrop-blur-xl p-space-md rounded-xl shadow-lg transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden" data-category="masonry" data-name="Masonry &amp; Foundation" data-rate="48">
+<div class="flex items-start justify-between gap-2">
+<div class="w-12 h-12 rounded-xl bg-slate-500/20 text-on-surface-variant flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-display" style="font-variation-settings: 'FILL' 1;">foundation</span>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              9 Pros Online
+            </div>
+</div>
+<div class="mt-space-md">
+<h3 class="font-headline-card text-headline-card text-on-surface group-hover:text-primary transition-colors">Masonry &amp; Foundation</h3>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 line-clamp-2">
+              Basement crack injection, tuckpointing, stone veneer preservation &amp; driveway slab settling.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-headline-card text-headline-card text-tertiary">From $48<span class="font-microcopy text-microcopy text-on-surface-variant font-normal">/hr</span></span>
+<span class="font-label-default text-label-default text-primary flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+              Dispatch
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Card 8: Appliance Repair -->
+<div class="category-card group bg-surface-container-low/70 hover:bg-surface-container/90 backdrop-blur-xl p-space-md rounded-xl shadow-lg transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden" data-category="appliance" data-name="Appliance Repair" data-rate="38">
+<div class="flex items-start justify-between gap-2">
+<div class="w-12 h-12 rounded-xl bg-primary/20 text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-display" style="font-variation-settings: 'FILL' 1;">kitchen</span>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-secondary/15 text-secondary font-caption-caps text-caption-caps uppercase flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              31 Pros Online
+            </div>
+</div>
+<div class="mt-space-md">
+<h3 class="font-headline-card text-headline-card text-on-surface group-hover:text-primary transition-colors">Appliance Repair</h3>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 line-clamp-2">
+              Commercial &amp; domestic refrigerators, induction ranges, washing drum balancing.
+            </p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-headline-card text-headline-card text-tertiary">From $38<span class="font-microcopy text-microcopy text-on-surface-variant font-normal">/hr</span></span>
+<span class="font-label-default text-label-default text-primary flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+              Dispatch
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</span>
+</div>
+</div>
+</div>
+<!-- Live Interactive Map Preview & Fast Dispatch Widget -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start pt-space-xs">
+<!-- PostGIS Live Map HUD Panel (7 cols) -->
+<div class="lg:col-span-7 bg-surface-container-low/80 backdrop-blur-2xl rounded-xl p-space-md flex flex-col gap-space-md shadow-2xl relative overflow-hidden">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary animate-ping"></span>
+<span class="font-headline-card text-headline-card text-on-surface">Live PostGIS Proximity Grid</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-primary font-caption-caps text-caption-caps">3.2km Radius</span>
+</div>
+<div class="flex items-center gap-2 text-microcopy font-microcopy text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-secondary">satellite_alt</span>
+              Telemetry Sync: 100%
+            </div>
+</div>
+<!-- Dark Map Graphic Simulation HUD -->
+<div class="relative w-full h-[380px] rounded-lg overflow-hidden bg-surface-container-lowest flex items-center justify-center">
+<!-- Map Static Imagery Base -->
+<div class="absolute inset-0 w-full h-full bg-cover bg-center opacity-45 mix-blend-luminosity" data-location="Springfield, Illinois" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDp0FRIXaEKcVtkMBpUWPZ5hluT4_9DrSSf22JjcFibkSgzZvptdywDsZWEbQbchP5Y2mTuDOLa42C6pnOMf8AmKN101cbQ1cYb0tj0_hqb4lCDJFtQEPkpPe2Abgcc9G6it-oHIkibzZe0JcUILfYDSyyQvJJI56K1Ru5u4Gx7ROutY7DCDtFF1MsQ8TaUQ88R0DBD5YLEZpnz7MffI8Wxh8ngqh5PP4d7CMaaj3STUJOyEFBudQD67g')"></div>
+<!-- Dark Tactical Tint & Radial Grid Rings -->
+<div class="absolute inset-0 bg-surface-container-lowest/65"></div>
+<!-- Concentric Proximity Rings -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-[340px] h-[340px] rounded-full border border-secondary/15 animate-[pulse_4s_infinite]"></div>
+<div class="w-[230px] h-[230px] rounded-full border border-primary/20 absolute"></div>
+<div class="w-[120px] h-[120px] rounded-full border border-secondary/30 absolute"></div>
+</div>
+<!-- User Origin Blip -->
+<div class="absolute z-20 flex flex-col items-center">
+<div class="w-5 h-5 rounded-full bg-primary flex items-center justify-center shadow-[0_0_16px_rgba(137,206,255,0.9)] animate-bounce">
+<span class="w-2 h-2 rounded-full bg-background"></span>
+</div>
+<div class="mt-1 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur-md text-on-surface font-caption-caps text-caption-caps shadow-md">
+                Client Site (You)
+              </div>
+</div>
+<!-- Pro Blip 1: Mark J. (Electrical) -->
+<div class="absolute top-[28%] left-[32%] z-20 flex items-center gap-1.5 group cursor-pointer">
+<div class="w-3.5 h-3.5 rounded-full bg-secondary flex items-center justify-center shadow-[0_0_12px_rgba(78,222,163,0.9)]">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-container-lowest"></span>
+</div>
+<div class="px-2 py-1 rounded bg-surface-container-high/90 backdrop-blur-md text-on-surface font-caption-caps text-caption-caps shadow-md flex items-center gap-1">
+<span class="text-secondary font-semibold">Mark J.</span> • 1.4km (6m)
+              </div>
+</div>
+<!-- Pro Blip 2: Elena R. (Plumbing) -->
+<div class="absolute bottom-[35%] right-[26%] z-20 flex items-center gap-1.5 group cursor-pointer">
+<div class="w-3.5 h-3.5 rounded-full bg-tertiary flex items-center justify-center shadow-[0_0_12px_rgba(255,185,95,0.9)]">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-container-lowest"></span>
+</div>
+<div class="px-2 py-1 rounded bg-surface-container-high/90 backdrop-blur-md text-on-surface font-caption-caps text-caption-caps shadow-md flex items-center gap-1">
+<span class="text-tertiary font-semibold">Elena R.</span> • 2.1km (11m)
+              </div>
+</div>
+<!-- Pro Blip 3: Dave S. (HVAC) -->
+<div class="absolute top-[38%] right-[22%] z-20 flex items-center gap-1.5 group cursor-pointer">
+<div class="w-3.5 h-3.5 rounded-full bg-secondary flex items-center justify-center shadow-[0_0_12px_rgba(78,222,163,0.9)]">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-container-lowest"></span>
+</div>
+<div class="px-2 py-1 rounded bg-surface-container-high/90 backdrop-blur-md text-on-surface font-caption-caps text-caption-caps shadow-md flex items-center gap-1">
+<span class="text-secondary font-semibold">Dave S.</span> • 2.8km (14m)
+              </div>
+</div>
+<!-- Map Overlay Quick Metric Bar -->
+<div class="absolute bottom-3 left-3 right-3 z-30 bg-surface-container-lowest/80 backdrop-blur-lg px-3 py-2 rounded-lg flex items-center justify-between text-on-surface-variant font-microcopy text-microcopy">
+<span class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-sm">radar</span>
+                18 active dispatchable units in perimeter
+              </span>
+<span class="text-on-surface">Average Response: <strong class="text-primary font-semibold">14 mins</strong></span>
+</div>
+</div>
+<!-- Bottom Telemetry Badges -->
+<div class="grid grid-cols-3 gap-space-xs pt-1">
+<div class="bg-surface-container/60 p-2.5 rounded-lg flex flex-col">
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Spatial Query</span>
+<span class="font-headline-card text-headline-card text-secondary mt-0.5">ST_DWithin</span>
+<span class="font-microcopy text-microcopy text-outline-variant">Real-time indexed</span>
+</div>
+<div class="bg-surface-container/60 p-2.5 rounded-lg flex flex-col">
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Backgrounds</span>
+<span class="font-headline-card text-headline-card text-primary mt-0.5">100% Passed</span>
+<span class="font-microcopy text-microcopy text-outline-variant">Checked 7-yr records</span>
+</div>
+<div class="bg-surface-container/60 p-2.5 rounded-lg flex flex-col">
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Avg Escrow Lock</span>
+<span class="font-headline-card text-headline-card text-tertiary mt-0.5">$180.00</span>
+<span class="font-microcopy text-microcopy text-outline-variant">Zero fee dispute vault</span>
+</div>
+</div>
+</div>
+<!-- Quick Dispatch Request Form (5 cols) -->
+<div class="lg:col-span-5 bg-surface-container-low/90 backdrop-blur-2xl rounded-xl p-space-lg shadow-2xl flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">bolt</span>
+</div>
+<h3 class="font-headline-card text-headline-card text-on-surface">Fast Dispatch Terminal</h3>
+</div>
+<span class="font-caption-caps text-caption-caps text-secondary uppercase bg-secondary/10 px-2 py-0.5 rounded">No Waitlist</span>
+</div>
+<!-- Form Fields -->
+<div class="flex flex-col gap-space-sm">
+<!-- Trade Dropdown -->
+<div class="flex flex-col gap-1">
+<label class="font-caption-caps text-caption-caps uppercase text-on-surface-variant">Selected Trade</label>
+<div class="relative">
+<select class="w-full h-11 bg-surface-container-high/80 rounded-lg px-3 pr-8 font-body-default text-body-default text-on-surface appearance-none focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer" id="requestTradeSelect">
+<option value="electrical">Electrical &amp; Wiring (34 online)</option>
+<option value="plumbing">Plumbing &amp; Pipe Rescue (28 online)</option>
+<option value="hvac">HVAC &amp; Climate Control (19 online)</option>
+<option value="roofing">Roofing &amp; Storm Damage (12 online)</option>
+<option value="locksmith">Locksmith &amp; Security (15 online)</option>
+<option value="carpentry">Carpentry &amp; Structural (22 online)</option>
+<option value="masonry">Masonry &amp; Foundation (9 online)</option>
+<option value="appliance">Appliance Repair (31 online)</option>
+</select>
+<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-lg">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Urgency Level Radio Pill -->
+<div class="flex flex-col gap-1 mt-1">
+<label class="font-caption-caps text-caption-caps uppercase text-on-surface-variant">Dispatch Urgency</label>
+<div class="grid grid-cols-2 gap-2 p-1 bg-surface-container rounded-lg">
+<button class="urgency-toggle-btn h-9 rounded bg-surface-container-high text-on-surface font-label-default text-label-default shadow-sm transition-all flex items-center justify-center gap-1.5" id="urgencyStandardBtn" type="button">
+<span class="material-symbols-outlined text-sm text-secondary">schedule</span>
+                  Standard (Today)
+                </button>
+<button class="urgency-toggle-btn h-9 rounded text-on-surface-variant hover:text-on-surface font-label-default text-label-default transition-all flex items-center justify-center gap-1.5" id="urgencyEmergencyBtn" type="button">
+<span class="material-symbols-outlined text-sm text-error">priority_high</span>
+                  Immediate (Under 30m)
+                </button>
+</div>
+</div>
+<!-- Problem Quick Tags -->
+<div class="flex flex-col gap-1 mt-1">
+<label class="font-caption-caps text-caption-caps uppercase text-on-surface-variant">Common Issue Tags</label>
+<div class="flex flex-wrap gap-1.5" id="quickIssueTags">
+<button class="issue-tag px-2.5 py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-microcopy text-microcopy transition-colors active:scale-95" data-text="Main breaker tripped &amp; won't reset" type="button">
+                  + Breaker Tripped
+                </button>
+<button class="issue-tag px-2.5 py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-microcopy text-microcopy transition-colors active:scale-95" data-text="Sparking outlet or burning smell" type="button">
+                  + Sparking / Smell
+                </button>
+<button class="issue-tag px-2.5 py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-microcopy text-microcopy transition-colors active:scale-95" data-text="Complete power blackout in wing" type="button">
+                  + Partial Outage
+                </button>
+<button class="issue-tag px-2.5 py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-microcopy text-microcopy transition-colors active:scale-95" data-text="EV charger install quotation" type="button">
+                  + EV Charger
+                </button>
+</div>
+</div>
+<!-- Problem Description Textarea -->
+<div class="flex flex-col gap-1 mt-1">
+<label class="font-caption-caps text-caption-caps uppercase text-on-surface-variant">Situation Summary</label>
+<textarea class="w-full bg-surface-container-high/80 rounded-lg p-3 font-body-default text-body-default text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none shadow-inner" id="situationInput" placeholder="Describe the symptom, equipment model, or safety threat..." rows="3"></textarea>
+</div>
+<!-- Live Quote Calculation Preview -->
+<div class="bg-surface-container/60 p-space-sm rounded-lg flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-caption-caps text-caption-caps text-on-surface-variant uppercase">Estimated First Hour</span>
+<span class="font-title-screen text-title-screen text-tertiary font-semibold" id="rateCalculatorDisplay">$45 - $65</span>
+</div>
+<div class="text-right">
+<span class="font-caption-caps text-caption-caps text-secondary uppercase block">Escrow Covered</span>
+<span class="font-microcopy text-microcopy text-on-surface-variant">Zero upfront charges</span>
+</div>
+</div>
+<!-- Search Action CTA Button -->
+<button class="w-full h-12 mt-1 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-default text-label-default flex items-center justify-center gap-2 shadow-lg shadow-primary/25 transition-all active:scale-[0.98]" id="dispatchSearchSubmitBtn" type="button">
+<span class="material-symbols-outlined text-lg">radar</span>
+<span>Execute PostGIS Proximity Search</span>
+</button>
+<p class="text-center font-microcopy text-microcopy text-outline-variant">
+              By dispatching, you activate encrypted two-way voice and GPS broadcast.
+            </p>
+</div>
+</div>
+</div>
+<!-- Trust Credential Band & Escrow Guarantee Details -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md pt-space-md">
+<div class="bg-surface-container-low/60 backdrop-blur-xl p-space-md rounded-xl flex items-start gap-space-sm shadow-md">
+<div class="w-10 h-10 rounded-lg bg-secondary/15 text-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">verified</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-headline-card text-headline-card text-on-surface">Triple-Layer KYC Verified</h4>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 leading-relaxed">
+              Every professional submits state licensure, criminal background records, and $2M active liability insurance before receiving dispatch privileges.
+            </p>
+</div>
+</div>
+<div class="bg-surface-container-low/60 backdrop-blur-xl p-space-md rounded-xl flex items-start gap-space-sm shadow-md">
+<div class="w-10 h-10 rounded-lg bg-tertiary/15 text-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-headline-card text-headline-card text-on-surface">Protected Vault Escrow</h4>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 leading-relaxed">
+              Payment is held safely in automated escrow. Funds are never transferred until work passes dual customer sign-off and photographic completion audit.
+            </p>
+</div>
+</div>
+<div class="bg-surface-container-low/60 backdrop-blur-xl p-space-md rounded-xl flex items-start gap-space-sm shadow-md">
+<div class="w-10 h-10 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl">fmd_good</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-headline-card text-headline-card text-on-surface">PostGIS Geofence Guarantee</h4>
+<p class="font-microcopy text-microcopy text-on-surface-variant mt-1 leading-relaxed">
+              Real-time RTK GPS checks confirm the technician is physically on your premises during billed work intervals, preventing off-site billing inflation.
+            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Quick SOS Modal Drawer (Hidden by default) -->
+<div class="fixed inset-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl hidden flex items-center justify-center p-margin" id="sosModalOverlay">
+<div class="w-full max-w-lg bg-surface-container-low rounded-2xl p-space-lg shadow-2xl flex flex-col gap-space-md relative overflow-hidden">
+<div class="absolute -top-12 -right-12 w-48 h-48 bg-error/20 rounded-full blur-[60px] pointer-events-none"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-xl bg-error/20 text-error flex items-center justify-center animate-pulse">
+<span class="material-symbols-outlined text-2xl">e911_emergency</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-title-screen text-title-screen text-on-surface">Emergency Rescue SOS</h3>
+<span class="font-caption-caps text-caption-caps text-error uppercase">Active Broadcast Sequence</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface flex items-center justify-center" id="closeSosModalBtn" type="button">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<p class="font-body-default text-body-default text-on-surface-variant">
+        You are about to ping <strong class="text-on-surface">48 active emergency responders</strong> within 3.2km. This overrides standard bids and auto-locks the closest tier-1 responder.
+      </p>
+<div class="bg-surface-container p-space-md rounded-xl flex flex-col gap-space-xs">
+<span class="font-caption-caps text-caption-caps uppercase text-tertiary">Select Primary Hazard</span>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+<label class="flex items-center gap-2 p-2.5 rounded-lg bg-surface-container-high cursor-pointer hover:bg-surface-bright transition-all">
+<input checked="" class="text-error focus:ring-error" name="hazard" type="radio" value="fire"/>
+<span class="font-microcopy text-microcopy text-on-surface">Electrical Hazard / Fire</span>
+</label>
+<label class="flex items-center gap-2 p-2.5 rounded-lg bg-surface-container-high cursor-pointer hover:bg-surface-bright transition-all">
+<input class="text-error focus:ring-error" name="hazard" type="radio" value="water"/>
+<span class="font-microcopy text-microcopy text-on-surface">Severe Flooding / Pipe</span>
+</label>
+<label class="flex items-center gap-2 p-2.5 rounded-lg bg-surface-container-high cursor-pointer hover:bg-surface-bright transition-all">
+<input class="text-error focus:ring-error" name="hazard" type="radio" value="gas"/>
+<span class="font-microcopy text-microcopy text-on-surface">Gas Smell / HVAC Risk</span>
+</label>
+<label class="flex items-center gap-2 p-2.5 rounded-lg bg-surface-container-high cursor-pointer hover:bg-surface-bright transition-all">
+<input class="text-error focus:ring-error" name="hazard" type="radio" value="structural"/>
+<span class="font-microcopy text-microcopy text-on-surface">Structural Collapsing</span>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-space-sm pt-2">
+<button class="flex-1 h-12 rounded-lg bg-error text-on-error font-label-default text-label-default uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-error/40 hover:bg-error-container transition-all" id="confirmSosBroadcastBtn" type="button">
+<span class="material-symbols-outlined text-xl">satellite</span>
+          Transmit Broadcast
+        </button>
+<button class="px-5 h-12 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface font-label-default text-label-default" id="cancelSosModalBtn" type="button">
+          Cancel
+        </button>
+</div>
+</div>
+</div>
+<!-- Interactive Address Edit Modal -->
+<div class="fixed inset-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl hidden flex items-center justify-center p-margin" id="addressModalOverlay">
+<div class="w-full max-w-md bg-surface-container-low rounded-2xl p-space-lg shadow-2xl flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">location_on</span>
+<h3 class="font-title-screen text-title-screen text-on-surface">Update Service Address</h3>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface flex items-center justify-center" id="closeAddressModalBtn" type="button">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-space-sm">
+<div class="flex flex-col gap-1">
+<label class="font-caption-caps text-caption-caps uppercase text-on-surface-variant">Street Address</label>
+<input class="h-11 bg-surface-container-high rounded-lg px-3 font-body-default text-body-default text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40" id="addressInputVal" type="text" value="742 Evergreen Terrace, Springfield"/>
+</div>
+<div class="flex items-center gap-2 bg-secondary/10 p-2.5 rounded-lg text-secondary font-microcopy text-microcopy">
+<span class="material-symbols-outlined text-base">gps_fixed</span>
+          GPS Lat: 39.7817° N • Long: 89.6501° W
+        </div>
+</div>
+<div class="flex items-center gap-space-sm pt-2">
+<button class="flex-1 h-11 rounded-lg bg-primary text-on-primary font-label-default text-label-default shadow-md shadow-primary/20" id="saveAddressBtn" type="button">
+          Save &amp; Recalculate Distances
+        </button>
+</div>
+</div>
+</div>
+<script>
+    (function initAegisCraftHome() {
+      // Elements
+      const searchInput = document.getElementById('serviceSearchInput');
+      const clearSearchBtn = document.getElementById('clearSearchBtn');
+      const categoryCards = document.querySelectorAll('.category-card');
+      const filterPills = document.querySelectorAll('.category-filter-btn');
+      const requestTradeSelect = document.getElementById('requestTradeSelect');
+      const situationInput = document.getElementById('situationInput');
+      const quickTags = document.querySelectorAll('.issue-tag');
+      const urgencyStandardBtn = document.getElementById('urgencyStandardBtn');
+      const urgencyEmergencyBtn = document.getElementById('urgencyEmergencyBtn');
+      const rateCalculatorDisplay = document.getElementById('rateCalculatorDisplay');
+      const dispatchSearchSubmitBtn = document.getElementById('dispatchSearchSubmitBtn');
+      
+      // SOS Modal
+      const sosEmergencyTrigger = document.getElementById('sosEmergencyTrigger');
+      const sosModalOverlay = document.getElementById('sosModalOverlay');
+      const closeSosModalBtn = document.getElementById('closeSosModalBtn');
+      const cancelSosModalBtn = document.getElementById('cancelSosModalBtn');
+      const confirmSosBroadcastBtn = document.getElementById('confirmSosBroadcastBtn');
+
+      // Address Modal
+      const editPinBtn = document.getElementById('editPinBtn');
+      const addressModalOverlay = document.getElementById('addressModalOverlay');
+      const closeAddressModalBtn = document.getElementById('closeAddressModalBtn');
+      const saveAddressBtn = document.getElementById('saveAddressBtn');
+
+      let currentUrgency = 'standard';
+
+      // 1. Search Debounce & Filtering
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const val = e.target.value.toLowerCase().trim();
+          if (val.length > 0) {
+            clearSearchBtn.classList.remove('hidden');
+          } else {
+            clearSearchBtn.classList.add('hidden');
+          }
+
+          categoryCards.forEach(card => {
+            const name = (card.getAttribute('data-name') || '').toLowerCase();
+            const desc = card.textContent.toLowerCase();
+            if (name.includes(val) || desc.includes(val)) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+
+        clearSearchBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          clearSearchBtn.classList.add('hidden');
+          categoryCards.forEach(card => card.style.display = 'flex');
+        });
+      }
+
+      // 2. Filter Pills
+      filterPills.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterPills.forEach(p => {
+            p.classList.remove('bg-primary', 'text-on-primary', 'shadow-md', 'shadow-primary/20');
+            p.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+          });
+          btn.classList.add('bg-primary', 'text-on-primary', 'shadow-md', 'shadow-primary/20');
+          btn.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+
+          const filter = btn.getAttribute('data-filter');
+          categoryCards.forEach(card => {
+            const rate = parseInt(card.getAttribute('data-rate') || '0', 10);
+            if (filter === 'all') {
+              card.style.display = 'flex';
+            } else if (filter === 'low-rate') {
+              card.style.display = rate <= 45 ? 'flex' : 'none';
+            } else if (filter === 'emergency') {
+              card.style.display = (card.getAttribute('data-category') === 'electrical' || card.getAttribute('data-category') === 'plumbing' || card.getAttribute('data-category') === 'locksmith') ? 'flex' : 'none';
+            } else {
+              card.style.display = 'flex';
+            }
+          });
+        });
+      });
+
+      // 3. Category Card Click Syncs Form
+      const rateRanges = {
+        electrical: '$45 - $65',
+        plumbing: '$50 - $75',
+        hvac: '$55 - $80',
+        roofing: '$60 - $95',
+        locksmith: '$40 - $60',
+        carpentry: '$42 - $65',
+        masonry: '$48 - $70',
+        appliance: '$38 - $58'
+      };
+
+      categoryCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const categoryKey = card.getAttribute('data-category');
+          if (requestTradeSelect && categoryKey) {
+            requestTradeSelect.value = categoryKey;
+            updateRateDisplay();
+            // Smooth scroll to form on mobile
+            if (window.innerWidth < 1024) {
+              requestTradeSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        });
+      });
+
+      function updateRateDisplay() {
+        if (!requestTradeSelect || !rateCalculatorDisplay) return;
+        const cat = requestTradeSelect.value;
+        const base = rateRanges[cat] || '$45 - $65';
+        if (currentUrgency === 'emergency') {
+          rateCalculatorDisplay.textContent = base + ' + $35 SOS';
+        } else {
+          rateCalculatorDisplay.textContent = base;
+        }
+      }
+
+      if (requestTradeSelect) {
+        requestTradeSelect.addEventListener('change', updateRateDisplay);
+      }
+
+      // 4. Urgency Toggles
+      if (urgencyStandardBtn && urgencyEmergencyBtn) {
+        urgencyStandardBtn.addEventListener('click', () => {
+          currentUrgency = 'standard';
+          urgencyStandardBtn.classList.add('bg-surface-container-high', 'text-on-surface', 'shadow-sm');
+          urgencyStandardBtn.classList.remove('text-on-surface-variant');
+          urgencyEmergencyBtn.classList.remove('bg-surface-container-high', 'text-on-surface', 'shadow-sm');
+          urgencyEmergencyBtn.classList.add('text-on-surface-variant');
+          updateRateDisplay();
+        });
+
+        urgencyEmergencyBtn.addEventListener('click', () => {
+          currentUrgency = 'emergency';
+          urgencyEmergencyBtn.classList.add('bg-surface-container-high', 'text-on-surface', 'shadow-sm');
+          urgencyEmergencyBtn.classList.remove('text-on-surface-variant');
+          urgencyStandardBtn.classList.remove('bg-surface-container-high', 'text-on-surface', 'shadow-sm');
+          urgencyStandardBtn.classList.add('text-on-surface-variant');
+          updateRateDisplay();
+        });
+      }
+
+      // 5. Quick Tags Injection
+      quickTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+          const text = tag.getAttribute('data-text');
+          if (situationInput && text) {
+            if (situationInput.value.length > 0) {
+              situationInput.value += '; ' + text;
+            } else {
+              situationInput.value = text;
+            }
+          }
+        });
+      });
+
+      // 6. SOS Modal Controls
+      if (sosEmergencyTrigger && sosModalOverlay) {
+        sosEmergencyTrigger.addEventListener('click', () => {
+          sosModalOverlay.classList.remove('hidden');
+        });
+
+        const closeSos = () => sosModalOverlay.classList.add('hidden');
+        if (closeSosModalBtn) closeSosModalBtn.addEventListener('click', closeSos);
+        if (cancelSosModalBtn) cancelSosModalBtn.addEventListener('click', closeSos);
+
+        if (confirmSosBroadcastBtn) {
+          confirmSosBroadcastBtn.addEventListener('click', () => {
+            confirmSosBroadcastBtn.innerHTML = '<span class="material-symbols-outlined text-xl animate-spin">refresh</span> Broadcasting 3km...';
+            setTimeout(() => {
+              alert('Emergency SOS Transmitted! 48 certified pros notified. Nearest tier-1 unit (Mark J.) responding in 4 mins.');
+              closeSos();
+              confirmSosBroadcastBtn.innerHTML = '<span class="material-symbols-outlined text-xl">satellite</span> Transmit Broadcast';
+            }, 1200);
+          });
+        }
+      }
+
+      // 7. Address Modal Controls
+      if (editPinBtn && addressModalOverlay) {
+        editPinBtn.addEventListener('click', () => addressModalOverlay.classList.remove('hidden'));
+        const closeAddr = () => addressModalOverlay.classList.add('hidden');
+        if (closeAddressModalBtn) closeAddressModalBtn.addEventListener('click', closeAddr);
+        if (saveAddressBtn) {
+          saveAddressBtn.addEventListener('click', () => {
+            const newVal = document.getElementById('addressInputVal').value;
+            alert('Location updated to: ' + newVal + ' (PostGIS index rebuilt).');
+            closeAddr();
+          });
+        }
+      }
+
+      // 8. Submit Request Button Feedback
+      if (dispatchSearchSubmitBtn) {
+        dispatchSearchSubmitBtn.addEventListener('click', () => {
+          const selectedText = requestTradeSelect ? requestTradeSelect.options[requestTradeSelect.selectedIndex].text : 'Trade';
+          dispatchSearchSubmitBtn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">sync</span> Querying Spatial Proximity...';
+          setTimeout(() => {
+            alert('PostGIS Search Complete! Found 18 available technicians for ' + selectedText + '. Opening live bidding room.');
+            dispatchSearchSubmitBtn.innerHTML = '<span class="material-symbols-outlined text-lg">radar</span><span>Execute PostGIS Proximity Search</span>';
+          }, 900);
+        });
+      }
+
+    })();
+  </script>
+</div></main><footer class="relative z-10 w-full bg-surface-container-lowest py-space-xl"><div class="max-w-[1440px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><img alt="AegisCraft Brand Emblem" class="h-6 w-auto object-contain opacity-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTSuuaMiUCIMyEWfTtlngtE2QwX6KL6WiBXYRIJc8ALZljnaqpVEOT-cPjvGyrtIgT-F0_7f8uka9_ald8r7oUTaEyuoL4zxK8fyLoc_X_4kHrXSE9NscRc_AcAkwDZxrKBApfk__G6h916S07cEQOCUnTKvi2eQWV2kOUuSpAMQwZXrizTwaN7uWE8uyAb8zgMGRmQM-Si6ci9Db7EQeFne8hX-LqToPTA-QPnuj1JDMzZKX90iFsMg"/><span class="font-headline-card text-headline-card text-on-surface-variant">AegisCraft Dispatch Infrastructure</span></div><p class="font-microcopy text-microcopy text-outline">© 2025 AegisCraft Network. Real-Time Blue-Collar Bidding, Geolocation &amp; Verified Escrow Operations.</p><div class="flex items-center gap-space-md"><a class="font-microcopy text-microcopy text-on-surface-variant hover:text-primary transition-colors" href="#">Security Protocols</a><a class="font-microcopy text-microcopy text-on-surface-variant hover:text-primary transition-colors" href="#">Escrow Guarantee</a><a class="font-microcopy text-microcopy text-on-surface-variant hover:text-primary transition-colors" href="#">Technician Portal</a></div></div></footer></body></html>
