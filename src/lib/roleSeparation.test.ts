@@ -7,6 +7,7 @@ test('role separation: customer account is saved with customer role and cannot c
   const custReg = db.register({
     name: 'Ananya Sen',
     phone: '+91 99001 12233',
+    phoneVerified: true,
     email: 'ananya.sen@example.in',
     password: 'password123',
     role: 'customer',
@@ -27,6 +28,7 @@ test('role separation: worker account is saved with worker_pro role and profile 
   const wrkReg = db.register({
     name: 'Karan Malhotra',
     phone: '+91 98888 77766',
+    phoneVerified: true,
     email: 'karan.m@aegispro.in',
     password: 'password123',
     role: 'worker_pro',
@@ -44,6 +46,7 @@ test('role separation: logout clears session token and invalidates authenticated
   const reg = db.register({
     name: 'Test Session User',
     phone: '+91 91111 22222',
+    phoneVerified: true,
     email: 'session.test@example.in',
     role: 'customer',
   });

@@ -46,6 +46,54 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // OTP Verification state
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [otpSending, setOtpSending] = useState(false);
+  const [otpVerifying, setOtpVerifying] = useState(false);
+  const [debugOtpMessage, setDebugOtpMessage] = useState<string | null>(null);
+
+  const handleSendOtp = async () => {
+    if (!phone.trim() || phone.replace(/[^\d]/g, '').length < 10) {
+      setError('Please enter a valid 10-digit mobile number before requesting OTP.');
+      return;
+    }
+    setOtpSending(true);
+    setError(null);
+    try {
+      const res = await api.sendOtp(phone.trim());
+      setOtpSent(true);
+      if (res.debugOtp) {
+        setDebugOtpMessage(`[Dev SMS Gateway] OTP Code: ${res.debugOtp}`);
+      } else {
+        setDebugOtpMessage('OTP sent successfully. Check your SMS messages.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to send OTP');
+    } finally {
+      setOtpSending(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otpCode.trim() || otpCode.trim().length !== 6) {
+      setError('Please enter the 6-digit OTP received via SMS.');
+      return;
+    }
+    setOtpVerifying(true);
+    setError(null);
+    try {
+      await api.verifyOtp(phone.trim(), otpCode.trim());
+      setPhoneVerified(true);
+      setDebugOtpMessage(null);
+    } catch (err: any) {
+      setError(err.message || 'OTP verification failed');
+    } finally {
+      setOtpVerifying(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   const handlePhoneChange = (val: string) => {
@@ -89,12 +137,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       } else {
         if (!name.trim()) throw new Error('Please enter your full name');
         if (!phone.trim()) throw new Error('Please enter your 10-digit mobile number');
+        if (!phoneVerified) throw new Error('Phone number verification via OTP is required before registration.');
 
         const cleanPhone = phone.startsWith('+91') ? phone : `+91 ${phone.replace(/^0+/, '').trim()}`;
 
         const payload: RegisterPayload = {
           name: name.trim(),
           phone: cleanPhone,
+          phoneVerified: true,
           email: email.trim() || undefined,
           password: password || 'password123',
           role,
@@ -279,23 +329,77 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             )}
 
             <div>
-              <label className="block text-xs font-mono uppercase text-slate-400 mb-1">
-                Indian Mobile Number (+91)
-              </label>
-              <div className="relative">
-                <Smartphone className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-                <input
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => handlePhoneChange(e.target.value)}
-                  placeholder={mode === 'login' ? 'e.g. +91 98450 12345 or 9845012345' : '+91 98450 12345'}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 font-mono"
-                />
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-mono uppercase text-slate-400">
+                  Indian Mobile Number (+91)
+                </label>
+                {mode === 'register' && (
+                  phoneVerified ? (
+                    <span className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1 font-mono">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Verified ✓
+                    </span>
+                  ) : (
+                    <span className="text-[11px] font-semibold text-amber-400 font-mono">
+                      OTP Verification Required
+                    </span>
+                  )
+                )}
               </div>
-              <span className="text-[10px] text-slate-500 mt-1 block">
-                SMS OTP verification node active across Bharat telecom carriers
-              </span>
+              <div className="relative flex gap-2">
+                <div className="relative flex-1">
+                  <Smartphone className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                  <input
+                    type="tel"
+                    required
+                    disabled={phoneVerified && mode === 'register'}
+                    value={phone}
+                    onChange={(e) => {
+                      handlePhoneChange(e.target.value);
+                      if (phoneVerified) setPhoneVerified(false);
+                    }}
+                    placeholder={mode === 'login' ? 'e.g. +91 98450 12345' : '+91 98450 12345'}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 font-mono"
+                  />
+                </div>
+                {mode === 'register' && !phoneVerified && (
+                  <button
+                    type="button"
+                    onClick={handleSendOtp}
+                    disabled={otpSending}
+                    className="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    {otpSending ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
+                  </button>
+                )}
+              </div>
+
+              {/* OTP Input Row if OTP sent but not verified */}
+              {mode === 'register' && otpSent && !phoneVerified && (
+                <div className="mt-2.5 p-3 bg-slate-950 border border-emerald-500/30 rounded-xl space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-300 font-mono">Enter 6-Digit OTP</span>
+                    {debugOtpMessage && <span className="text-amber-400 text-[11px] font-mono">{debugOtpMessage}</span>}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      maxLength={6}
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                      placeholder="123456"
+                      className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white tracking-widest font-mono text-center focus:outline-none focus:border-emerald-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleVerifyOtp}
+                      disabled={otpVerifying || otpCode.length !== 6}
+                      className="px-4 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      {otpVerifying ? 'Verifying...' : 'Verify OTP'}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {mode === 'register' && (

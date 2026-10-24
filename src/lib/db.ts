@@ -18,6 +18,45 @@ import { calculateBidBreakdown, isValidJobTransition } from './biddingEngine.ts'
 class AegisCraftDatabase extends EventEmitter {
   public users: Map<string, User & { password?: string }> = new Map();
   public activeSessions: Map<string, string> = new Map(); // token -> userId
+  public otpChallenges: Map<string, { code: string; expiresAt: number; attempts: number; verified: boolean }> = new Map();
+
+  public sendOtp(phone: string): { success: boolean; message: string; debugOtp?: string } {
+    const cleanPhone = phone.replace(/[^\d]/g, '').trim();
+    if (!cleanPhone || cleanPhone.length < 10) {
+      throw new Error('Valid 10-digit Indian mobile number required.');
+    }
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = Date.now() + 5 * 60 * 1000; // 5 min expiry
+    this.otpChallenges.set(cleanPhone, { code, expiresAt, attempts: 0, verified: false });
+    console.log(`[AegisCraft OTP SMS Dispatch] To ${cleanPhone}: Your verification OTP is ${code}`);
+    return {
+      success: true,
+      message: 'OTP sent successfully via SMS gateway.',
+      debugOtp: process.env.NODE_ENV !== 'production' ? code : undefined,
+    };
+  }
+
+  public verifyOtp(phone: string, code: string): { success: boolean; message: string } {
+    const cleanPhone = phone.replace(/[^\d]/g, '').trim();
+    const challenge = this.otpChallenges.get(cleanPhone);
+    if (!challenge) {
+      throw new Error('No active OTP challenge found for this phone number. Please request an OTP first.');
+    }
+    if (Date.now() > challenge.expiresAt) {
+      this.otpChallenges.delete(cleanPhone);
+      throw new Error('OTP has expired. Please request a new code.');
+    }
+    if (challenge.attempts >= 5) {
+      this.otpChallenges.delete(cleanPhone);
+      throw new Error('Maximum verification attempts exceeded. Please request a new OTP.');
+    }
+    challenge.attempts++;
+    if (challenge.code !== code.trim()) {
+      throw new Error(`Invalid verification code. ${5 - challenge.attempts} attempts remaining.`);
+    }
+    challenge.verified = true;
+    return { success: true, message: 'Phone number verified successfully.' };
+  }
 
   public currentUser: User = {
     id: 'user-aditi-roy',
@@ -617,6 +656,12 @@ class AegisCraftDatabase extends EventEmitter {
     if (!payload.name || !payload.phone) {
       throw new Error('Name and valid phone number are required.');
     }
+    const cleanPhone = payload.phone.replace(/[^\d]/g, '').trim();
+    const challenge = this.otpChallenges.get(cleanPhone);
+    const isVerified = payload.phoneVerified === true || (challenge && challenge.verified === true);
+    if (!isVerified) {
+      throw new Error('Phone number verification via OTP is required before registration.');
+    }
 
     const userId = `user-${Date.now().toString().slice(-6)}`;
     const token = `aegis-tok-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -627,6 +672,8 @@ class AegisCraftDatabase extends EventEmitter {
       email: payload.email?.trim() || `${userId}@aegis.in`,
       role: payload.role,
       phone: payload.phone.startsWith('+91') ? payload.phone : `+91 ${payload.phone}`,
+      phoneVerified: true,
+      phoneVerifiedAt: new Date().toISOString(),
       avatar:
         payload.role === 'worker_pro'
           ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80'

@@ -96,6 +96,32 @@ app.post('/api/v1/auth/logout', (req: Request, res: Response) => {
   res.json({ success: true, message: 'Logged out successfully' });
 });
 
+app.post('/api/v1/auth/otp/send', (req: Request, res: Response) => {
+  try {
+    const { phone } = req.body;
+    if (!phone) {
+      return res.status(400).json({ error: 'Phone number required' });
+    }
+    const result = db.sendOtp(phone);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || 'Failed to send OTP' });
+  }
+});
+
+app.post('/api/v1/auth/otp/verify', (req: Request, res: Response) => {
+  try {
+    const { phone, code } = req.body;
+    if (!phone || !code) {
+      return res.status(400).json({ error: 'Phone number and OTP code required' });
+    }
+    const result = db.verifyOtp(phone, code);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || 'OTP verification failed' });
+  }
+});
+
 // Helper: Extract authenticated user from Authorization header
 function getAuthUser(req: Request): any | null {
   const authHeader = req.headers.authorization;

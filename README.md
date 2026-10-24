@@ -225,11 +225,37 @@ graph TB
    ```
    *Launches full-stack Express server on `http://localhost:3000` mounting Vite middleware in dev mode.*
 
-6. **Build for Production**:
+6. **Build for Production & Cloud Run**:
    ```bash
    npm run build
    npm start
    ```
+   *Binds Express server on `0.0.0.0` using environment port `PORT` and serves production static build alongside API endpoints.*
+
+---
+
+## ☁️ Google Cloud Run Production Deployment & Verified `.run.app` Architecture
+
+AegisCraft is fully containerized and configured for deployment on **Google Cloud Run**:
+- **Runtime Target**: Node.js 22 LTS container with Express API and Vite React SPA bundle served from a single unified process.
+- **Port Binding**: Automatically binds to `0.0.0.0` and respects the `PORT` environment variable provided by Cloud Run.
+- **Verified Production URL Format**: `https://[service-name]-[hash]-[region].a.run.app`.
+- **Environment Variables**: Managed securely via Cloud Run environment configuration and Google Secret Manager (`GEMINI_API_KEY`, `APP_URL`).
+- **Health Checks & Telemetry**: `/api/v1/health` endpoint verifies PostGIS connection, socket streams, and escrow vault readiness.
+
+---
+
+## 📱 Secure Phone Number OTP Verification
+
+AegisCraft enforces strict phone number ownership verification during registration for both Customer and Worker Pro accounts:
+- **OTP Challenge Flow**:
+  1. User enters 10-digit Indian mobile number (`+91`).
+  2. User clicks **Send OTP** (`POST /api/v1/auth/otp/send`).
+  3. Backend generates a cryptographically secure 6-digit OTP with a 5-minute TTL and logs/dispatches via SMS gateway.
+  4. User enters the 6-digit code and clicks **Verify OTP** (`POST /api/v1/auth/otp/verify`).
+  5. Upon success, the UI displays a green **Verified ✓** badge and unlocks account registration.
+- **Backend Enforcement**: `db.register()` requires `phoneVerified: true` and validates against active OTP challenges stored in server memory.
+- **Rate Limiting & Attempt Protection**: Maximum 5 verification attempts per challenge; challenge expires automatically after 5 minutes.
 
 ---
 

@@ -6,6 +6,8 @@ export interface User {
   email: string;
   role: UserRole;
   phone: string;
+  phoneVerified?: boolean;
+  phoneVerifiedAt?: string;
   avatar: string;
   rating: number;
   completedJobsCount: number;
@@ -196,6 +198,7 @@ export interface RegisterPayload {
   name: string;
   email?: string;
   phone: string;
+  phoneVerified?: boolean;
   password?: string;
   role: UserRole;
   tradeCategory?: string;
