@@ -50,7 +50,7 @@ app.get('/api/v1/auth/me', (req: Request, res: Response) => {
     }
   }
   res.json({
-    user: db.currentUser,
+    user: null,
   });
 });
 
@@ -97,21 +97,21 @@ app.post('/api/v1/auth/logout', (req: Request, res: Response) => {
 });
 
 app.post('/api/v1/auth/role', (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+  const token = authHeader.substring(7);
+  const user = db.getUserByToken(token);
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid or expired session' });
+  }
+
   const { role } = req.body;
   if (role === 'customer' || role === 'worker_pro') {
-    db.currentUser.role = role;
-    if (role === 'worker_pro') {
-      db.currentUser.name = 'Rajesh Sharma';
-      db.currentUser.phone = '+91 98451 88421';
-      db.currentUser.avatar =
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80';
-    } else {
-      db.currentUser.name = 'Aditi Roy';
-      db.currentUser.phone = '+91 98450 12345';
-      db.currentUser.avatar =
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80';
-    }
-    return res.json({ success: true, user: db.currentUser });
+    user.role = role;
+    db.users.set(user.id, user);
+    return res.json({ success: true, user });
   }
   return res.status(400).json({ error: 'Invalid role requested' });
 });

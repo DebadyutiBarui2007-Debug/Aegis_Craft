@@ -1,0 +1,931 @@
+# MASTER FINAL POLISH PROMPT — BLUE-COLLAR MANAGEMENT PLATFORM
+## Security Hardening • Correct First-Launch Authentication • Role-Based Interfaces • Full-Stack Verification • Production Readiness
+
+You are an autonomous senior full-stack engineering agent, application security specialist, penetration-testing engineer, authentication architect, database engineer, QA automation engineer, and performance optimization expert.
+
+You are working on my **existing, substantially completed Blue-Collar Management Platform**. Your responsibility is to perform a comprehensive final engineering pass, harden its security, correct the first-launch authentication flow, verify all frontend and backend integrations, test every important interaction, and fix the defects you discover.
+
+I am using an AI development environment such as Google AI Studio. Therefore, **operate as an implementation agent, not merely as a coding assistant**. Inspect the project, understand its architecture, edit the actual files, run available tools and tests, diagnose failures, implement corrections, and verify the result.
+
+Do not merely generate a plan or explain what I should do.
+
+Do not rebuild the project from scratch.
+
+Do not remove, disable, or redesign existing features unnecessarily.
+
+Preserve the current premium liquid-glass UI, nature-inspired emerald-and-gold color palette, typography, application launch animation, its existing transition, Indian localization, customer platform, worker platform, job workflow, PostGIS matching, bidding, counteroffers, messaging, tracking, SOS, ratings, notifications, transactions, and MCP integration.
+
+**Your primary objectives are to make the application substantially more secure, ensure first-time users actually see the account-creation portal, ensure each account opens only its correct interface, and verify the complete application end to end.**
+
+---
+
+# PART 1 — CRITICAL CORRECTION: FIRST-LAUNCH AUTHENTICATION MUST WORK
+
+This is the highest-priority bug. Previous implementation attempts have failed to make the account-creation portal appear immediately after the existing loading animation.
+
+Understand this requirement precisely and implement it as an application-level routing rule.
+
+## 1.1 The correct application startup sequence
+
+Implement this exact sequence:
+
+**Application launch → Existing loading animation → Existing transition → Authentication check → Correct destination.**
+
+Do not redesign or remove the existing loading animation or transition. Preserve their present visual appearance, timing, and behavior, except for necessary corrections that do not change the intended experience.
+
+Immediately after the existing animation and transition finish, the application must resolve the user's authentication state and navigate accordingly.
+
+### Scenario A — First-time user with no existing account or valid session
+
+The application must display the **account-creation portal immediately after the animation and transition**.
+
+The first-time registration view should be the default selected view.
+
+The user must not land on:
+- The customer home screen.
+- The worker home screen.
+- A prefilled dashboard.
+- A guest dashboard pretending to be authenticated.
+- An empty page.
+- An indefinite loading screen.
+- A screen requiring the user to navigate manually to find registration.
+
+Present the existing authentication portal, including the account-type selection and registration form.
+
+The user should be able to choose:
+
+**Customer — I need a service.**
+
+or
+
+**Worker — I provide services.**
+
+The existing authentication design and visual style must remain intact.
+
+If the authentication screen already contains a login/register selector, default it to registration on a genuinely fresh, unauthenticated launch while preserving the login option for returning users.
+
+### Scenario B — User has previously registered and has a valid session
+
+Restore the authenticated session securely.
+
+Retrieve the user's authoritative identity and account role from the existing backend.
+
+Navigate directly to the correct interface:
+
+- Customer account → Customer application.
+- Worker account → Worker application.
+
+Do not show the registration portal unnecessarily when a valid session has already been restored.
+
+Do not let a customer accidentally enter the worker interface or a worker accidentally enter the customer interface.
+
+### Scenario C — Existing account, but no valid session
+
+Display the authentication portal with a working sign-in option.
+
+Do not create a new account automatically.
+
+Allow the user to switch between registration and sign-in without losing the existing visual design.
+
+If the user has no existing account, registration must remain easily accessible.
+
+### Scenario D — Expired, revoked, or invalid session
+
+Clear or invalidate the unusable session through the appropriate authentication mechanism.
+
+Return the user to the authentication portal.
+
+Do not silently authenticate the user using a locally stored username, a previous role selection, cached profile data, or a hardcoded account.
+
+### Scenario E — Backend temporarily unavailable
+
+Do not display a false login success or send an unauthenticated user to either protected interface.
+
+Show an appropriate loading or connection-error state with a retry action.
+
+Do not hold the user indefinitely on the splash screen. The existing animation must finish within its already specified maximum duration of three seconds.
+
+The authentication portal may remain available for presentation, but protected operations must remain unavailable until authentication succeeds.
+
+## 1.2 Find and fix the actual root cause
+
+Do not assume the problem is just a missing registration button.
+
+Inspect:
+- The application entry point.
+- The splash-screen completion callback.
+- The post-animation navigation transition.
+- Authentication initialization.
+- Session restoration.
+- Router guards and default routes.
+- Registration/login state management.
+- Conditional rendering in the root component.
+- Role-based redirect logic.
+- API initialization timing.
+- Persistent storage.
+- Any hardcoded or mocked default user.
+- Any fallback that navigates directly to a home screen when the account state is unknown.
+
+Identify the actual reason the account-creation portal is not appearing.
+
+Possible causes may include an incorrect initial route, a stale authenticated-state variable, asynchronous initialization racing against routing, a default-user fallback, an unconditional home redirect, or an authentication screen that is never selected.
+
+These are investigation possibilities, not assumptions. Verify the cause in the actual code.
+
+Correct the source of the problem rather than adding another overlay or duplicate registration screen.
+
+**Do not declare this task complete until a clean first-launch test proves that the account-creation portal appears immediately after the existing animation and transition.**
+
+---
+
+# PART 2 — ACCOUNT REGISTRATION MUST CREATE REAL ACCOUNTS
+
+Implement and verify the actual registration flow using the existing backend.
+
+## 2.1 Fresh account creation
+
+When a new user submits the registration form:
+
+1. Validate the submitted information on the frontend.
+2. Send the request through the existing API client.
+3. Validate the request again on the backend.
+4. Create the account in the actual database.
+5. Persist the correct account role.
+6. Create or initialize the correct customer or worker profile.
+7. Establish a secure authenticated session if the authentication flow permits immediate login.
+8. Return the authoritative account information.
+9. Navigate to the correct interface only after successful backend confirmation.
+
+Do not simulate account creation by merely storing a name and role in browser storage.
+
+Do not navigate to the home screen before account creation succeeds.
+
+Do not create a default customer or worker behind the scenes.
+
+Do not silently switch the chosen role.
+
+Do not silently generate an account when a database call fails.
+
+For email/phone verification or worker verification, follow the existing product's actual requirements and accurately preserve the relevant pending states.
+
+## 2.2 Persist user identity and role
+
+The database must contain the account and its appropriate profile.
+
+The application must restore these details after refresh, reopening the app, or signing in again.
+
+Persist, as appropriate to the existing schema:
+- User ID.
+- Account role.
+- Display name.
+- Verified contact information where available.
+- Relevant profile details.
+- Worker service categories and verification state where applicable.
+- Account status.
+- Created and updated timestamps.
+
+Do not duplicate profile records unnecessarily.
+
+Do not lose the role after a refresh.
+
+Do not derive account identity from an editable client-side field.
+
+## 2.3 Two different interfaces, not one combined dashboard
+
+The application must maintain two distinct user experiences.
+
+**Customer interface:**
+
+Customer home, service discovery, service request creation, nearby-worker matching, worker profiles, bidding, agreements, chat, live job tracking, SOS access where applicable, completion, ratings, job history, transactions, and customer settings.
+
+**Worker interface:**
+
+Worker home, availability, profile and verification state, incoming job requests, bidding and counteroffers, accepted jobs, active assignments, job-related chat, voice assistance where implemented, earnings/transaction information, and worker settings.
+
+Keep existing implemented features available in the appropriate account mode.
+
+Hide navigation items that belong exclusively to the other role.
+
+More importantly, enforce role restrictions on the backend. Hiding a button is not a security boundary.
+
+If the existing project legitimately supports multi-role accounts, preserve that behavior only through an explicit, authorized account-role selection mechanism. Otherwise, use the role assigned to the registered account.
+
+## 2.4 No pre-created production account
+
+**There must be no default authenticated account automatically created when the application starts.**
+
+Audit the entire project for:
+- Hardcoded default users.
+- Automatic account creation.
+- Fake login success.
+- Mock-authentication fallbacks.
+- Default worker or customer identities used in the production startup flow.
+- Test accounts automatically inserted into production.
+- Unconditional customer or worker redirects.
+- Fallback code that substitutes a fake profile when the API fails.
+
+Remove or disable these behaviors in production.
+
+Development seed accounts may remain available only through an explicit development/test setup. They must never be silently created by the normal application startup sequence or represented as genuine users.
+
+An account can become authenticated only through the actual configured authentication mechanism.
+
+---
+
+# PART 3 — COMPREHENSIVE APPLICATION SECURITY AUDIT
+
+Perform a structured security review of the existing codebase before making security changes.
+
+Use current official security guidance, suitable OWASP application-security standards, framework security recommendations, and applicable dependency advisories.
+
+Treat the application as a real product handling personal information, locations, job agreements, private messages, and emergency-related data.
+
+**No application can honestly be guaranteed “hack-proof” or completely failure-free. Your responsibility is to reduce attack surfaces, implement appropriate protections, test them, and report residual risk accurately.**
+
+## 3.1 Authentication security
+
+Verify and harden:
+- Password hashing with an established, appropriately configured password-hashing algorithm.
+- Session creation, validation, expiry, and revocation.
+- Secure logout.
+- Refresh-token rotation where implemented.
+- Session invalidation when necessary.
+- Brute-force protections.
+- Rate limiting for sensitive authentication operations.
+- Input validation.
+- Account-enumeration-resistant error messages where appropriate.
+- Verification and recovery flows where implemented.
+- Secure storage of session credentials.
+- Protection against authentication bypass.
+- Protection against session fixation or incorrect session renewal.
+- Handling of simultaneous refresh requests.
+- Proper separation of authenticated and unauthenticated application state.
+
+Never store plaintext passwords or log access tokens, refresh tokens, passwords, OTPs, or secret keys.
+
+For browser sessions, use an appropriately secured HTTP-only cookie architecture where compatible with the existing application, with appropriate SameSite, Secure, and CSRF protections.
+
+For native clients, use supported platform-secure credential storage.
+
+Do not introduce a new identity provider or authentication framework unnecessarily if the existing system is functional.
+
+## 3.2 Authorization and role security
+
+Test whether:
+- Customers can retrieve another customer's private data.
+- Workers can retrieve another worker's private data.
+- Customers can access worker-only operations.
+- Workers can access unauthorized jobs.
+- An unauthorized user can modify a job ID to access another job.
+- A user can change their role by editing a request payload.
+- A user can manipulate a worker verification flag.
+- A user can accept or reject another worker's offer.
+- An unrelated user can subscribe to another job's real-time channel.
+- A user can access messages or transaction records belonging to another user.
+
+Fix all confirmed authorization defects.
+
+Enforce deny-by-default authorization on protected operations.
+
+Derive the acting user identity and role from the authenticated server-side context.
+
+Verify object ownership and job participation on every relevant request.
+
+Do not trust a user ID, role, worker ID, job status, price, or verification state supplied by the browser.
+
+## 3.3 API security
+
+Audit and test:
+- SQL injection.
+- Cross-site scripting where applicable.
+- Cross-site request forgery where applicable.
+- Insecure direct object references.
+- Excessive request payloads.
+- Malformed input.
+- Missing authorization checks.
+- Unsafe error responses.
+- Unrestricted result sizes.
+- Abuse of search endpoints.
+- Excessive authentication requests.
+- Duplicate consequential operations.
+- Sensitive-data exposure.
+- Incorrect CORS configuration.
+- Missing or inappropriate security headers.
+- Unsafe file or URL handling if those features exist.
+- API endpoints that accidentally expose internal database data.
+
+Use parameterized queries or safe ORM/query-builder methods.
+
+Use runtime schema validation.
+
+Restrict request sizes and apply suitable rate limits.
+
+Do not expose stack traces, SQL statements, private environment values, or internal server details in production responses.
+
+Use consistent error handling and request correlation IDs.
+
+Do not add arbitrary security middleware without understanding how it interacts with the current framework and authentication system.
+
+---
+
+# PART 4 — PROTECT THE PLATFORM'S CORE BUSINESS LOGIC
+
+## 4.1 Job lifecycle
+
+Verify that the backend permits only valid transitions for the actual job workflow.
+
+Examples include:
+- Request created.
+- Matching or bidding started.
+- Offer accepted.
+- Agreement established.
+- Job started.
+- Job completed.
+- Job cancelled where allowed.
+
+Do not allow arbitrary state changes by editing a client payload.
+
+Use transactional state updates where appropriate.
+
+Reject illegal transitions with clear, documented responses.
+
+Prevent an unassigned worker from manipulating another worker's job.
+
+Prevent accidental completion, duplicate job creation, and inconsistent agreement records.
+
+## 4.2 Bidding and counteroffers
+
+Verify:
+- Only eligible authorized participants can submit bids.
+- Bids are accepted only when the job state permits negotiation.
+- Prices and currencies are validated.
+- Amounts use exact, consistent monetary representation.
+- Offers preserve the required history.
+- Counteroffers reference the appropriate job and offer.
+- Accepted agreements reflect the authoritative backend state.
+- Duplicate submissions are controlled.
+- Concurrent acceptance attempts cannot produce conflicting accepted agreements.
+- Stale offers are rejected correctly when the implemented rules require it.
+
+Use transactions and database-level constraints where necessary.
+
+Test conflicting requests rather than assuming that a button-disable state prevents race conditions.
+
+Never display an unconfirmed offer acceptance as a completed agreement.
+
+## 4.3 Geospatial matching and location privacy
+
+Audit the PostGIS and Redis matching implementations where present.
+
+Verify:
+- Input-coordinate validation.
+- Valid search-radius limits.
+- Service-category filtering.
+- Worker availability checks.
+- Verification eligibility where required.
+- Location freshness checks.
+- Spatial-index usage.
+- Reasonable result limits.
+- Correct distance calculations.
+- Safe behavior when location data is unavailable.
+- Redis cache consistency with authoritative data.
+
+Ensure that precise worker locations are only exposed to appropriately authorized parties for legitimate product workflows.
+
+Do not allow arbitrary users to query the location of any worker or customer.
+
+Avoid storing or logging more location information than the application actually needs.
+
+Do not display fake locations, distances, or arrival times when live information is unavailable.
+
+## 4.4 Real-time communication
+
+Test the existing WebSocket/Socket.IO and Redis-based features.
+
+Verify:
+- Authentication when connecting.
+- Authorization when joining job rooms.
+- Access restrictions for private channels.
+- Message ownership.
+- Event payload validation.
+- Duplicate event handling.
+- Reconnection behavior.
+- Missed-update recovery.
+- Cleanup on logout.
+- Cleanup on component unmount or navigation.
+- Behavior when Redis or the WebSocket service becomes unavailable.
+
+Ensure the frontend reconciles its state with the authoritative API after reconnection.
+
+Do not assume that a published event has been delivered simply because a server attempted to send it.
+
+Persist important messages and job changes using the existing durable data architecture.
+
+## 4.5 SOS and emergency handling
+
+Verify the complete SOS flow.
+
+The frontend must preserve its existing explicit emergency-confirmation interaction, including the intended countdown.
+
+The backend must validate the caller and relevant job permissions, prevent unintended duplicate alerts, persist the event, initiate only the configured notification mechanism, and track the actual delivery result.
+
+Test:
+- Valid SOS initiation.
+- Unauthorized SOS attempts.
+- Repeated submissions.
+- Network timeout.
+- Delivery-provider failure.
+- Retry behavior.
+- Reconnection.
+- Status synchronization.
+- Emergency-state visibility.
+
+Do not display “Alert delivered” merely because the database contains an SOS record.
+
+Clearly distinguish the request being submitted, the backend receiving it, and actual delivery being confirmed where that information is available.
+
+Do not invent emergency contacts or claim that an emergency service has been contacted without evidence.
+
+## 4.6 MCP server security
+
+Audit the MCP server and its tools.
+
+Verify:
+- Authentication for remote access.
+- Tool-level authorization.
+- Strict argument validation.
+- Restricted resource access.
+- Output minimization.
+- Safe error handling.
+- Request limits.
+- Appropriate transport security.
+- Protection against unauthorized tool invocation.
+- Protection against arbitrary database access.
+- Protection against caller identity spoofing.
+- Reuse of the same business rules as the main API.
+
+MCP actions must never bypass normal job authorization, bid validation, or the emergency-confirmation workflow.
+
+An AI-generated suggestion must not be treated as authorization.
+
+Do not expose privileged MCP credentials to the frontend.
+
+---
+
+# PART 5 — VERIFY EVERY BUTTON, COMPONENT, SCREEN, AND API
+
+Conduct a systematic audit of the entire application.
+
+Do not restrict testing to the homepage or a few successful demonstrations.
+
+## 5.1 Build a complete inventory
+
+Inspect every existing screen, route, component, form, and interactive element.
+
+Create an internal verification table containing:
+- Screen and component name.
+- Expected behavior.
+- Required backend operation or local UI action.
+- Authentication requirement.
+- Success state.
+- Loading state.
+- Error state.
+- Actual test result.
+- Defect, if any.
+- Remediation status.
+
+Do not remove a feature just because it is broken.
+
+Fix its implementation.
+
+## 5.2 Test every meaningful interaction
+
+Where present, verify:
+- Registration and login.
+- Account-type selection.
+- Route transitions.
+- Back navigation.
+- Customer bottom navigation.
+- Worker bottom navigation.
+- Search and category controls.
+- Service request creation.
+- Location selection.
+- Nearby-worker matching.
+- Worker profile navigation.
+- Availability changes.
+- Bid submission.
+- Counteroffer submission.
+- Offer acceptance.
+- Agreement confirmation.
+- Chat sending and recovery.
+- GPS tracking.
+- SOS confirmation and cancellation.
+- Job start and completion.
+- Rating submission.
+- Job history.
+- Transaction history.
+- Notifications and read status.
+- Profile editing.
+- Voice input and its fallback.
+- Settings and theme selection.
+- Loading indicators.
+- Empty states.
+- Error messages.
+- Retry actions.
+- Dialogs and bottom sheets.
+
+Local interactions, such as switching a theme or opening a bottom sheet, need not call an API. They must still work correctly.
+
+For backend-driven actions, verify the actual API request, server response, persistent state, and resulting user-interface update.
+
+Do not use a decorative success animation to conceal a failed request.
+
+Do not accept buttons with no meaningful handler.
+
+## 5.3 Test all relevant application states
+
+Test each important screen with:
+- Normal data.
+- Empty data.
+- Invalid input.
+- Unauthorized access.
+- Loading state.
+- Expired authentication.
+- Backend failure.
+- Network disconnection.
+- Stale data.
+- Duplicate submission.
+- Concurrent state changes where relevant.
+
+Make sure an error in one component does not unnecessarily freeze the entire application.
+
+Use accessible messages and recovery actions.
+
+---
+
+# PART 6 — VERIFY FRONTEND-BACKEND CONNECTIVITY
+
+Inspect the complete connection between the frontend and backend.
+
+Check:
+- API base URL configuration.
+- Request headers.
+- Authentication handling.
+- Session refresh.
+- Response validation.
+- Error normalization.
+- Request timeouts.
+- Retry safety.
+- CORS configuration.
+- Database persistence.
+- Real-time connection handling.
+- Event subscriptions.
+- Route protection.
+- API contract consistency.
+
+Ensure that all relevant screens use the actual backend instead of permanent mock data.
+
+Search for hardcoded user objects, fixed job lists, static bids, fake worker profiles, fabricated transaction records, and placeholder API responses.
+
+Remove these from production paths where real backend endpoints exist.
+
+Keep clearly identified test fixtures or mock mode only where appropriate for development and automated tests.
+
+**Never replace a genuine API failure with fictional production data.**
+
+If the backend returns no workers, display the correct empty state.
+
+If the API fails, display an actionable error.
+
+If the database does not contain a particular user or job, do not invent one.
+
+If an external provider is not configured, display an honest unavailable state.
+
+Verify that persisted data remains correct after the user refreshes, signs out, signs back in, or reopens the application.
+
+---
+
+# PART 7 — SECURITY TESTING AND DEPENDENCY HYGIENE
+
+Perform a proportionate security test of the actual codebase.
+
+Use tools supported by the project, such as:
+- Dependency vulnerability auditing.
+- Static analysis.
+- Type checking.
+- Secret scanning.
+- API security tests.
+- Authentication and authorization tests.
+- Browser end-to-end testing.
+- Database constraint tests.
+- Relevant MCP security tests.
+
+Review the currently installed dependencies for known vulnerabilities. Prefer targeted, compatible updates instead of indiscriminate package upgrades that could break the application.
+
+Identify and fix confirmed issues.
+
+If a vulnerability cannot be fixed without a significant upgrade, document the risk, the available remediation options, and the compatibility concern.
+
+Check for accidentally committed secrets and inappropriate use of environment variables.
+
+Ensure:
+- Production secrets are not exposed in frontend bundles.
+- `.env` files containing real credentials are not committed.
+- Database credentials remain server-side.
+- Authentication secrets are stored securely.
+- Third-party API keys have appropriate access restrictions.
+- CORS permits only intended origins in production.
+- Debug mode and verbose error output are disabled in production.
+- Health endpoints do not expose sensitive system details.
+
+Do not perform destructive tests against production accounts or data. Use an isolated development/test environment for penetration and failure testing.
+
+Do not attack third-party systems or external infrastructure.
+
+---
+
+# PART 8 — PERFORMANCE, RESILIENCE, AND FAILURE PREVENTION
+
+Make the application responsive and robust without sacrificing correctness.
+
+Audit the principal user-facing operations:
+- Application startup.
+- Authentication restoration.
+- Account registration.
+- Service discovery.
+- Job creation.
+- Worker matching.
+- Bid submission and acceptance.
+- Live messaging.
+- Tracking updates.
+- Notification delivery.
+- Job history.
+
+Check for:
+- Unnecessary repeated API calls.
+- Duplicate WebSocket subscriptions.
+- Repeated refresh-token requests.
+- Inefficient database queries.
+- N+1 query behavior.
+- Missing pagination.
+- Unbounded requests.
+- Heavy startup dependencies.
+- Excessive animation work.
+- Memory leaks.
+- Unhandled asynchronous errors.
+- Race conditions in state updates.
+- Missing cleanup operations.
+
+Use request cancellation, deduplication, caching, and bounded retries where appropriate.
+
+Use idempotency for consequential writes.
+
+Do not retry unsafe operations blindly.
+
+Keep the current splash animation at or below its three-second maximum and make sure it does not replay unnecessarily on every route navigation.
+
+Do not sacrifice security or database consistency merely to make the interface appear fast.
+
+If performance benchmarks are run, document the measured environment and actual results. Do not make unsupported claims of zero lag or guaranteed uptime.
+
+---
+
+# PART 9 — PRESERVE ALL FEATURES AND INDIAN LOCALIZATION
+
+Keep the complete existing product intact.
+
+Verify the following features remain available in their appropriate roles:
+- Customer experience.
+- Worker experience.
+- Role-based authentication.
+- Worker profiles and service categories.
+- Worker verification status.
+- Location-aware matching.
+- Job creation and dispatch.
+- Bidding and counteroffers.
+- Agreement confirmation.
+- Real-time communication.
+- Live job tracking.
+- SOS.
+- Job completion.
+- Two-way reviews.
+- Job history.
+- Transactions and supported earnings.
+- Notifications.
+- MCP integration.
+- Indian localization.
+- Nearby business/provider discovery where configured.
+- Existing liquid-glass styling.
+- Launch animation and transition.
+
+Maintain the Indian-first display conventions already implemented:
+- INR for new Indian transactions.
+- Indian telephone-number handling.
+- Indian address and PIN-code conventions.
+- Appropriate date and time formatting.
+- Asia/Kolkata for Indian display where applicable.
+- Kilometers and meters for distance presentation.
+
+Do not silently reinterpret historical transaction currencies.
+
+Do not invent worker or customer information.
+
+Do not automatically seed default production accounts.
+
+Do not fabricate local businesses, contact numbers, ratings, GPS positions, or emergency-provider integrations.
+
+Do not remove a working feature merely to simplify the audit.
+
+---
+
+# PART 10 — REQUIRED END-TO-END TEST SCENARIOS
+
+Use automated tests wherever possible, supplemented by actual browser or application testing.
+
+## Test A — First-ever launch
+
+1. Start with a clean, unauthenticated application state.
+2. Ensure no valid account session is present.
+3. Launch the application.
+4. Observe the existing splash animation and its transition.
+5. Confirm that the account-creation portal appears immediately afterward.
+6. Confirm that registration is selected by default for the fresh unauthenticated experience.
+7. Confirm that the customer and worker account choices are visible and functional.
+8. Confirm that neither protected home screen appears prematurely.
+9. Confirm that no default account is silently created or authenticated.
+
+**This test is mandatory and must pass.**
+
+## Test B — Customer registration
+
+1. Select customer registration.
+2. Enter valid details.
+3. Submit the form.
+4. Verify actual database persistence.
+5. Verify the assigned customer role.
+6. Verify the authenticated session.
+7. Verify navigation to the customer interface.
+8. Refresh or reopen the application.
+9. Verify that the valid session is restored securely.
+10. Confirm that the worker interface is not incorrectly displayed.
+
+## Test C — Worker registration
+
+1. Select worker registration.
+2. Enter valid details.
+3. Submit the form.
+4. Verify actual database persistence.
+5. Verify the worker role and worker profile.
+6. Verify the appropriate onboarding or verification state.
+7. Confirm navigation to the worker experience.
+8. Refresh or reopen the application.
+9. Confirm that the correct worker interface is restored.
+10. Verify that the worker is not falsely marked as verified.
+
+## Test D — Existing customer login
+
+1. Sign out.
+2. Return to the startup flow.
+3. Confirm that authentication is required.
+4. Sign in with an existing customer account.
+5. Verify the server-confirmed identity.
+6. Verify customer-only navigation.
+7. Confirm that the customer's persisted data is loaded.
+
+## Test E — Existing worker login
+
+Repeat the same sequence using a legitimate worker account.
+
+Confirm that only the authorized worker interface is opened.
+
+## Test F — Session expiration and logout
+
+1. Use an authenticated account.
+2. Expire or revoke its test session.
+3. Confirm that protected requests are rejected.
+4. Confirm that the application returns to the authentication portal.
+5. Sign out.
+6. Verify that protected local state and real-time subscriptions are cleared.
+7. Verify that subsequent access requires valid authentication.
+
+## Test G — Security and authorization
+
+Attempt controlled, unauthorized operations in the isolated test environment.
+
+Verify that:
+- A customer cannot access another customer's private data.
+- A worker cannot access another worker's private data.
+- A user cannot promote themselves to a different role.
+- Unauthorized job access is rejected.
+- Unauthorized offer acceptance is rejected.
+- Private conversations cannot be accessed by unrelated accounts.
+- Restricted real-time rooms cannot be joined by unauthorized users.
+- Invalid inputs and duplicate consequential operations are handled safely.
+
+## Test H — Full business workflow
+
+Demonstrate the supported workflow:
+
+Customer request → Nearby-worker matching → Offer submission → Counteroffer → Accepted agreement → Active job → Messaging/tracking → Completion → Rating.
+
+Verify actual persistence and correct role permissions at every step.
+
+## Test I — MCP integration
+
+Verify that the existing MCP server starts, authenticates as designed, validates inputs, enforces tool permissions, and calls real shared backend services.
+
+Do not claim that an MCP feature works if only a mock response is returned.
+
+## Test J — Regression
+
+Rerun the relevant original tests and verify that the security, authentication, and routing changes have not broken existing application features.
+
+Fix all discovered regressions before completing the task.
+
+---
+
+# PART 11 — FINAL QUALITY GATE
+
+Before reporting completion, perform a final review of the actual code and runtime behavior.
+
+The application should satisfy all the following conditions:
+
+- The original launch animation and transition remain intact.
+- A fresh unauthenticated user sees the account-creation portal immediately after the transition.
+- No default authenticated account is created.
+- A new account is persisted in the real backend.
+- The account role is authoritative and persistent.
+- The correct customer or worker interface opens after successful registration.
+- Existing users can log in.
+- Valid sessions restore the correct role-specific interface.
+- Expired sessions are handled properly.
+- Protected backend operations enforce authorization.
+- All existing screens remain available.
+- All relevant buttons and controls have meaningful behavior.
+- All forms validate and display clear errors.
+- Backend mutations return truthful outcomes.
+- Real-time interactions are authorized and recoverable.
+- Database queries enforce appropriate constraints and access rules.
+- The MCP server follows the same business permissions.
+- Indian localization remains intact.
+- Existing features have not been removed.
+- Security and regression tests have been executed.
+- README.md accurately describes the current implementation.
+
+For any condition that cannot be verified, clearly identify it as unverified. Do not present it as complete.
+
+---
+
+# PART 12 — EXECUTION AND REPORTING
+
+Work in the following order:
+
+**Phase 1:** Inspect the existing repository and identify the actual cause of the startup-routing defect.
+
+**Phase 2:** Fix the startup and account-creation flow while preserving the existing animation and transition.
+
+**Phase 3:** Verify real customer and worker registration, persistent account roles, secure session restoration, and role-specific routing.
+
+**Phase 4:** Audit authentication, authorization, APIs, database access, real-time connections, MCP tools, and sensitive workflows.
+
+**Phase 5:** Create a full inventory of screens, buttons, forms, and backend integrations.
+
+**Phase 6:** Run automated tests, relevant security checks, and full end-to-end workflows.
+
+**Phase 7:** Fix all issues within scope and rerun the affected tests.
+
+**Phase 8:** Update README.md with the corrected startup behavior, authentication flow, security changes, test commands, verified results, and remaining setup requirements.
+
+At the end, provide a concise implementation report containing:
+
+1. The root cause of the account-creation portal not appearing.
+2. The files and components modified.
+3. How first-launch routing now works.
+4. How account roles and sessions are persisted.
+5. Security vulnerabilities identified and resolved.
+6. Buttons, components, and business workflows tested.
+7. Actual tests executed and their results.
+8. Any remaining issues or externally configured integrations.
+9. Any risks that could not be eliminated or fully verified.
+
+Do not claim zero vulnerabilities, zero failures, perfect security, or guaranteed uptime.
+
+Do not mark an unexecuted test as passing.
+
+Do not claim deployment or production verification if it did not occur.
+
+---
+
+# FINAL EXECUTION COMMAND
+
+**Start inspecting the actual project now. Make the necessary changes directly in the existing codebase.**
+
+The most urgent defect is the missing first-launch account-creation portal. Fix that first, using the exact existing animation and transition already present in the application.
+
+Then ensure that registration creates real persistent accounts, the backend remembers each account's role, and each authenticated user opens only the correct interface.
+
+Finally, carry out the full security audit, test all meaningful buttons and components, verify frontend-backend connectivity, protect sensitive data, preserve every existing feature, fix the defects discovered, and update the README.
+
+**Do not return a plan instead of implementation. Do not rebuild the application. Do not fabricate success. Work on the existing project and verify your changes.**
+
+The final deliverable must be a substantially hardened, fully integrated, carefully tested version of the existing Blue-Collar Management Platform, with a correct first-launch experience, secure account handling, distinct customer and worker interfaces, and transparent reporting of what has actually been verified.

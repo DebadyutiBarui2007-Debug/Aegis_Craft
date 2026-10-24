@@ -51,9 +51,7 @@ AegisCraft is localized for Indian infrastructure:
 
 ### Case Scenario: Emergency MCB Breaker Tripping at 742 12th Main Road, Indiranagar, Bengaluru
 1. **Smooth Signature Launch Sequence**: The application boots with a 2.8-second liquid-glass launch animation with emerald (`#10B981`) and golden amber (`#F59E0B`) radar ripples, checking satellite sync, escrow vault, and trade node availability.
-2. **Authentication & Role-Based Routing**: User logs in with `+91` mobile credentials or uses 1-click verified pre-seeded demo accounts:
-   - **Customer Portal**: Aditi Roy (Indiranagar, PIN 560038).
-   - **Worker Pro Terminal**: Rajesh Sharma (Grade A Master Electrician, Karnataka Lic. #KA-EL-8842).
+2. **Authentication & Role-Based Routing**: On first launch, immediately following the 2.5-second camera shutter aperture loading animation, the mandatory Account Portal modal appears as a pop-up. Users register or log in with their `+91` mobile credentials, directing them strictly to their role-specific view (Customer vs Worker Pro Terminal) without any pre-authenticated fallback or default account state.
 3. **Discovery & Geo-Lock**: Aditi Roy observes her main electrical MCB tripping with an electrical burning smell. Her coordinates are locked via RTK satellite sync (`12.9784° N, 77.6408° E`).
 4. **PostGIS Proximity Query**: The Fast Dispatch Terminal executes an `ST_DWithin` query indexing all active Master Electricians within 3.2 km in 14ms.
 5. **Authorized Agency Directory Check**: Aditi can also inspect nearby OEM authorized hubs (e.g., Havells Galaxy 1.2 km away on 100 Feet Road, Schneider Electric Center 1.8 km away).
