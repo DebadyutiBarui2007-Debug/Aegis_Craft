@@ -1,5 +1,5 @@
 /**
- * AegisCraft Dynamic Bidding & Escrow Calculation Engine
+ * AegisCraft Dynamic Bidding & Escrow Calculation Engine (India Localized)
  */
 
 export interface MarketCorridor {
@@ -12,60 +12,60 @@ export interface MarketCorridor {
 
 export const CATEGORY_MARKET_CORRIDORS: Record<string, MarketCorridor> = {
   electrical: {
-    minEscrow: 50,
-    marketMean: 75,
-    maxSafe: 150,
-    safeMin: 65,
-    safeMax: 85,
+    minEscrow: 450,
+    marketMean: 750,
+    maxSafe: 1500,
+    safeMin: 650,
+    safeMax: 950,
   },
   plumbing: {
-    minEscrow: 50,
-    marketMean: 80,
-    maxSafe: 160,
-    safeMin: 68,
-    safeMax: 92,
+    minEscrow: 500,
+    marketMean: 800,
+    maxSafe: 1600,
+    safeMin: 680,
+    safeMax: 980,
   },
   hvac: {
-    minEscrow: 55,
-    marketMean: 85,
-    maxSafe: 180,
-    safeMin: 72,
-    safeMax: 98,
+    minEscrow: 550,
+    marketMean: 900,
+    maxSafe: 1800,
+    safeMin: 750,
+    safeMax: 1100,
   },
   roofing: {
-    minEscrow: 60,
-    marketMean: 95,
-    maxSafe: 220,
-    safeMin: 80,
-    safeMax: 110,
+    minEscrow: 600,
+    marketMean: 1000,
+    maxSafe: 2200,
+    safeMin: 800,
+    safeMax: 1300,
   },
   locksmith: {
-    minEscrow: 40,
-    marketMean: 65,
-    maxSafe: 130,
-    safeMin: 50,
-    safeMax: 75,
+    minEscrow: 350,
+    marketMean: 600,
+    maxSafe: 1200,
+    safeMin: 450,
+    safeMax: 750,
   },
   carpentry: {
-    minEscrow: 45,
-    marketMean: 70,
-    maxSafe: 140,
-    safeMin: 55,
-    safeMax: 80,
+    minEscrow: 400,
+    marketMean: 700,
+    maxSafe: 1400,
+    safeMin: 550,
+    safeMax: 850,
   },
   masonry: {
-    minEscrow: 50,
-    marketMean: 78,
-    maxSafe: 150,
-    safeMin: 60,
-    safeMax: 88,
+    minEscrow: 450,
+    marketMean: 750,
+    maxSafe: 1500,
+    safeMin: 600,
+    safeMax: 900,
   },
   appliance: {
-    minEscrow: 40,
-    marketMean: 62,
-    maxSafe: 125,
-    safeMin: 48,
-    safeMax: 72,
+    minEscrow: 350,
+    marketMean: 650,
+    maxSafe: 1300,
+    safeMin: 500,
+    safeMax: 800,
   },
 };
 
@@ -79,19 +79,31 @@ export interface PriceBreakdown {
 }
 
 /**
- * Calculates itemized breakdown for a proposed bid
- * Hardware parts allowance is typically $15 base, platform fee is $0.00 (escrow covered)
+ * Indian Rupee (INR) Formatter using en-IN locale
+ * e.g., formatInr(800) -> "₹800", formatInr(12500) -> "₹12,500"
+ */
+export function formatInr(amount: number): string {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+/**
+ * Calculates itemized breakdown for a proposed bid in INR
+ * Hardware parts allowance is typically ₹150 base in India, platform fee is ₹0 (escrow covered)
  */
 export function calculateBidBreakdown(
   totalAmount: number,
   tradeCategory = 'electrical',
-  partsAllowance = 15
+  partsAllowance = 150
 ): PriceBreakdown {
-  const safeTotal = Math.max(20, Math.round(totalAmount));
+  const safeTotal = Math.max(100, Math.round(totalAmount));
   const corridor = CATEGORY_MARKET_CORRIDORS[tradeCategory] || CATEGORY_MARKET_CORRIDORS.electrical;
   
   const laborAmount = Math.max(0, safeTotal - partsAllowance);
-  const platformFee = 0.0; // Covered by platform escrow guarantee
+  const platformFee = 0; // Covered by platform escrow guarantee
   const isWithinCorridor = safeTotal >= corridor.safeMin && safeTotal <= corridor.safeMax;
   const spreadDelta = safeTotal - corridor.marketMean;
 

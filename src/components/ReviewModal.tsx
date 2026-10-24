@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { api } from '../services/api.ts';
+import { formatInr } from '../lib/biddingEngine.ts';
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -19,7 +20,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
   onCompletionSuccess,
 }) => {
   const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState('Flawless multimeter diagnostic and Eaton breaker replacement. Highly professional!');
+  const [comment, setComment] = useState('Flawless multimeter diagnostic and Havells 30A MCB breaker replacement. Highly professional!');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -57,11 +58,11 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#4edea3] text-2xl">verified</span>
-            <span className="text-lg font-bold text-white">Completion &amp; Escrow Release</span>
+            <span className="text-lg font-bold text-white">Completion &amp; INR Escrow Release</span>
           </div>
           <button
             onClick={onClose}
-            className="text-[#bec8d2] hover:text-white"
+            className="text-[#bec8d2] hover:text-white cursor-pointer"
             type="button"
           >
             <span className="material-symbols-outlined text-lg">close</span>
@@ -74,11 +75,11 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
               <img
                 alt={technicianName}
                 className="w-12 h-12 rounded-lg object-cover ring-2 ring-[#4edea3]/40"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ"
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80"
               />
               <div>
                 <span className="text-sm font-semibold text-white">{technicianName}</span>
-                <p className="text-xs text-[#4edea3]">Master Electrical Specialist • License #EL-8941</p>
+                <p className="text-xs text-[#4edea3] font-mono">Master Electrical Specialist • License #KA-EL-8842</p>
               </div>
             </div>
 
@@ -90,7 +91,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
                     key={star}
                     type="button"
                     onClick={() => setRating(star)}
-                    className="transition-transform hover:scale-110 active:scale-95"
+                    className="transition-transform hover:scale-110 active:scale-95 cursor-pointer"
                   >
                     <span
                       className="material-symbols-outlined text-3xl"
@@ -105,7 +106,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-[11px] uppercase tracking-wider text-[#bec8d2] font-semibold">
+              <label className="text-[11px] uppercase tracking-wider text-[#bec8d2] font-semibold font-mono">
                 Customer Sign-Off Feedback
               </label>
               <textarea
@@ -116,10 +117,10 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
               />
             </div>
 
-            <div className="bg-[#171f33] p-3 rounded-lg flex flex-col gap-1 text-xs border border-white/5">
+            <div className="bg-[#171f33] p-3 rounded-lg flex flex-col gap-1 text-xs border border-white/5 font-mono">
               <div className="flex items-center justify-between">
                 <span className="text-[#bec8d2]">Vault Escrow Release:</span>
-                <span className="text-white font-bold">${agreedAmount.toFixed(2)} USD</span>
+                <span className="text-white font-bold">{formatInr(agreedAmount)} INR</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[#bec8d2]">Craftsmanship Guarantee:</span>
@@ -135,21 +136,20 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="w-full py-3 rounded-lg bg-[#00a572] hover:bg-[#4edea3] hover:text-[#003824] text-white text-sm font-bold transition-all shadow-lg shadow-[#00a572]/30 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-lg bg-[#00a572] hover:bg-[#4edea3] hover:text-[#003824] text-white text-sm font-bold transition-all shadow-lg shadow-[#00a572]/30 flex items-center justify-center gap-2 cursor-pointer font-mono"
             >
               <span className="material-symbols-outlined text-lg">lock_open</span>
-              {isSubmitting ? 'Verifying Dual Sign-off...' : `Release Escrow ($${agreedAmount.toFixed(2)}) & Sign Off`}
+              {isSubmitting ? 'Verifying Dual Sign-off...' : `Release Escrow (${formatInr(agreedAmount)}) & Sign Off`}
             </button>
           </>
         ) : (
           <div className="py-8 flex flex-col items-center text-center">
             <div className="w-16 h-16 rounded-full bg-[#4edea3]/20 text-[#4edea3] flex items-center justify-center mb-3">
-              <span className="material-symbols-outlined text-3xl">task_alt</span>
+              <span className="material-symbols-outlined text-4xl">check_circle</span>
             </div>
-            <h4 className="text-lg font-bold text-white mb-1">Escrow Released Successfully!</h4>
-            <p className="text-xs text-[#bec8d2]">
-              Funds transferred from Smart Escrow Vault to {technicianName}. Reciprocal 5-star ratings permanently
-              anchored.
+            <h3 className="text-xl font-bold text-white mb-1">Escrow Funds Disbursed!</h3>
+            <p className="text-xs text-[#bec8d2] max-w-xs font-mono">
+              {formatInr(agreedAmount)} has been credited to {technicianName}. Warranty certificate generated.
             </p>
           </div>
         )}

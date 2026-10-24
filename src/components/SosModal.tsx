@@ -59,9 +59,9 @@ export const SosModal: React.FC<SosModalProps> = ({ isOpen, onClose, activeJobId
         <div className="absolute -top-12 -right-12 w-48 h-48 bg-[#93000a]/20 rounded-full blur-[60px] pointer-events-none"></div>
 
         {/* Header Tag */}
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#93000a]/30 text-[#ffb4ab] text-xs font-semibold uppercase tracking-wider mb-4 border border-[#ffb4ab]/20">
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#93000a]/30 text-[#ffb4ab] text-xs font-semibold uppercase tracking-wider mb-4 border border-[#ffb4ab]/20 font-mono">
           <span className="w-2 h-2 rounded-full bg-[#ffb4ab] animate-ping"></span>
-          Emergency Rescue SOS Protocol
+          Emergency 112 India Rescue Protocol
         </div>
 
         {!isEscalated ? (
@@ -91,68 +91,68 @@ export const SosModal: React.FC<SosModalProps> = ({ isOpen, onClose, activeJobId
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl font-bold text-[#ffb4ab]">
+                <span className="text-4xl font-bold text-[#ffb4ab] font-mono">
                   {secondsLeft > 0 ? secondsLeft : '!'}
                 </span>
-                <span className="text-[10px] uppercase text-[#bec8d2] tracking-wider">Seconds</span>
+                <span className="text-[10px] uppercase text-[#bec8d2] tracking-wider font-mono">Seconds</span>
               </div>
             </div>
 
-            <h3 className="text-xl font-bold text-white mt-1">Transmitting Emergency Beacon</h3>
+            <h3 className="text-xl font-bold text-white mt-1">Transmitting 112 Emergency Beacon</h3>
             <p className="text-xs text-[#bec8d2] mt-1 max-w-sm">
               All 48 certified emergency responders within 3.2km are receiving high-priority alarm vectors for{' '}
-              <strong className="text-white">742 Evergreen Terrace</strong>.
+              <strong className="text-white">742 12th Main Road, Indiranagar, Bengaluru (560038)</strong>.
             </p>
 
             {/* Select Primary Hazard */}
             <div className="w-full bg-[#171f33] p-3 rounded-xl mt-4 text-left">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#ffb95f] block mb-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#ffb95f] block mb-2 font-mono">
                 Select Primary Hazard Threat
               </span>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => setHazard('fire')}
-                  className={`p-2.5 rounded-lg text-xs font-medium text-left transition-all ${
+                  className={`p-2.5 rounded-lg text-xs font-medium text-left transition-all cursor-pointer ${
                     hazard === 'fire'
                       ? 'bg-[#93000a]/40 text-[#ffb4ab] border border-[#ffb4ab]/40'
                       : 'bg-[#222a3d] text-[#dae2fd] hover:bg-[#31394d]'
                   }`}
                 >
-                  ⚡ Electrical Hazard / Fire
+                  ⚡ Electrical Spark / Fire Risk
                 </button>
                 <button
                   type="button"
                   onClick={() => setHazard('water')}
-                  className={`p-2.5 rounded-lg text-xs font-medium text-left transition-all ${
+                  className={`p-2.5 rounded-lg text-xs font-medium text-left transition-all cursor-pointer ${
                     hazard === 'water'
                       ? 'bg-[#93000a]/40 text-[#ffb4ab] border border-[#ffb4ab]/40'
                       : 'bg-[#222a3d] text-[#dae2fd] hover:bg-[#31394d]'
                   }`}
                 >
-                  🌊 Severe Flooding / Pipe
+                  🌊 Severe Flooding / Burst Pipe
                 </button>
                 <button
                   type="button"
                   onClick={() => setHazard('gas')}
-                  className={`p-2.5 rounded-lg text-xs font-medium text-left transition-all ${
+                  className={`p-2.5 rounded-lg text-xs font-medium text-left transition-all cursor-pointer ${
                     hazard === 'gas'
                       ? 'bg-[#93000a]/40 text-[#ffb4ab] border border-[#ffb4ab]/40'
                       : 'bg-[#222a3d] text-[#dae2fd] hover:bg-[#31394d]'
                   }`}
                 >
-                  🔥 Gas Smell / HVAC Risk
+                  🔥 LPG / Gas Leak Hazard
                 </button>
                 <button
                   type="button"
                   onClick={() => setHazard('structural')}
-                  className={`p-2.5 rounded-lg text-xs font-medium text-left transition-all ${
+                  className={`p-2.5 rounded-lg text-xs font-medium text-left transition-all cursor-pointer ${
                     hazard === 'structural'
                       ? 'bg-[#93000a]/40 text-[#ffb4ab] border border-[#ffb4ab]/40'
                       : 'bg-[#222a3d] text-[#dae2fd] hover:bg-[#31394d]'
                   }`}
                 >
-                  🏚️ Structural Collapse
+                  🏚️ Structural Hazard
                 </button>
               </div>
             </div>
@@ -164,14 +164,14 @@ export const SosModal: React.FC<SosModalProps> = ({ isOpen, onClose, activeJobId
                   <span className="material-symbols-outlined text-[#4edea3] text-sm">my_location</span>
                   Live GPS Vector:
                 </span>
-                <span className="text-[#4edea3] font-mono">44.0462° N, 123.0220° W</span>
+                <span className="text-[#4edea3] font-mono">12.9784° N, 77.6408° E</span>
               </div>
               <div className="flex items-center justify-between text-white">
                 <span className="flex items-center gap-1.5 text-[#bec8d2]">
                   <span className="material-symbols-outlined text-[#89ceff] text-sm">mic</span>
                   Encrypted Audio Link:
                 </span>
-                <span className="text-[#89ceff]">Live Standby</span>
+                <span className="text-[#89ceff] font-mono">112 ERSS Standby</span>
               </div>
             </div>
 
@@ -179,52 +179,41 @@ export const SosModal: React.FC<SosModalProps> = ({ isOpen, onClose, activeJobId
             <div className="w-full flex flex-col gap-2 mt-5">
               <button
                 type="button"
-                onClick={onClose}
-                className="w-full py-3 rounded-xl bg-[#222a3d] hover:bg-[#2d3449] text-white text-sm font-semibold transition-all"
-              >
-                Cancel Immediately (False Alarm)
-              </button>
-              <button
-                type="button"
                 onClick={triggerBroadcast}
                 disabled={isTransmitting}
-                className="w-full py-2.5 rounded-lg bg-[#93000a] text-[#ffdad6] text-xs font-bold uppercase tracking-wider hover:bg-[#ffb4ab] hover:text-[#690005] transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-lg bg-[#93000a] hover:bg-[#ba1a1a] text-white text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-[#93000a]/40 flex items-center justify-center gap-2 cursor-pointer font-mono"
               >
-                <span className="material-symbols-outlined text-base">emergency</span>
-                {isTransmitting ? 'Transmitting Beacon...' : 'Escalate Right Now Without Waiting'}
+                <span className="material-symbols-outlined text-base">crisis_alert</span>
+                <span>{isTransmitting ? 'Transmitting to 112 Network...' : 'Transmit Immediate 112 Broadcast Now'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full py-2.5 text-[#bec8d2] hover:text-white text-xs transition-colors cursor-pointer"
+              >
+                Cancel Beacon (False Alarm)
               </button>
             </div>
           </>
         ) : (
-          <div className="py-6 flex flex-col items-center">
-            <div className="w-16 h-16 rounded-full bg-[#4edea3]/20 text-[#4edea3] flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-3xl">verified</span>
+          <div className="py-4 flex flex-col items-center gap-3">
+            <div className="w-16 h-16 rounded-full bg-[#4edea3]/20 text-[#4edea3] flex items-center justify-center">
+              <span className="material-symbols-outlined text-3xl">done_all</span>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Emergency Rescue Broadcast Active</h3>
-            <p className="text-xs text-[#bec8d2] max-w-sm mb-4">
-              Nearest tier-1 certified master technician (Mark J. - Master Electrician) is locked and inbound.
-              ETA: &lt;4 minutes.
+            <h3 className="text-xl font-bold text-white">112 Emergency Rescue Locked</h3>
+            <p className="text-xs text-[#bec8d2] max-w-sm">
+              Rapid response unit <strong className="text-white">Rajesh Sharma (Grade A Master Electrician)</strong> has been designated primary on-scene commander. 
             </p>
-            <div className="bg-[#171f33] p-3 rounded-xl w-full text-left text-xs mb-4">
-              <div className="flex justify-between py-1 border-b border-white/5">
-                <span className="text-[#bec8d2]">Assigned Unit:</span>
-                <span className="text-[#4edea3] font-semibold">Mark J. (Ford Transit #VAN-08)</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-white/5">
-                <span className="text-[#bec8d2]">Emergency Surcharge:</span>
-                <span className="text-[#ffb95f] font-semibold">$35.00 Flat Lock</span>
-              </div>
-              <div className="flex justify-between py-1">
-                <span className="text-[#bec8d2]">Two-Way Voice Channel:</span>
-                <span className="text-[#89ceff] font-semibold">Encrypted Active</span>
-              </div>
+            <div className="bg-[#171f33] p-3 rounded-lg text-xs text-[#ffb95f] w-full text-center font-mono">
+              Bengaluru Emergency Interconnect: Active • ETA 4 Mins
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="w-full py-3 rounded-xl bg-[#00a572] hover:bg-[#4edea3] hover:text-[#003824] text-white text-sm font-semibold transition-all"
+              className="mt-3 px-6 py-2 rounded-lg bg-[#0ea5e9] text-white text-xs font-semibold hover:bg-[#89ceff] hover:text-[#00344d] transition-all cursor-pointer"
             >
-              Return to Live Radar Monitor
+              Return to Live Radar
             </button>
           </div>
         )}

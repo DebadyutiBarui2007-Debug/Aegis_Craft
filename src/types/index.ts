@@ -13,6 +13,8 @@ export interface User {
     lat: number;
     lng: number;
     address: string;
+    city?: string;
+    pincode?: string;
     sector: string;
   };
 }
@@ -78,6 +80,8 @@ export interface JobRequest {
     lat: number;
     lng: number;
     address: string;
+    city?: string;
+    pincode?: string;
     sector: string;
   };
   status: JobStatus;
@@ -160,6 +164,50 @@ export interface ReviewRecord {
   comment: string;
   timestamp: string;
   warrantyGuaranteed: boolean;
+}
+
+export interface ServiceAgency {
+  id: string;
+  name: string;
+  category: string;
+  address: string;
+  locality: string;
+  city: string;
+  pincode: string;
+  lat: number;
+  lng: number;
+  phone?: string;
+  website?: string;
+  rating?: number;
+  reviewCount?: number;
+  distanceKm: number;
+  isOpenNow?: boolean;
+  openingHours?: string;
+  isExternalListing: true;
+  verifiedSource: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: User;
+}
+
+export interface RegisterPayload {
+  name: string;
+  email?: string;
+  phone: string;
+  password?: string;
+  role: UserRole;
+  tradeCategory?: string;
+  specialtyTitle?: string;
+  address?: string;
+  city?: string;
+  pincode?: string;
+}
+
+export interface LoginPayload {
+  identifier: string;
+  password?: string;
 }
 
 export interface MCPToolCall {

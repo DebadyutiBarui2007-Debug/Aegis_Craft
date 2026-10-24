@@ -2,6 +2,59 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Gracefully handle Vite HMR WebSocket in Cloud Run / AI Studio preview environment
+      (function() {
+        if (typeof window !== 'undefined' && window.WebSocket) {
+          var OrigWS = window.WebSocket;
+          window.WebSocket = function(url, protocols) {
+            if (protocols === 'vite-hmr' || (Array.isArray(protocols) && protocols.indexOf('vite-hmr') !== -1)) {
+              var target = new EventTarget();
+              target.readyState = 1;
+              target.OPEN = 1;
+              target.CONNECTING = 0;
+              target.CLOSING = 2;
+              target.CLOSED = 3;
+              target.send = function() {};
+              target.close = function() { target.readyState = 3; };
+              setTimeout(function() {
+                try { target.dispatchEvent(new Event('open')); } catch(e) {}
+              }, 10);
+              return target;
+            }
+            return new OrigWS(url, protocols);
+          };
+          window.WebSocket.prototype = OrigWS.prototype;
+          window.WebSocket.CONNECTING = OrigWS.CONNECTING;
+          window.WebSocket.OPEN = OrigWS.OPEN;
+          window.WebSocket.CLOSING = OrigWS.CLOSING;
+          window.WebSocket.CLOSED = OrigWS.CLOSED;
+        }
+
+        window.addEventListener('error', function(e) {
+          if (
+            (e.filename && e.filename.indexOf('@vite/client') !== -1) ||
+            (e.message && (e.message.indexOf('WebSocket') !== -1 || e.message.indexOf('createWebSocketModuleRunnerTransport') !== -1))
+          ) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+
+        window.addEventListener('unhandledrejection', function(e) {
+          var r = String(e.reason && (e.reason.message || e.reason.stack || e.reason));
+          if (
+            r.indexOf('WebSocket') !== -1 ||
+            r.indexOf('@vite/client') !== -1 ||
+            r.indexOf('createWebSocketModuleRunnerTransport') !== -1
+          ) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+          }
+        }, true);
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AegisCraft - Verified Blue-Collar Rapid Dispatch & Escrow Platform</title>
     <meta name="description" content="Hyperlocal geospatial blue-collar trades dispatch platform with PostGIS spatial indexing, dynamic live bidding, escrow vault guarantees, and real-time RTK GPS tracking." />

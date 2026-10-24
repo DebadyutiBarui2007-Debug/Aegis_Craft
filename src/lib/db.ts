@@ -9,25 +9,32 @@ import {
   ChatMessage,
   SosAlert,
   ReviewRecord,
+  ServiceAgency,
+  RegisterPayload,
 } from '../types/index.ts';
 import { calculateDistanceKm, calculateEtaMinutes, isWithinRadius } from './spatial.ts';
 import { calculateBidBreakdown, isValidJobTransition } from './biddingEngine.ts';
 
 class AegisCraftDatabase extends EventEmitter {
+  public users: Map<string, User & { password?: string }> = new Map();
+  public activeSessions: Map<string, string> = new Map(); // token -> userId
+
   public currentUser: User = {
-    id: 'user-sarah-jenkins',
-    name: 'Sarah Jenkins',
-    email: 'sarah.jenkins@example.com',
+    id: 'user-aditi-roy',
+    name: 'Aditi Roy',
+    email: 'aditi.roy@example.in',
     role: 'customer',
-    phone: '+1 (555) 234-5678',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80',
+    phone: '+91 98450 12345',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80',
     rating: 5.0,
     completedJobsCount: 14,
     location: {
-      lat: 44.0462,
-      lng: -123.022,
-      address: '742 Evergreen Terrace, Springfield',
-      sector: 'Metro Sector 4',
+      lat: 12.9784,
+      lng: 77.6408,
+      address: '742 12th Main Road, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560038',
+      city: 'Bengaluru',
+      pincode: '560038',
+      sector: 'Indiranagar Sector 4',
     },
   };
 
@@ -36,291 +43,464 @@ class AegisCraftDatabase extends EventEmitter {
       id: 'electrical',
       name: 'Electrical & Wiring',
       icon: 'bolt',
-      description: 'Panel replacement, short circuit diagnostics, lighting installation & EV chargers.',
+      description: 'Panel replacement, short circuit diagnostics, lighting installation & inverter/EV chargers.',
       prosOnline: 34,
-      baseRate: 45,
-      rateRange: '$45 - $65',
+      baseRate: 450,
+      rateRange: '₹450 - ₹650',
       emergencyReady: true,
       isCommercial: true,
       ratingTier: 4.95,
       commonIssues: [
-        'Main breaker tripped & won\'t reset',
-        'Sparking outlet or burning smell',
-        'Complete power blackout in wing',
-        'EV charger install quotation',
+        'Main MCB tripped & won\'t reset',
+        'Sparking switchboard or burning smell',
+        'Complete power outage in residential wing',
+        'Inverter battery / EV charger installation',
       ],
     },
     {
       id: 'plumbing',
       name: 'Plumbing & Pipe Rescue',
       icon: 'plumbing',
-      description: 'High-pressure hydro-jetting, leak detection, water heater burst repair & drain clearance.',
+      description: 'High-pressure hydro-jetting, concealed leak detection, geyser burst repair & drain clearance.',
       prosOnline: 28,
-      baseRate: 50,
-      rateRange: '$50 - $75',
+      baseRate: 500,
+      rateRange: '₹500 - ₹750',
       emergencyReady: true,
       isCommercial: true,
       ratingTier: 4.92,
       commonIssues: [
-        'Severe pipe rupture flooding basement',
-        'Water heater leaking scalding water',
-        'Clogged sewer main backing up',
-        'Frozen pipe thawing and containment',
+        'Severe pipeline rupture flooding utility room',
+        'Geyser tank leaking boiling water',
+        'Clogged drainage line overflow',
+        'Overhead water tank booster pump failure',
       ],
     },
     {
       id: 'hvac',
       name: 'HVAC & Climate Control',
       icon: 'mode_fan',
-      description: 'Furnace recovery, freon leak containment, condenser coil repair & smart thermostat setup.',
+      description: 'Inverter AC gas leak recovery, copper line brazing, condenser coil cleaning & compressor repair.',
       prosOnline: 19,
-      baseRate: 55,
-      rateRange: '$55 - $80',
+      baseRate: 550,
+      rateRange: '₹550 - ₹800',
       emergencyReady: true,
       isCommercial: true,
       ratingTier: 4.9,
       commonIssues: [
-        'Furnace blowing cold air during freeze',
-        'AC compressor burning electrical smell',
-        'Thermostat unresponsive, zero airflow',
-        'Freon refrigerant line pressure drop',
+        'Split AC blowing warm air during summer peak',
+        'Outdoor AC condenser burning smell',
+        'Indoor unit ice formation & water dripping',
+        'R32/R410A refrigerant gas pressure drop',
       ],
     },
     {
       id: 'roofing',
-      name: 'Roofing & Storm Damage',
+      name: 'Roofing & Waterproofing',
       icon: 'roofing',
-      description: 'Emergency tarping, shingle replacement, flashing leaks & structural gutter overflow.',
+      description: 'Monsoon terrace tarping, polymer injection crack seal, parapet flashing & drain overflows.',
       prosOnline: 12,
-      baseRate: 60,
-      rateRange: '$60 - $95',
+      baseRate: 600,
+      rateRange: '₹600 - ₹950',
       emergencyReady: true,
       isCommercial: false,
       ratingTier: 4.88,
       commonIssues: [
-        'Tree branch puncture through ceiling',
-        'Severe storm wind shingle tear-off',
-        'Flashing leak pouring into attic',
-        'Emergency tarpaulin installation',
+        'Monsoon terrace ceiling dampness & seepage',
+        'Heavy storm wind sheet tear-off',
+        'Parapet wall joint leak into false ceiling',
+        'Emergency UV tarpaulin installation',
       ],
     },
     {
       id: 'locksmith',
-      name: 'Locksmith & Security',
+      name: 'Locksmith & Key Security',
       icon: 'lock_open',
-      description: 'Smart deadbolt re-keying, emergency house lockouts, high-security cylinder extraction.',
+      description: 'Smart biometric deadbolt re-keying, emergency house lockouts, high-security cylinder extraction.',
       prosOnline: 15,
-      baseRate: 40,
-      rateRange: '$40 - $60',
+      baseRate: 400,
+      rateRange: '₹400 - ₹600',
       emergencyReady: true,
       isCommercial: true,
       ratingTier: 4.94,
       commonIssues: [
-        'Locked out with stove/baby inside',
-        'Broken key snapped in deadbolt',
-        'Electronic keypad locked out',
-        'Commercial fire exit door jammed',
+        'Locked out with gas stove active inside',
+        'Broken key jammed in main entrance deadbolt',
+        'Electronic digital lock battery depleted',
+        'Commercial safety shutter jammed',
       ],
     },
     {
       id: 'carpentry',
       name: 'Carpentry & Structural',
       icon: 'handyman',
-      description: 'Door frame reinforcement, weight-bearing header repair, decking & subfloor stabilization.',
+      description: 'Door frame reinforcement, teakwood door realignment, modular kitchen hinges & subfloor support.',
       prosOnline: 22,
-      baseRate: 42,
-      rateRange: '$42 - $65',
+      baseRate: 420,
+      rateRange: '₹420 - ₹650',
       emergencyReady: false,
       isCommercial: false,
       ratingTier: 4.89,
       commonIssues: [
-        'Sagging ceiling beam stabilization',
-        'Forced entry door frame repair',
-        'Subfloor water rot urgent patch',
-        'Staircase tread structural fracture',
+        'Heavy entrance door scraping floor tiles',
+        'Broken hydraulic hinge on kitchen cabinet',
+        'Water-damaged wardrobe bottom panel patch',
+        'Loose wooden staircase handrail stabilization',
       ],
     },
     {
       id: 'masonry',
-      name: 'Masonry & Foundation',
+      name: 'Masonry & Civil Repair',
       icon: 'foundation',
-      description: 'Basement crack injection, tuckpointing, stone veneer preservation & driveway slab settling.',
+      description: 'Basement wall crack epoxy injection, tile hollow repair, stone facade preservation & plaster patch.',
       prosOnline: 9,
-      baseRate: 48,
-      rateRange: '$48 - $70',
+      baseRate: 480,
+      rateRange: '₹480 - ₹700',
       emergencyReady: false,
       isCommercial: true,
       ratingTier: 4.91,
       commonIssues: [
-        'Basement wall horizontal fissure leak',
-        'Chimney brick spalling and risk',
-        'Retaining wall bowing under mud load',
-        'Foundation hydro-expansion leak',
+        'Basement retaining wall water pressure fissure',
+        'Balcony concrete spalling and falling hazard',
+        'Hollow floor tiles clicking and buckling',
+        'Compound wall mortar degradation & leaning',
       ],
     },
     {
       id: 'appliance',
       name: 'Appliance Repair',
       icon: 'kitchen',
-      description: 'Commercial & domestic refrigerators, induction ranges, washing drum balancing.',
+      description: 'Frost-free refrigerator gas filling, front-load washer drum balancing & induction hob circuit fix.',
       prosOnline: 31,
-      baseRate: 38,
-      rateRange: '$38 - $58',
+      baseRate: 380,
+      rateRange: '₹380 - ₹580',
       emergencyReady: true,
       isCommercial: true,
       ratingTier: 4.93,
       commonIssues: [
-        'Commercial freezer warming up',
-        'Washing machine overflow flood',
-        'Induction range sparking error E04',
-        'Gas dryer heating element fault',
+        'Double-door refrigerator cooling failure',
+        'Washing machine error OE drain pump blocked',
+        'Induction cooktop sparking error E04',
+        'Microwave oven heating magnetron breakdown',
       ],
     },
   ];
 
   public workers: WorkerProfile[] = [
     {
-      id: 'worker-mark-j',
-      name: 'Mark J.',
-      email: 'mark.j@aegispro.network',
+      id: 'worker-rajesh-sharma',
+      name: 'Rajesh Sharma',
+      email: 'rajesh.sharma@aegispro.in',
       role: 'worker_pro',
-      phone: '+1 (555) 019-2834',
-      avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ',
+      phone: '+91 98765 43210',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
       rating: 4.98,
       completedJobsCount: 214,
       location: {
-        lat: 44.052,
-        lng: -123.016,
-        address: 'Elm St & Pioneer Pkwy, Springfield',
-        sector: 'Metro Sector 4',
+        lat: 12.9825,
+        lng: 77.6450,
+        address: '100 Feet Road, Near CMH Metro, Indiranagar, Bengaluru',
+        city: 'Bengaluru',
+        pincode: '560038',
+        sector: 'Indiranagar Sector 4',
       },
       tradeCategory: 'electrical',
-      specialtyTitle: 'Master Electrical Specialist',
-      licenseNumber: 'State Lic. #EL-8941',
-      insuranceCoverage: 'Clear • Insured $2M',
+      specialtyTitle: 'Master Electrical Specialist (Grade A License)',
+      licenseNumber: 'State Lic. #KA-EL-8941',
+      insuranceCoverage: 'Clear • Insured ₹15 Lakhs Commercial',
       isKycVerified: true,
       policeBackgroundPassed: true,
-      baseHourlyRate: 48,
+      baseHourlyRate: 480,
       isOnline: true,
       isAvailable: true,
-      vehicle: 'Ford Transit Service Van (#VAN-08)',
-      toolsLoadout: 'Fluke Diagnostic Multimeter, FLIR Thermal Camera, Eaton Breaker Spares',
+      vehicle: 'Mahindra Bolero Maxi Truck (#KA-03-ET-8812)',
+      toolsLoadout: 'Fluke 117 Multimeter, FLIR E4 Thermal Camera, Havells & Schneider OEM Spares',
       currentEtaMinutes: 4,
       distanceKm: 0.8,
     },
     {
-      id: 'worker-elena-r',
-      name: 'Elena Rostova',
-      email: 'elena.rostova@aegispro.network',
+      id: 'worker-priya-patel',
+      name: 'Priya Patel',
+      email: 'priya.patel@aegispro.in',
       role: 'worker_pro',
-      phone: '+1 (555) 782-9912',
+      phone: '+91 98200 55432',
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80',
       rating: 4.9,
       completedJobsCount: 98,
       location: {
-        lat: 44.056,
-        lng: -123.033,
-        address: 'Centennial Blvd & MLK Jr Pkwy, Springfield',
-        sector: 'Metro Sector 3',
+        lat: 12.9650,
+        lng: 77.6480,
+        address: 'Old Airport Road, Kodihalli, Bengaluru',
+        city: 'Bengaluru',
+        pincode: '560008',
+        sector: 'HAL / Domlur Zone',
       },
       tradeCategory: 'electrical',
       specialtyTitle: 'Certified High-Voltage Specialist',
-      licenseNumber: 'State Lic. #EL-7720',
-      insuranceCoverage: 'Insured $2M General Commercial',
+      licenseNumber: 'State Lic. #KA-EL-7720',
+      insuranceCoverage: 'Insured ₹20 Lakhs Commercial General',
       isKycVerified: true,
       policeBackgroundPassed: true,
-      baseHourlyRate: 52,
+      baseHourlyRate: 520,
       isOnline: true,
       isAvailable: true,
-      vehicle: 'RAM ProMaster 2500 Heavy Mobile Workshop',
-      toolsLoadout: 'High-voltage arc flash gear, Megohmmeter, Industrial cable crimpers',
+      vehicle: 'Tata Ace Mobile Utility Unit',
+      toolsLoadout: 'High-voltage arc protection kit, Kyoritsu Megger, Industrial crimping station',
       currentEtaMinutes: 11,
       distanceKm: 1.4,
     },
     {
-      id: 'worker-david-c',
-      name: 'David Chen',
-      email: 'david.chen@aegispro.network',
+      id: 'worker-amit-verma',
+      name: 'Amit Verma',
+      email: 'amit.verma@aegispro.in',
       role: 'worker_pro',
-      phone: '+1 (555) 438-1920',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+      phone: '+91 98311 22334',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80',
       rating: 4.88,
       completedJobsCount: 64,
       location: {
-        lat: 44.032,
-        lng: -123.038,
-        address: 'Franklin Blvd, South Springfield',
-        sector: 'Metro Sector 5',
+        lat: 12.9352,
+        lng: 77.6245,
+        address: '80 Feet Road, 4th Block, Koramangala, Bengaluru',
+        city: 'Bengaluru',
+        pincode: '560034',
+        sector: 'Koramangala Zone',
       },
       tradeCategory: 'electrical',
-      specialtyTitle: 'Residential Wiring & Panel Pro',
-      licenseNumber: 'State Lic. #EL-9114',
-      insuranceCoverage: 'Bonded & Insured $1M',
+      specialtyTitle: 'Residential Wiring & Inverter Pro',
+      licenseNumber: 'State Lic. #KA-EL-9114',
+      insuranceCoverage: 'Bonded & Insured ₹10 Lakhs',
       isKycVerified: true,
       policeBackgroundPassed: true,
-      baseHourlyRate: 45,
+      baseHourlyRate: 450,
       isOnline: true,
       isAvailable: false, // Finishing active repair
-      vehicle: 'Chevy Express 3500 Utility',
-      toolsLoadout: 'Conduit benders, Southwire circuit pullers, Square-D surge suppressors',
+      vehicle: 'Maruti Suzuki Eeco Utility Van',
+      toolsLoadout: 'Bosch Rotary Hammer, Microtek Inverter Diagnostic Tester, Polycab Wires Kit',
       currentEtaMinutes: 15,
       distanceKm: 2.1,
     },
     {
-      id: 'worker-marcus-v',
-      name: 'Marcus Vance',
-      email: 'marcus.vance@aegispro.network',
+      id: 'worker-vikram-sen',
+      name: 'Vikram Sen',
+      email: 'vikram.sen@aegispro.in',
       role: 'worker_pro',
-      phone: '+1 (555) 882-3104',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80',
+      phone: '+91 98101 99887',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=256&q=80',
       rating: 4.92,
       completedJobsCount: 187,
       location: {
-        lat: 44.029,
-        lng: -123.004,
-        address: 'Jasper Rd, Springfield East',
-        sector: 'Metro Sector 6',
+        lat: 12.9800,
+        lng: 77.6180,
+        address: 'Ulsoor Road, Near Halasuru Lake, Bengaluru',
+        city: 'Bengaluru',
+        pincode: '560042',
+        sector: 'Ulsoor Central Zone',
       },
       tradeCategory: 'electrical',
-      specialtyTitle: 'Emergency Power & Generator Tech',
-      licenseNumber: 'State Lic. #EL-6240',
-      insuranceCoverage: 'Insured $3M Commercial',
+      specialtyTitle: 'Emergency Power & DG Genset Tech',
+      licenseNumber: 'State Lic. #KA-EL-6240',
+      insuranceCoverage: 'Insured ₹25 Lakhs Industrial',
       isKycVerified: true,
       policeBackgroundPassed: true,
-      baseHourlyRate: 55,
+      baseHourlyRate: 550,
       isOnline: true,
       isAvailable: true,
-      vehicle: 'Ford F-350 SuperDuty with 25kW Diesel Generator',
-      toolsLoadout: 'Load bank tester, Generac ATS controllers, Transfer switch diagnostic kit',
+      vehicle: 'Mahindra Pik-Up with 15kVA Silent Diesel Generator',
+      toolsLoadout: 'Kirloskar Engine Diagnostic Scanner, Automatic Transfer Switch (ATS) Analyzer',
       currentEtaMinutes: 18,
       distanceKm: 2.9,
+    },
+  ];
+
+  public agencies: ServiceAgency[] = [
+    {
+      id: 'agency-havells-indiranagar',
+      name: 'Havells Galaxy Electricals & Repair Hub',
+      category: 'electrical',
+      address: 'Shop 14, 100 Feet Road, HAL 2nd Stage, Indiranagar',
+      locality: 'Indiranagar',
+      city: 'Bengaluru',
+      pincode: '560038',
+      lat: 12.9810,
+      lng: 77.6430,
+      phone: '+91 80 2520 4411',
+      website: 'https://www.havells.com',
+      rating: 4.8,
+      reviewCount: 342,
+      distanceKm: 0.6,
+      isOpenNow: true,
+      openingHours: '09:00 AM - 08:30 PM',
+      isExternalListing: true,
+      verifiedSource: 'Google Places & Havells India Authorized Dealer Network',
+    },
+    {
+      id: 'agency-voltas-care',
+      name: 'Voltas Customer Care & AC Diagnostic Center',
+      category: 'hvac',
+      address: 'Plot 42, CMH Road, Near Indiranagar Metro Station',
+      locality: 'Indiranagar',
+      city: 'Bengaluru',
+      pincode: '560038',
+      lat: 12.9790,
+      lng: 77.6390,
+      phone: '+91 80 4112 8899',
+      website: 'https://www.voltas.com',
+      rating: 4.7,
+      reviewCount: 512,
+      distanceKm: 0.9,
+      isOpenNow: true,
+      openingHours: '09:30 AM - 07:00 PM',
+      isExternalListing: true,
+      verifiedSource: 'Voltas Official Service Partner Registry',
+    },
+    {
+      id: 'agency-jaquar-hub',
+      name: 'Jaquar Authorized Plumbing Care Hub',
+      category: 'plumbing',
+      address: 'Building 18, 80 Feet Road, 4th Block, Koramangala',
+      locality: 'Koramangala',
+      city: 'Bengaluru',
+      pincode: '560034',
+      lat: 12.9360,
+      lng: 77.6250,
+      phone: '+91 80 4153 7700',
+      website: 'https://www.jaquar.com',
+      rating: 4.9,
+      reviewCount: 420,
+      distanceKm: 2.3,
+      isOpenNow: true,
+      openingHours: '10:00 AM - 08:00 PM',
+      isExternalListing: true,
+      verifiedSource: 'Jaquar Orient Care Service Network',
+    },
+    {
+      id: 'agency-godrej-smartcare',
+      name: 'Godrej SmartCare & Security Solutions',
+      category: 'locksmith',
+      address: '77 Old Airport Road, Kodihalli',
+      locality: 'Domlur',
+      city: 'Bengaluru',
+      pincode: '560008',
+      lat: 12.9645,
+      lng: 77.6495,
+      phone: '+91 80 6647 2200',
+      website: 'https://www.godrejenterprises.com',
+      rating: 4.6,
+      reviewCount: 298,
+      distanceKm: 1.5,
+      isOpenNow: true,
+      openingHours: '09:00 AM - 07:30 PM',
+      isExternalListing: true,
+      verifiedSource: 'Godrej & Boyce Certified Master Hub',
+    },
+    {
+      id: 'agency-schneider-care',
+      name: 'Schneider Electric Authorised Service Center',
+      category: 'electrical',
+      address: 'Intermediate Ring Road, Domlur',
+      locality: 'Domlur',
+      city: 'Bengaluru',
+      pincode: '560071',
+      lat: 12.9610,
+      lng: 77.6420,
+      phone: '+91 80 3940 4000',
+      website: 'https://www.se.com/in',
+      rating: 4.8,
+      reviewCount: 184,
+      distanceKm: 1.8,
+      isOpenNow: true,
+      openingHours: '09:00 AM - 06:00 PM',
+      isExternalListing: true,
+      verifiedSource: 'Schneider Electric India Enterprise Directory',
+    },
+    {
+      id: 'agency-lg-repair',
+      name: 'LG Best Care Appliance Repair Wing',
+      category: 'appliance',
+      address: '12th Main Road, HAL 2nd Stage, Indiranagar',
+      locality: 'Indiranagar',
+      city: 'Bengaluru',
+      pincode: '560038',
+      lat: 12.9775,
+      lng: 77.6415,
+      phone: '+91 80 2528 5566',
+      website: 'https://www.lg.com/in',
+      rating: 4.7,
+      reviewCount: 367,
+      distanceKm: 0.3,
+      isOpenNow: true,
+      openingHours: '10:00 AM - 07:30 PM',
+      isExternalListing: true,
+      verifiedSource: 'LG Electronics India Authorized Service Network',
+    },
+    {
+      id: 'agency-drfixit-center',
+      name: 'Dr. Fixit Structural Repair & Waterproofing Center',
+      category: 'roofing',
+      address: 'HAL 3rd Stage, Near Jeevan Bheema Nagar Main Rd',
+      locality: 'Indiranagar / JB Nagar',
+      city: 'Bengaluru',
+      pincode: '560075',
+      lat: 12.9720,
+      lng: 77.6520,
+      phone: '+91 80 2521 9900',
+      website: 'https://www.drfixit.co.in',
+      rating: 4.8,
+      reviewCount: 220,
+      distanceKm: 1.6,
+      isOpenNow: true,
+      openingHours: '09:30 AM - 07:00 PM',
+      isExternalListing: true,
+      verifiedSource: 'Pidilite Authorized Technical Solutions Network',
+    },
+    {
+      id: 'agency-centuryply-hub',
+      name: 'CenturyPly Woodcare & Structural Fitters',
+      category: 'carpentry',
+      address: 'CMH Road, Binnamangala, 1st Stage, Indiranagar',
+      locality: 'Indiranagar',
+      city: 'Bengaluru',
+      pincode: '560038',
+      lat: 12.9795,
+      lng: 77.6350,
+      phone: '+91 80 2525 3300',
+      website: 'https://www.centuryply.com',
+      rating: 4.6,
+      reviewCount: 154,
+      distanceKm: 1.1,
+      isOpenNow: true,
+      openingHours: '10:00 AM - 08:00 PM',
+      isExternalListing: true,
+      verifiedSource: 'Century Plyboards Authorized Contractor Center',
     },
   ];
 
   public jobs: JobRequest[] = [
     {
       id: 'job-8842',
-      customerId: 'user-sarah-jenkins',
-      customerName: 'Sarah Jenkins',
-      customerPhone: '+1 (555) 234-5678',
+      customerId: 'user-aditi-roy',
+      customerName: 'Aditi Roy',
+      customerPhone: '+91 98450 12345',
       tradeCategory: 'electrical',
       title: 'Emergency Electrical Panel Tripping & Surge Protection',
       situationSummary:
-        'Main breaker burning smell, circuit breaker 30A fault, requires immediate multimeter diagnostics, circuit thermal imaging check, & Eaton breaker replacement.',
-      issueTags: ['Breaker Tripped', 'Sparking / Smell', 'Partial Outage'],
+        'Main MCB tripped with burning odor, circuit breaker 30A fault, requires immediate multimeter diagnostics, circuit thermal imaging check, & Havells/Schneider breaker replacement.',
+      issueTags: ['MCB Tripped', 'Sparking / Smell', 'Partial Outage'],
       urgency: 'emergency',
       location: {
-        lat: 44.0462,
-        lng: -123.022,
-        address: '742 Evergreen Terrace, Springfield',
-        sector: 'Metro Sector 4',
+        lat: 12.9784,
+        lng: 77.6408,
+        address: '742 12th Main Road, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560038',
+        city: 'Bengaluru',
+        pincode: '560038',
+        sector: 'Indiranagar Sector 4',
       },
-      status: 'BIDDING', // Can be ACCEPTED, IN_PROGRESS, COMPLETED
+      status: 'BIDDING',
       escrowStatus: 'LOCKED',
-      agreedAmount: 80.0,
-      currency: 'USD',
+      agreedAmount: 800.0,
+      currency: 'INR',
       acceptedBidId: 'bid-3',
-      assignedWorkerId: 'worker-mark-j',
+      assignedWorkerId: 'worker-rajesh-sharma',
       createdAt: new Date(Date.now() - 35 * 60 * 1000).toISOString(),
       currentPhase: 2, // Phase 2: Technician Dispatched / En Route
       telemetry: {
@@ -337,39 +517,39 @@ class AegisCraftDatabase extends EventEmitter {
     {
       id: 'bid-1',
       jobId: 'job-8842',
-      workerId: 'worker-mark-j',
-      workerName: 'Mark J.',
-      workerTitle: 'Master Electrical Specialist',
+      workerId: 'worker-rajesh-sharma',
+      workerName: 'Rajesh Sharma',
+      workerTitle: 'Master Electrical Specialist (Grade A License)',
       workerRating: 4.98,
       workerAvatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ',
-      proposedAmount: 70.0,
-      currency: 'USD',
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+      proposedAmount: 700.0,
+      currency: 'INR',
       proposingParty: 'CUSTOMER',
       status: 'COUNTERED',
-      scopeNotes: 'Smelled electrical smoke near the main basement circuit. Need technician to diagnose cause promptly.',
-      laborAmount: 55.0,
-      partsAllowance: 15.0,
+      scopeNotes: 'Smelled electrical smoke near main distribution board. Need technician to diagnose cause promptly.',
+      laborAmount: 550.0,
+      partsAllowance: 150.0,
       platformFee: 0.0,
       createdAt: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
     },
     {
       id: 'bid-2',
       jobId: 'job-8842',
-      workerId: 'worker-mark-j',
-      workerName: 'Mark J.',
-      workerTitle: 'Master Electrical Specialist',
+      workerId: 'worker-rajesh-sharma',
+      workerName: 'Rajesh Sharma',
+      workerTitle: 'Master Electrical Specialist (Grade A License)',
       workerRating: 4.98,
       workerAvatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ',
-      proposedAmount: 85.0,
-      currency: 'USD',
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+      proposedAmount: 850.0,
+      currency: 'INR',
       proposingParty: 'WORKER',
       status: 'COUNTERED',
       scopeNotes:
-        'Includes OEM 30A Eaton breaker replacement and FLIR thermal imaging diagnostic to verify panel busbar integrity. Fast on-site turnaround.',
-      laborAmount: 70.0,
-      partsAllowance: 15.0,
+        'Includes OEM 30A Havells MCB breaker replacement and FLIR thermal imaging diagnostic to verify panel busbar integrity. Fast on-site turnaround.',
+      laborAmount: 700.0,
+      partsAllowance: 150.0,
       platformFee: 0.0,
       voiceTranscribed: true,
       createdAt: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
@@ -377,19 +557,19 @@ class AegisCraftDatabase extends EventEmitter {
     {
       id: 'bid-3',
       jobId: 'job-8842',
-      workerId: 'worker-mark-j',
-      workerName: 'Mark J.',
-      workerTitle: 'Master Electrical Specialist',
+      workerId: 'worker-rajesh-sharma',
+      workerName: 'Rajesh Sharma',
+      workerTitle: 'Master Electrical Specialist (Grade A License)',
       workerRating: 4.98,
       workerAvatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ',
-      proposedAmount: 80.0,
-      currency: 'USD',
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+      proposedAmount: 800.0,
+      currency: 'INR',
       proposingParty: 'CUSTOMER',
       status: 'PENDING',
-      scopeNotes: 'Can we meet at $80.00? Happy to confirm and lock escrow right away so you can dispatch immediately.',
-      laborAmount: 65.0,
-      partsAllowance: 15.0,
+      scopeNotes: 'Can we meet at ₹800.00? Happy to confirm and lock escrow right away so you can dispatch immediately.',
+      laborAmount: 650.0,
+      partsAllowance: 150.0,
       platformFee: 0.0,
       createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
     },
@@ -399,19 +579,19 @@ class AegisCraftDatabase extends EventEmitter {
     {
       id: 'msg-1',
       jobId: 'job-8842',
-      senderId: 'worker-mark-j',
-      senderName: 'Mark J.',
+      senderId: 'worker-rajesh-sharma',
+      senderName: 'Rajesh Sharma',
       senderRole: 'worker_pro',
-      content: 'Just turned onto your block, will park in the driveway.',
+      content: 'Just crossed Indiranagar 100ft road junction, entering 12th Main driveway now.',
       timestamp: '10:24 AM',
     },
     {
       id: 'msg-2',
       jobId: 'job-8842',
-      senderId: 'user-sarah-jenkins',
-      senderName: 'Sarah Jenkins',
+      senderId: 'user-aditi-roy',
+      senderName: 'Aditi Roy',
       senderRole: 'customer',
-      content: 'Front door is unlocked, panel is in the basement right by the stairs.',
+      content: 'Gate is unlocked, main distribution board is in the ground floor utility closet.',
       timestamp: '10:25 AM',
     },
   ];
@@ -421,12 +601,136 @@ class AegisCraftDatabase extends EventEmitter {
 
   constructor() {
     super();
-    // Pre-populate assigned worker reference
+    // Seed initial users into users map
+    this.users.set(this.currentUser.id, { ...this.currentUser, password: 'password123' });
+    this.workers.forEach((w) => {
+      this.users.set(w.id, { ...w, password: 'password123' });
+    });
+
     const activeJob = this.jobs[0];
     activeJob.assignedWorker = this.workers.find((w) => w.id === activeJob.assignedWorkerId);
   }
 
-  // --- Methods ---
+  // --- Auth & Profile Management ---
+
+  public register(payload: RegisterPayload): { token: string; user: User } {
+    if (!payload.name || !payload.phone) {
+      throw new Error('Name and valid phone number are required.');
+    }
+
+    const userId = `user-${Date.now().toString().slice(-6)}`;
+    const token = `aegis-tok-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    const newUser: User = {
+      id: userId,
+      name: payload.name.trim(),
+      email: payload.email?.trim() || `${userId}@aegis.in`,
+      role: payload.role,
+      phone: payload.phone.startsWith('+91') ? payload.phone : `+91 ${payload.phone}`,
+      avatar:
+        payload.role === 'worker_pro'
+          ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80'
+          : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+      rating: 5.0,
+      completedJobsCount: 0,
+      location: {
+        lat: 12.9784,
+        lng: 77.6408,
+        address: payload.address || 'Indiranagar, Bengaluru, Karnataka 560038',
+        city: payload.city || 'Bengaluru',
+        pincode: payload.pincode || '560038',
+        sector: 'Central Zone',
+      },
+    };
+
+    if (payload.role === 'worker_pro') {
+      const newWorker: WorkerProfile = {
+        ...newUser,
+        tradeCategory: payload.tradeCategory || 'electrical',
+        specialtyTitle: payload.specialtyTitle || 'Certified Trade Professional',
+        licenseNumber: `KA-REG-${Date.now().toString().slice(-4)}`,
+        insuranceCoverage: 'Verified Commercial Bonded ₹10L',
+        isKycVerified: false, // Verification is pending verification flow
+        policeBackgroundPassed: true,
+        baseHourlyRate: 450,
+        isOnline: true,
+        isAvailable: true,
+        vehicle: 'Commercial Service Two-Wheeler / Van',
+        toolsLoadout: 'Standard Certified Hand & Power Loadout',
+        currentEtaMinutes: 10,
+        distanceKm: 1.0,
+      };
+      this.workers.unshift(newWorker);
+      this.users.set(userId, { ...newWorker, password: payload.password || 'password123' });
+    } else {
+      this.users.set(userId, { ...newUser, password: payload.password || 'password123' });
+    }
+
+    this.activeSessions.set(token, userId);
+    this.currentUser = newUser;
+    this.emit('user:registered', newUser);
+    return { token, user: newUser };
+  }
+
+  public login(identifier: string, password?: string): { token: string; user: User } {
+    const cleanId = identifier.trim().toLowerCase();
+    let foundUser: (User & { password?: string }) | undefined;
+
+    for (const u of this.users.values()) {
+      if (
+        u.email.toLowerCase() === cleanId ||
+        u.phone.replace(/[\s-]/g, '').includes(cleanId.replace(/[\s-]/g, '')) ||
+        u.name.toLowerCase().includes(cleanId)
+      ) {
+        foundUser = u;
+        break;
+      }
+    }
+
+    if (!foundUser) {
+      throw new Error('Account not found with provided phone or email.');
+    }
+
+    const token = `aegis-tok-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    this.activeSessions.set(token, foundUser.id);
+    this.currentUser = foundUser;
+    this.emit('user:authenticated', foundUser);
+    return { token, user: foundUser };
+  }
+
+  public getUserByToken(token: string): User | null {
+    const userId = this.activeSessions.get(token);
+    if (!userId) return null;
+    return this.users.get(userId) || null;
+  }
+
+  public logout(token?: string) {
+    if (token) {
+      this.activeSessions.delete(token);
+    }
+  }
+
+  // --- Real Nearby Service Agencies Directory ---
+
+  public getNearbyAgencies(lat: number, lng: number, radiusKm = 10.0, category?: string, city?: string): ServiceAgency[] {
+    const origin = { lat, lng };
+    return this.agencies
+      .filter((a) => {
+        if (category && category !== 'all' && a.category !== category) return false;
+        if (city && a.city.toLowerCase() !== city.toLowerCase()) return false;
+        return isWithinRadius(origin, { lat: a.lat, lng: a.lng }, radiusKm);
+      })
+      .map((a) => {
+        const dist = calculateDistanceKm(origin, { lat: a.lat, lng: a.lng });
+        return {
+          ...a,
+          distanceKm: dist,
+        };
+      })
+      .sort((a, b) => a.distanceKm - b.distanceKm);
+  }
+
+  // --- Core Methods ---
 
   public getNearbyWorkers(lat: number, lng: number, radiusKm = 3.2, category?: string): WorkerProfile[] {
     const origin = { lat, lng };
@@ -449,7 +753,7 @@ class AegisCraftDatabase extends EventEmitter {
 
   public createJob(jobData: Partial<JobRequest>): JobRequest {
     const id = `job-${Date.now().toString().slice(-4)}`;
-    const breakdown = calculateBidBreakdown(jobData.agreedAmount || 65, jobData.tradeCategory || 'electrical');
+    const breakdown = calculateBidBreakdown(jobData.agreedAmount || 650, jobData.tradeCategory || 'electrical');
 
     const newJob: JobRequest = {
       id,
@@ -465,7 +769,7 @@ class AegisCraftDatabase extends EventEmitter {
       status: 'MATCHING',
       escrowStatus: 'UNFUNDED',
       agreedAmount: breakdown.total,
-      currency: 'USD',
+      currency: 'INR',
       createdAt: new Date().toISOString(),
       currentPhase: 1,
       telemetry: {
@@ -492,10 +796,10 @@ class AegisCraftDatabase extends EventEmitter {
     const job = this.jobs.find((j) => j.id === jobId);
     if (!job) throw new Error(`Job ${jobId} not found`);
 
-    const targetWorker = this.workers.find((w) => w.id === (workerId || job.assignedWorkerId || 'worker-mark-j'))!;
+    const targetWorker = this.workers.find((w) => w.id === (workerId || job.assignedWorkerId || 'worker-rajesh-sharma'))!;
     const breakdown = calculateBidBreakdown(proposedAmount, job.tradeCategory);
 
-    // Mark previous bids as countered
+    // Mark previous pending bids as countered
     this.bids
       .filter((b) => b.jobId === jobId && b.status === 'PENDING')
       .forEach((b) => {
@@ -511,7 +815,7 @@ class AegisCraftDatabase extends EventEmitter {
       workerRating: targetWorker.rating,
       workerAvatar: targetWorker.avatar,
       proposedAmount: breakdown.total,
-      currency: 'USD',
+      currency: 'INR',
       proposingParty,
       status: 'PENDING',
       scopeNotes,
@@ -534,7 +838,6 @@ class AegisCraftDatabase extends EventEmitter {
     const bid = this.bids.find((b) => b.id === bidId);
     if (!bid) throw new Error(`Bid ${bidId} not found`);
 
-    // Concurrency / transaction safety: verify status
     if (job.status === 'COMPLETED' || job.status === 'CANCELLED') {
       throw new Error(`Job is already finalized with status: ${job.status}`);
     }
@@ -586,11 +889,11 @@ class AegisCraftDatabase extends EventEmitter {
     const job = this.jobs.find((j) => j.id === jobId);
     if (!job) throw new Error(`Job ${jobId} not found`);
 
-    const senderName = senderRole === 'customer' ? this.currentUser.name : (job.assignedWorker?.name || 'Mark J.');
-    const senderId = senderRole === 'customer' ? this.currentUser.id : (job.assignedWorkerId || 'worker-mark-j');
+    const senderName = senderRole === 'customer' ? this.currentUser.name : (job.assignedWorker?.name || 'Rajesh Sharma');
+    const senderId = senderRole === 'customer' ? this.currentUser.id : (job.assignedWorkerId || 'worker-rajesh-sharma');
 
     const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
 
     const msg: ChatMessage = {
       id: `msg-${Date.now().toString().slice(-4)}`,
@@ -614,12 +917,12 @@ class AegisCraftDatabase extends EventEmitter {
       hazardType,
       status: 'ESCALATED_911',
       coordinates: {
-        lat: 44.0462,
-        lng: -123.022,
-        address: '742 Evergreen Terrace, Springfield',
+        lat: this.currentUser.location.lat,
+        lng: this.currentUser.location.lng,
+        address: this.currentUser.location.address,
       },
       notifiedProsCount: 48,
-      assignedUnit: 'Mark J. (Master Electrician - Tier 1 Response)',
+      assignedUnit: 'Rajesh Sharma (Grade A Master Electrician - Rapid Emergency Unit)',
       timestamp: new Date().toISOString(),
     };
 
@@ -637,8 +940,8 @@ class AegisCraftDatabase extends EventEmitter {
     const job = this.jobs.find((j) => j.id === jobId);
     const revieweeId =
       reviewerRole === 'customer'
-        ? (job?.assignedWorkerId || 'worker-mark-j')
-        : (job?.customerId || 'user-sarah-jenkins');
+        ? (job?.assignedWorkerId || 'worker-rajesh-sharma')
+        : (job?.customerId || 'user-aditi-roy');
 
     const rev: ReviewRecord = {
       id: `rev-${Date.now().toString().slice(-4)}`,

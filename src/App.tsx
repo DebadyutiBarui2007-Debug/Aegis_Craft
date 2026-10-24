@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { User, WorkerProfile, ServiceCategory, JobRequest, BidOffer, ChatMessage } from './types/index.ts';
-import { api } from './services/api.ts';
+import { api, tokenStorage } from './services/api.ts';
+import { formatInr } from './lib/biddingEngine.ts';
 import { Header } from './components/Header.tsx';
 import { ServiceDiscoveryView } from './components/ServiceDiscoveryView.tsx';
 import { RadarMatchingView } from './components/RadarMatchingView.tsx';
@@ -11,22 +12,29 @@ import { McpStudioView } from './components/McpStudioView.tsx';
 import { SosModal } from './components/SosModal.tsx';
 import { AddressModal } from './components/AddressModal.tsx';
 import { ReviewModal } from './components/ReviewModal.tsx';
+import { SplashLaunchScreen } from './components/SplashLaunchScreen.tsx';
+import { AuthModal } from './components/AuthModal.tsx';
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   const [currentUser, setCurrentUser] = useState<User>({
-    id: 'user-sarah-jenkins',
-    name: 'Sarah Jenkins',
-    email: 'sarah.jenkins@example.com',
+    id: 'user-aditi-roy',
+    name: 'Aditi Roy',
+    email: 'aditi.roy@example.in',
     role: 'customer',
-    phone: '+1 (555) 234-5678',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80',
+    phone: '+91 98450 12345',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
     rating: 5.0,
     completedJobsCount: 14,
     location: {
-      lat: 44.0462,
-      lng: -123.022,
-      address: '742 Evergreen Terrace, Springfield',
-      sector: 'Metro Sector 4',
+      lat: 12.9784,
+      lng: 77.6408,
+      address: '742 12th Main Road, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560038',
+      city: 'Bengaluru',
+      pincode: '560038',
+      sector: 'Indiranagar Sector 4',
     },
   });
 
@@ -57,11 +65,16 @@ export default function App() {
         const [meRes, catRes, workersRes, jobsRes] = await Promise.all([
           api.getMe(),
           api.getCategories(),
-          api.getNearbyWorkers(),
+          api.getNearbyWorkers(12.9784, 77.6408, 3.2),
           api.getJobs(),
         ]);
 
-        setCurrentUser(meRes.user);
+        if (meRes.user) {
+          setCurrentUser(meRes.user);
+          if (meRes.user.role === 'worker_pro') {
+            setActiveTab('worker');
+          }
+        }
         setCategories(catRes.categories);
         setWorkers(workersRes.workers);
 
@@ -92,16 +105,16 @@ export default function App() {
         showToast(`New Job created: ${event.data.title}`);
       } else if (event.type === 'bid:created') {
         setBids((prev) => [...prev, event.data]);
-        showToast(`New Counteroffer received: $${event.data.proposedAmount.toFixed(2)}`);
+        showToast(`New Counteroffer received: ${formatInr(event.data.proposedAmount)}`);
       } else if (event.type === 'bid:accepted') {
         setActiveJob(event.data.job);
-        showToast(`Agreement locked at $${event.data.bid.proposedAmount.toFixed(2)}! Escrow secured.`);
+        showToast(`Agreement locked at ${formatInr(event.data.bid.proposedAmount)}! INR Escrow secured.`);
       } else if (event.type === 'job:updated') {
         setActiveJob(event.data);
       } else if (event.type === 'message:created') {
         setMessages((prev) => [...prev, event.data]);
       } else if (event.type === 'sos:triggered') {
-        showToast('EMERGENCY SOS: Platform intervention broadcasted to 48 certified units.');
+        showToast('EMERGENCY 112 SOS: Platform intervention broadcasted to 48 certified units in Bengaluru.');
       }
     });
 
@@ -115,10 +128,10 @@ export default function App() {
       setCurrentUser(res.user);
       if (role === 'worker_pro') {
         setActiveTab('worker');
-        showToast('Switched to Worker Pro Terminal (Mark J. - Master Electrician)');
+        showToast('Switched to Worker Pro Terminal (Rajesh Sharma - Master Electrician)');
       } else {
         setActiveTab('discovery');
-        showToast('Switched to Customer View (Sarah Jenkins)');
+        showToast('Switched to Customer View (Aditi Roy)');
       }
     } catch (e: any) {
       console.error(e);
@@ -147,7 +160,7 @@ export default function App() {
       });
       setActiveJob(res.job);
       setActiveTab('radar');
-      showToast('PostGIS Proximity Search executed! Showing verified nearby technicians.');
+      showToast('PostGIS Proximity Search executed! Showing verified nearby technicians in Bengaluru.');
     } catch (e: any) {
       showToast(e.message);
     }
@@ -216,8 +229,21 @@ export default function App() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await api.logout();
+      showToast('Logged out of session');
+      setIsAuthModalOpen(true);
+    } catch (err: any) {
+      showToast(err.message || 'Logout error');
+    }
+  };
+
   return (
     <div className="bg-[#0b1326] font-body-default text-[#dae2fd] relative min-h-screen selection:bg-[#89ceff] selection:text-[#00344d]">
+      {/* Launch Splash Screen */}
+      {showSplash && <SplashLaunchScreen onComplete={() => setShowSplash(false)} />}
+
       {/* Toast Notification Banner */}
       {toastMessage && (
         <div className="fixed top-24 right-6 z-50 bg-[#171f33] border border-[#4edea3]/40 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in">
@@ -233,6 +259,8 @@ export default function App() {
         setActiveTab={setActiveTab}
         onOpenSos={() => setIsSosOpen(true)}
         onRoleSwitch={handleRoleSwitch}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onLogout={handleLogout}
       />
 
       {/* Main Application Content Body */}
@@ -301,20 +329,19 @@ export default function App() {
         <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#4edea3] text-xl">shield</span>
-            <span className="text-sm font-bold text-white">AegisCraft Dispatch Infrastructure</span>
+            <span className="text-sm font-bold text-white">AegisCraft Bharat Dispatch Infrastructure</span>
           </div>
           <p className="text-xs text-[#88929b]">
-            © 2026 AegisCraft Network. Real-Time Blue-Collar Bidding, PostGIS Geolocation &amp; Verified Escrow
-            Operations.
+            © 2026 AegisCraft Network. Real-Time Blue-Collar Bidding, PostGIS Geolocation &amp; Verified INR Escrow Operations.
           </p>
           <div className="flex items-center gap-4 text-xs text-[#bec8d2]">
-            <button onClick={() => showToast('AegisCraft Security: 256-bit encryption & dual KYC validation.')} className="hover:text-white">
+            <button onClick={() => showToast('AegisCraft Security: 256-bit encryption & dual KYC validation.')} className="hover:text-white cursor-pointer">
               Security Protocols
             </button>
-            <button onClick={() => showToast('Escrow Guarantee: Zero fee escrow vault backed by $2,500 30-day warranty.')} className="hover:text-white">
-              Escrow Guarantee
+            <button onClick={() => showToast('Escrow Guarantee: Zero fee escrow vault backed by ₹25,000 30-day warranty.')} className="hover:text-white cursor-pointer">
+              ₹ Escrow Guarantee
             </button>
-            <button onClick={() => handleRoleSwitch('worker_pro')} className="text-[#4edea3] hover:underline font-semibold">
+            <button onClick={() => handleRoleSwitch('worker_pro')} className="text-[#4edea3] hover:underline font-semibold cursor-pointer">
               Technician Portal
             </button>
           </div>
@@ -335,15 +362,30 @@ export default function App() {
         onSaveAddress={handleUpdateAddress}
       />
 
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={(user) => {
+          setCurrentUser(user);
+          showToast(`Welcome back, ${user.name}!`);
+          if (user.role === 'worker_pro') {
+            setActiveTab('worker');
+          } else {
+            setActiveTab('discovery');
+          }
+        }}
+        defaultRole={currentUser.role}
+      />
+
       {activeJob && (
         <ReviewModal
           isOpen={isReviewModalOpen}
           onClose={() => setIsReviewModalOpen(false)}
           jobId={activeJob.id}
-          technicianName={activeJob.assignedWorker?.name || 'Mark J.'}
+          technicianName={activeJob.assignedWorker?.name || 'Rajesh Sharma'}
           agreedAmount={activeJob.agreedAmount}
           onCompletionSuccess={() => {
-            showToast('Escrow payment released! Reciprocal 5-star ratings permanently registered.');
+            showToast('INR Escrow released! Reciprocal 5-star ratings permanently registered.');
             setActiveTab('discovery');
           }}
         />

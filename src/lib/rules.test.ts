@@ -3,20 +3,20 @@ import assert from 'node:assert/strict';
 import { calculateDistanceKm, isWithinRadius, calculateEtaMinutes, calculateBearing } from './spatial.ts';
 import { calculateBidBreakdown, isValidJobTransition, CATEGORY_MARKET_CORRIDORS } from './biddingEngine.ts';
 
-test('spatial: calculates accurate distance between two Springfield geo-coordinates', () => {
-  // Springfield client site: 44.0462° N, 123.0220° W
-  const client = { lat: 44.0462, lng: -123.0220 };
-  // Mark J. technician coords: ~0.8 km away
-  const markJ = { lat: 44.0520, lng: -123.0160 };
+test('spatial: calculates accurate distance between Bengaluru client site and technician', () => {
+  // Indiranagar client site: 12.9784° N, 77.6408° E
+  const client = { lat: 12.9784, lng: 77.6408 };
+  // Rajesh Sharma technician coords: ~0.4 km away
+  const rajeshSharma = { lat: 12.9810, lng: 77.6435 };
 
-  const distance = calculateDistanceKm(client, markJ);
-  assert.ok(distance > 0.5 && distance < 1.2, `Distance should be ~0.8km, got ${distance}`);
+  const distance = calculateDistanceKm(client, rajeshSharma);
+  assert.ok(distance > 0.2 && distance < 0.8, `Distance should be ~0.4km, got ${distance}`);
 });
 
-test('spatial: isWithinRadius respects PostGIS ST_DWithin thresholds', () => {
-  const client = { lat: 44.0462, lng: -123.0220 };
-  const nearbyWorker = { lat: 44.0500, lng: -123.0200 };
-  const farawayWorker = { lat: 44.1500, lng: -123.1000 };
+test('spatial: isWithinRadius respects PostGIS ST_DWithin thresholds in Bengaluru grid', () => {
+  const client = { lat: 12.9784, lng: 77.6408 };
+  const nearbyWorker = { lat: 12.9810, lng: 77.6435 }; // ~0.4km
+  const farawayWorker = { lat: 13.1000, lng: 77.8000 }; // ~25km away
 
   assert.equal(isWithinRadius(client, nearbyWorker, 3.2), true);
   assert.equal(isWithinRadius(client, farawayWorker, 3.2), false);
@@ -36,22 +36,22 @@ test('spatial: calculateBearing produces correct directional angle', () => {
   assert.equal(Math.round(bearing), 0);
 });
 
-test('bidding: itemizes price breakdown with parts allowance and zero platform escrow fee', () => {
-  const breakdown = calculateBidBreakdown(80, 'electrical', 15);
-  assert.equal(breakdown.total, 80);
-  assert.equal(breakdown.laborAmount, 65);
-  assert.equal(breakdown.partsAllowance, 15);
+test('bidding: itemizes INR price breakdown with parts allowance and zero platform escrow fee', () => {
+  const breakdown = calculateBidBreakdown(800, 'electrical', 150);
+  assert.equal(breakdown.total, 800);
+  assert.equal(breakdown.laborAmount, 650);
+  assert.equal(breakdown.partsAllowance, 150);
   assert.equal(breakdown.platformFee, 0);
   assert.equal(breakdown.isWithinCorridor, true);
-  assert.equal(breakdown.spreadDelta, 5); // 80 - 75 marketMean
+  assert.equal(breakdown.spreadDelta, 50); // 800 - 750 marketMean
 });
 
-test('bidding: correctly flags amounts outside safe market corridor', () => {
+test('bidding: correctly flags INR amounts outside safe market corridor', () => {
   const corridor = CATEGORY_MARKET_CORRIDORS.electrical;
-  const underpriced = calculateBidBreakdown(40, 'electrical', 15);
+  const underpriced = calculateBidBreakdown(200, 'electrical', 150);
   assert.equal(underpriced.isWithinCorridor, false);
 
-  const overpriced = calculateBidBreakdown(200, 'electrical', 15);
+  const overpriced = calculateBidBreakdown(3500, 'electrical', 150);
   assert.equal(overpriced.isWithinCorridor, false);
 });
 

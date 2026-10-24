@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { WorkerProfile } from '../types/index.ts';
+import { formatInr } from '../lib/biddingEngine.ts';
 
 interface RadarMatchingViewProps {
   workers: WorkerProfile[];
@@ -15,11 +16,11 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
   const [selectedRadius, setSelectedRadius] = useState<number>(3.2);
   const [selectedCategory, setSelectedCategory] = useState<string>('electrical');
   const [isSimulatedEmpty, setIsSimulatedEmpty] = useState<boolean>(false);
-  const [highlightedWorkerId, setHighlightedWorkerId] = useState<string>('worker-mark-j');
+  const [highlightedWorkerId, setHighlightedWorkerId] = useState<string>('worker-rajesh-sharma');
   const [activeModalWorker, setActiveModalWorker] = useState<WorkerProfile | null>(null);
-  const [modalBidAmount, setModalBidAmount] = useState<number>(48);
+  const [modalBidAmount, setModalBidAmount] = useState<number>(650);
   const [modalScopeNotes, setModalScopeNotes] = useState<string>(
-    'Main breaker continuously tripping with intermittent buzzing and burning odor in utility panel.'
+    'Main MCB tripped with burning odor, circuit breaker 30A fault, requires immediate multimeter diagnostics & busbar check.'
   );
 
   // Filter workers based on radius and simulated empty toggle
@@ -30,11 +31,11 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
         return w.distanceKm <= selectedRadius;
       });
 
-  const featuredWorker = workers.find((w) => w.id === 'worker-mark-j') || workers[0];
+  const featuredWorker = workers.find((w) => w.id === highlightedWorkerId) || workers[0];
 
   const handleOpenBidModal = (worker: WorkerProfile) => {
     setActiveModalWorker(worker);
-    setModalBidAmount(worker.baseHourlyRate);
+    setModalBidAmount(worker.baseHourlyRate || 650);
   };
 
   const handleConfirmBidModal = () => {
@@ -47,21 +48,21 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
   return (
     <div className="w-full max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12 py-4 flex flex-col gap-4">
       {/* Top Utility & Spatial Telemetry Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#171f33]/60 backdrop-blur-xl p-3 rounded-xl shadow-lg border border-white/5">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#171f33]/60 backdrop-blur-xl p-3.5 rounded-xl shadow-lg border border-white/5">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 rounded-lg bg-[#4edea3]/15 flex items-center justify-center text-[#4edea3] shadow-[0_0_16px_rgba(78,222,163,0.35)] shrink-0">
             <span className="material-symbols-outlined text-2xl">radar</span>
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold uppercase text-[#4edea3] tracking-wider">
+              <span className="text-[11px] font-bold uppercase text-[#4edea3] tracking-wider font-mono">
                 Spatial Indexer ST_Point
               </span>
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-ping"></span>
-              <span className="text-xs text-[#bec8d2]">PostGIS 3.4 Live Cluster</span>
+              <span className="text-xs text-[#bec8d2]">PostGIS 3.4 Live Cluster • Bengaluru</span>
             </div>
             <p className="text-base font-semibold text-white truncate">
-              Rescue Radar: 742 Evergreen Terrace (Springfield Metro Sector 4)
+              Rescue Radar: 742 12th Main Road, HAL 2nd Stage, Indiranagar (560038)
             </p>
           </div>
         </div>
@@ -79,13 +80,13 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-[#222a3d]/60 rounded-lg text-xs text-[#bec8d2] border border-white/5">
             <span className="material-symbols-outlined text-[#ffb95f] text-sm">schedule</span>
             <span>
-              Avg ETA: <strong className="text-[#ffb95f] font-semibold">6.4 min</strong>
+              Avg ETA: <strong className="text-[#ffb95f] font-semibold">5.8 min</strong>
             </span>
           </div>
 
           <button
             onClick={() => setIsSimulatedEmpty(!isSimulatedEmpty)}
-            className="px-3 py-1.5 rounded-lg bg-[#2d3449]/80 hover:bg-[#3e4850] text-[#bec8d2] hover:text-[#ffb4ab] transition-all text-xs font-medium flex items-center gap-1.5 border border-white/5"
+            className="px-3 py-1.5 rounded-lg bg-[#2d3449]/80 hover:bg-[#3e4850] text-[#bec8d2] hover:text-[#ffb4ab] transition-all text-xs font-medium flex items-center gap-1.5 border border-white/5 cursor-pointer"
             type="button"
           >
             <span className="material-symbols-outlined text-base">leak_remove</span>
@@ -119,13 +120,13 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
                   height: `${Math.min(620, selectedRadius * 90)}px`,
                 }}
               >
-                <span className="absolute top-3 right-1/4 text-[10px] uppercase tracking-widest text-[#4edea3]/80 px-2 py-0.5 rounded bg-[#060e20]/80 border border-[#4edea3]/20">
+                <span className="absolute top-3 right-1/4 text-[10px] uppercase tracking-widest text-[#4edea3]/80 px-2 py-0.5 rounded bg-[#060e20]/80 border border-[#4edea3]/20 font-mono">
                   {selectedRadius.toFixed(1)} km Radius ST_DWithin
                 </span>
 
                 {/* 2km Isochrone */}
                 <div className="w-[320px] h-[320px] rounded-full border border-[#89ceff]/20 bg-[#89ceff]/5 flex items-center justify-center">
-                  <span className="absolute top-2 left-1/3 text-[10px] uppercase text-[#89ceff]/70">
+                  <span className="absolute top-2 left-1/3 text-[10px] uppercase text-[#89ceff]/70 font-mono">
                     2.0 km Isochrone
                   </span>
 
@@ -149,86 +150,93 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
                   <span className="material-symbols-outlined text-xl">home_repair_service</span>
                 </div>
               </div>
-              <div className="mt-2 bg-[#060e20]/90 backdrop-blur-md px-3 py-1 rounded-full shadow-xl border border-white/10 flex items-center gap-1.5 whitespace-nowrap">
-                <span className="w-2 h-2 rounded-full bg-[#ffb95f]"></span>
-                <span className="text-xs font-semibold text-white">Emergency Site: 742 Evergreen</span>
+              <div className="mt-1 px-2.5 py-1 rounded bg-[#060e20]/95 backdrop-blur-md text-white text-[10px] font-bold shadow-lg border border-white/10 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ffb95f]"></span>
+                Client Location (Indiranagar)
               </div>
             </div>
 
-            {/* Worker Pin 1: Mark J. (0.8km North-East) */}
+            {/* Worker Radar Pins */}
             {!isSimulatedEmpty && (
               <>
+                {/* Worker Pin 1: Rajesh Sharma (0.4km North-East) */}
                 <button
                   type="button"
-                  onClick={() => setHighlightedWorkerId('worker-mark-j')}
-                  className="absolute top-[36%] left-[62%] -translate-x-1/2 -translate-y-1/2 group transition-all z-20"
+                  onClick={() => setHighlightedWorkerId('worker-rajesh-sharma')}
+                  className="absolute top-[36%] left-[62%] -translate-x-1/2 -translate-y-1/2 group transition-all z-20 cursor-pointer"
                 >
                   <div className="relative flex items-center justify-center">
-                    <span className="absolute -inset-3 rounded-full bg-[#4edea3]/30 animate-pulse"></span>
-                    <div className="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-[#4edea3] to-[#89ceff] shadow-[0_0_20px_rgba(78,222,163,0.7)] flex items-center justify-center">
+                    <span className="absolute w-8 h-8 rounded-full bg-[#4edea3]/30 animate-pulse"></span>
+                    <div className="w-10 h-10 rounded-full bg-[#171f33] border-2 border-[#4edea3] shadow-[0_0_16px_rgba(78,222,163,0.6)] flex items-center justify-center text-white overflow-hidden">
                       <img
-                        alt="Mark J."
-                        className="w-full h-full rounded-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ"
+                        alt="Rajesh Sharma"
+                        className="w-full h-full object-cover"
+                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80"
                       />
                     </div>
-                    <div className="absolute -bottom-1 -right-1 bg-[#4edea3] text-[#003824] w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shadow">
-                      <span className="material-symbols-outlined text-[13px]">bolt</span>
-                    </div>
                   </div>
-                  <div className="mt-1 px-2.5 py-0.5 rounded-full bg-[#222a3d]/90 backdrop-blur-md text-[#4edea3] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-md border border-[#4edea3]/30 group-hover:scale-105 transition-transform">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3]"></span> 0.8 km • 4m
+                  <div className="mt-1 px-2 py-0.5 rounded-full bg-[#060e20]/90 text-white text-[10px] font-semibold flex items-center gap-1 border border-[#4edea3]/40 shadow-md">
+                    <span className="text-[#4edea3]">Rajesh S.</span> • 0.4 km (4m)
                   </div>
                 </button>
 
-                {/* Worker Pin 2: Elena R. (1.4km North-West) */}
+                {/* Worker Pin 2: Priya Patel (1.1km North-West) */}
                 <button
                   type="button"
-                  onClick={() => setHighlightedWorkerId('worker-elena-r')}
-                  className="absolute top-[30%] left-[32%] -translate-x-1/2 -translate-y-1/2 group transition-all z-20"
+                  onClick={() => setHighlightedWorkerId('worker-priya-patel')}
+                  className="absolute top-[32%] left-[34%] -translate-x-1/2 -translate-y-1/2 group transition-all z-20 cursor-pointer"
                 >
                   <div className="relative flex items-center justify-center">
-                    <div className="w-9 h-9 rounded-full bg-[#222a3d] border border-[#4edea3]/50 shadow-[0_0_14px_rgba(78,222,163,0.4)] flex items-center justify-center text-[#4edea3]">
-                      <span className="material-symbols-outlined text-lg">electric_meter</span>
-                    </div>
-                    <div className="absolute -bottom-0.5 -right-0.5 bg-[#4edea3] text-[#003824] w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold">
-                      ✓
+                    <div className="w-9 h-9 rounded-full bg-[#171f33] border border-[#89ceff] shadow-[0_0_14px_rgba(137,206,255,0.4)] flex items-center justify-center text-white overflow-hidden">
+                      <img
+                        alt="Priya Patel"
+                        className="w-full h-full object-cover"
+                        src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80"
+                      />
                     </div>
                   </div>
-                  <div className="mt-1 px-2 py-0.5 rounded-full bg-[#222a3d]/90 text-white text-[10px] flex items-center gap-1 border border-white/10">
-                    Elena R. • 1.4 km
+                  <div className="mt-1 px-2 py-0.5 rounded-full bg-[#060e20]/90 text-[#bec8d2] text-[10px] flex items-center gap-1 border border-white/10 shadow-md">
+                    Priya P. • 1.1 km
                   </div>
                 </button>
 
-                {/* Worker Pin 3: David C. (2.1km South-West) */}
+                {/* Worker Pin 3: Amit Verma (1.8km South-West) */}
                 <button
                   type="button"
-                  onClick={() => setHighlightedWorkerId('worker-david-c')}
-                  className="absolute top-[68%] left-[26%] -translate-x-1/2 -translate-y-1/2 group transition-all z-20"
+                  onClick={() => setHighlightedWorkerId('worker-amit-verma')}
+                  className="absolute top-[68%] left-[28%] -translate-x-1/2 -translate-y-1/2 group transition-all z-20 cursor-pointer"
                 >
                   <div className="relative flex items-center justify-center">
-                    <div className="w-9 h-9 rounded-full bg-[#222a3d] border border-[#89ceff]/50 shadow-[0_0_14px_rgba(137,206,255,0.4)] flex items-center justify-center text-[#89ceff]">
-                      <span className="material-symbols-outlined text-lg">build_circle</span>
+                    <div className="w-9 h-9 rounded-full bg-[#222a3d] border border-[#ffb95f]/50 shadow-[0_0_14px_rgba(255,185,95,0.4)] flex items-center justify-center text-white overflow-hidden">
+                      <img
+                        alt="Amit Verma"
+                        className="w-full h-full object-cover"
+                        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80"
+                      />
                     </div>
                   </div>
-                  <div className="mt-1 px-2 py-0.5 rounded-full bg-[#222a3d]/90 text-[#bec8d2] text-[10px] flex items-center gap-1 border border-white/10">
-                    David C. • 2.1 km
+                  <div className="mt-1 px-2 py-0.5 rounded-full bg-[#222a3d]/90 text-[#bec8d2] text-[10px] flex items-center gap-1 border border-white/10 shadow-md">
+                    Amit V. • 1.8 km
                   </div>
                 </button>
 
-                {/* Worker Pin 4: Marcus V. (2.9km South-East) */}
+                {/* Worker Pin 4: Vikram Sen (2.5km South-East) */}
                 <button
                   type="button"
-                  onClick={() => setHighlightedWorkerId('worker-marcus-v')}
-                  className="absolute top-[72%] left-[76%] -translate-x-1/2 -translate-y-1/2 group transition-all z-20"
+                  onClick={() => setHighlightedWorkerId('worker-vikram-sen')}
+                  className="absolute top-[72%] left-[74%] -translate-x-1/2 -translate-y-1/2 group transition-all z-20 cursor-pointer"
                 >
                   <div className="relative flex items-center justify-center">
-                    <div className="w-9 h-9 rounded-full bg-[#222a3d] border border-[#ffb95f]/50 shadow-[0_0_14px_rgba(255,185,95,0.4)] flex items-center justify-center text-[#ffb95f]">
-                      <span className="material-symbols-outlined text-lg">power</span>
+                    <div className="w-9 h-9 rounded-full bg-[#222a3d] border border-[#ffb95f]/50 shadow-[0_0_14px_rgba(255,185,95,0.4)] flex items-center justify-center text-white overflow-hidden">
+                      <img
+                        alt="Vikram Sen"
+                        className="w-full h-full object-cover"
+                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=256&q=80"
+                      />
                     </div>
                   </div>
-                  <div className="mt-1 px-2 py-0.5 rounded-full bg-[#222a3d]/90 text-[#bec8d2] text-[10px] flex items-center gap-1 border border-white/10">
-                    Marcus V. • 2.9 km
+                  <div className="mt-1 px-2 py-0.5 rounded-full bg-[#222a3d]/90 text-[#bec8d2] text-[10px] flex items-center gap-1 border border-white/10 shadow-md">
+                    Vikram S. • 2.5 km
                   </div>
                 </button>
               </>
@@ -242,8 +250,7 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
                 </div>
                 <h3 className="text-xl font-bold text-white mb-1">No Verified Pros within {selectedRadius.toFixed(1)} km</h3>
                 <p className="text-xs text-[#bec8d2] max-w-sm mb-4">
-                  We couldn't detect active specialists in your immediate grid. Expand your radar threshold or schedule
-                  a regional priority broadcast.
+                  We couldn't detect active specialists in your immediate grid. Expand your radar threshold or schedule a regional priority broadcast across Bengaluru.
                 </p>
                 <div className="flex items-center gap-3">
                   <button
@@ -252,7 +259,7 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
                       setSelectedRadius(5.0);
                       setIsSimulatedEmpty(false);
                     }}
-                    className="px-4 py-2 rounded-lg bg-[#0ea5e9] text-white text-xs font-semibold hover:bg-[#89ceff] hover:text-[#00344d] transition-all shadow-md"
+                    className="px-4 py-2 rounded-lg bg-[#0ea5e9] text-white text-xs font-semibold hover:bg-[#89ceff] hover:text-[#00344d] transition-all shadow-md cursor-pointer"
                   >
                     Expand to 5.0 km
                   </button>
@@ -262,7 +269,7 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
                       setSelectedRadius(10.0);
                       setIsSimulatedEmpty(false);
                     }}
-                    className="px-4 py-2 rounded-lg bg-[#222a3d] text-white text-xs font-semibold hover:bg-[#31394d] transition-all"
+                    className="px-4 py-2 rounded-lg bg-[#222a3d] text-white text-xs font-semibold hover:bg-[#31394d] transition-all cursor-pointer"
                   >
                     Regional Scan (10 km)
                   </button>
@@ -276,45 +283,45 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setSelectedCategory('electrical')}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                     selectedCategory === 'electrical'
                       ? 'bg-[#4edea3]/20 text-[#4edea3] border border-[#4edea3]/30'
                       : 'text-[#bec8d2] hover:text-white'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-sm">electric_bolt</span>Electrical (4)
+                  <span className="material-symbols-outlined text-sm">electric_bolt</span>Electrical
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedCategory('plumbing')}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                     selectedCategory === 'plumbing'
                       ? 'bg-[#89ceff]/20 text-[#89ceff] border border-[#89ceff]/30'
                       : 'text-[#bec8d2] hover:text-white'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-sm">plumbing</span>Plumbing (7)
+                  <span className="material-symbols-outlined text-sm">plumbing</span>Plumbing
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedCategory('hvac')}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer ${
                     selectedCategory === 'hvac'
                       ? 'bg-[#ffb95f]/20 text-[#ffb95f] border border-[#ffb95f]/30'
                       : 'text-[#bec8d2] hover:text-white'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-sm">mode_fan</span>HVAC (3)
+                  <span className="material-symbols-outlined text-sm">mode_fan</span>HVAC
                 </button>
               </div>
 
               {/* Radius Slider Widget */}
               <div className="w-64 p-3 rounded-xl bg-[#060e20]/85 backdrop-blur-md border border-white/10 shadow-xl flex flex-col gap-1.5">
                 <div className="flex items-center justify-between text-white text-xs">
-                  <span className="text-[10px] font-bold uppercase text-[#bec8d2] tracking-wider">
+                  <span className="text-[10px] font-bold uppercase text-[#bec8d2] tracking-wider font-mono">
                     PostGIS Query Radius
                   </span>
-                  <span className="font-bold text-[#4edea3]">{selectedRadius.toFixed(1)} km</span>
+                  <span className="font-bold text-[#4edea3] font-mono">{selectedRadius.toFixed(1)} km</span>
                 </div>
                 <input
                   className="w-full h-1.5 bg-[#222a3d] rounded-lg appearance-none cursor-pointer accent-[#4edea3]"
@@ -325,7 +332,7 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
                   value={selectedRadius}
                   onChange={(e) => setSelectedRadius(parseFloat(e.target.value))}
                 />
-                <div className="flex justify-between text-[10px] text-[#88929b]">
+                <div className="flex justify-between text-[10px] text-[#88929b] font-mono">
                   <span>1.0 km</span>
                   <span>5.0 km</span>
                   <span>10.0 km</span>
@@ -338,7 +345,7 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
               <div className="px-3 py-1.5 rounded-lg bg-[#060e20]/85 backdrop-blur-md border border-white/10 shadow-xl text-xs text-[#bec8d2] flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#4edea3]"></span>
                 <span>
-                  Coordinates: <strong className="text-white">44.0462° N, 123.0220° W</strong>
+                  Coordinates: <strong className="text-white font-mono">12.9784° N, 77.6408° E</strong> (Indiranagar)
                 </span>
               </div>
             </div>
@@ -349,174 +356,87 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
         <section className="lg:col-span-5 flex flex-col gap-3">
           <div className="bg-[#171f33]/70 backdrop-blur-xl p-3 rounded-xl shadow-md border border-white/5 flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#4edea3]"></span>
-                <h2 className="text-sm font-bold text-white">
-                  {visibleWorkers.length} Verified Electrical Technicians
-                </h2>
-              </div>
-              <span className="px-2 py-0.5 rounded-full bg-[#4edea3]/15 text-[#4edea3] text-[10px] font-bold uppercase tracking-wider border border-[#4edea3]/20">
-                Within {selectedRadius.toFixed(1)} km
+              <span className="text-xs font-bold uppercase tracking-wider text-[#4edea3] font-mono flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#4edea3] animate-ping"></span>
+                Matched Certified Specialists ({visibleWorkers.length})
               </span>
+              <span className="text-[10px] text-[#bec8d2] font-mono">Sorted by ST_Distance</span>
             </div>
-            <div className="flex items-center justify-between text-xs text-[#bec8d2] pt-1 border-t border-white/5">
-              <span>Sort by: <strong className="text-[#89ceff]">Nearest</strong> • Rating • Fast ETA</span>
-              <span className="flex items-center gap-1 text-[#4edea3]">
-                <span className="material-symbols-outlined text-sm">verified</span>Escrow Protected
-              </span>
-            </div>
-          </div>
 
-          {/* Technicians List Container */}
-          <div className="flex flex-col gap-3 overflow-y-auto max-h-[640px] pr-0.5">
-            {/* FEATURED WORKER: Mark J. */}
-            <article
-              className={`relative p-4 rounded-xl bg-[#222a3d]/90 backdrop-blur-xl shadow-xl border transition-all ${
-                highlightedWorkerId === featuredWorker.id ? 'border-[#4edea3] ring-1 ring-[#4edea3]' : 'border-white/5'
-              }`}
-            >
-              <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#ffb95f]/20 text-[#ffb95f] text-[10px] font-bold uppercase tracking-wider border border-[#ffb95f]/30">
-                <span className="material-symbols-outlined text-xs">stars</span>Best Match
-              </div>
-
-              <div className="flex items-start gap-3 mb-3">
-                <div className="relative shrink-0">
-                  <img
-                    alt={featuredWorker.name}
-                    className="w-16 h-16 rounded-xl object-cover shadow-md ring-2 ring-[#ffb95f]/40"
-                    src={featuredWorker.avatar}
-                  />
-                  <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#4edea3] flex items-center justify-center text-[10px] text-[#003824] font-bold">
-                    ✓
-                  </span>
-                </div>
-                <div className="min-w-0 pr-16">
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="text-base font-bold text-white truncate">{featuredWorker.name}</h3>
-                    <span className="text-xs text-[#88929b]">(#{featuredWorker.licenseNumber})</span>
-                  </div>
-                  <p className="text-xs text-[#89ceff] truncate font-medium">{featuredWorker.specialtyTitle}</p>
-                  <div className="mt-1 flex items-center gap-1.5 flex-wrap">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#4edea3]/15 text-[#4edea3] text-[10px] font-bold uppercase tracking-wider border border-[#4edea3]/20">
-                      <span className="material-symbols-outlined text-xs">verified_user</span>KYC Verified
-                    </span>
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#171f33] text-[#bec8d2] text-[10px]">
-                      Police BG Checked
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Metrics Grid */}
-              <div className="grid grid-cols-3 gap-2 py-2 px-3 rounded-lg bg-[#060e20]/60 mb-3 text-center border border-white/5">
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-[#bec8d2]">Pro Rating</span>
-                  <p className="text-sm font-bold text-[#ffb95f] flex items-center justify-center gap-0.5">
-                    <span className="material-symbols-outlined text-sm font-bold">star</span>
-                    {featuredWorker.rating}
-                  </p>
-                  <span className="text-[10px] text-[#88929b]">{featuredWorker.completedJobsCount} reviews</span>
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-[#bec8d2]">Distance / ETA</span>
-                  <p className="text-sm font-bold text-[#4edea3]">{featuredWorker.distanceKm} km</p>
-                  <span className="text-[10px] text-[#4edea3]">~{featuredWorker.currentEtaMinutes} min drive</span>
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-[#bec8d2]">Rate</span>
-                  <p className="text-sm font-bold text-white">${featuredWorker.baseHourlyRate}/hr</p>
-                  <span className="text-[10px] text-[#88929b]">Base Rate</span>
-                </div>
-              </div>
-
-              {/* Tool Loadout Callout */}
-              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-[#171f33]/60 mb-4 text-[#bec8d2] text-xs border border-white/5">
-                <span className="material-symbols-outlined text-[#4edea3] text-base shrink-0">handyman</span>
-                <span className="truncate">
-                  Equipped with <strong>Fluke Diagnostic Multimeters</strong> &amp; Emergency Surge Gear
-                </span>
-              </div>
-
-              {/* Dispatch Action */}
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleOpenBidModal(featuredWorker)}
-                  className="flex-1 py-3 px-4 rounded-lg bg-[#ffb95f] hover:bg-[#ffddb8] text-[#472a00] text-sm font-bold shadow-[0_0_20px_rgba(255,185,95,0.4)] transition-all flex items-center justify-center gap-2"
-                >
-                  <span className="material-symbols-outlined text-lg">bolt</span>
-                  <span>Send Dispatch Request &amp; Open Bid</span>
-                </button>
-                <a
-                  href={`tel:${featuredWorker.phone}`}
-                  className="w-12 h-12 rounded-lg bg-[#171f33] hover:bg-[#2d3449] text-white flex items-center justify-center transition-colors border border-white/5"
-                  title="Direct Call"
-                >
-                  <span className="material-symbols-outlined text-xl">call</span>
-                </a>
-              </div>
-            </article>
-
-            {/* Other Workers */}
-            {visibleWorkers
-              .filter((w) => w.id !== featuredWorker.id)
-              .map((w) => (
-                <article
-                  key={w.id}
-                  className={`p-4 rounded-xl bg-[#171f33]/80 backdrop-blur-xl hover:bg-[#222a3d] transition-all border ${
-                    highlightedWorkerId === w.id ? 'border-[#4edea3]' : 'border-white/5'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-[#89ceff]/15 flex items-center justify-center text-[#89ceff] font-bold text-sm shrink-0">
-                        {w.name.slice(0, 2).toUpperCase()}
+            {visibleWorkers.map((w) => (
+              <article
+                key={w.id}
+                onClick={() => setHighlightedWorkerId(w.id)}
+                className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col gap-3 ${
+                  highlightedWorkerId === w.id
+                    ? 'bg-[#1e273d] border-[#4edea3]/50 shadow-lg'
+                    : 'bg-[#131b2e]/60 border-white/5 hover:border-white/15'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <img
+                      alt={w.name}
+                      className="w-12 h-12 rounded-xl object-cover ring-2 ring-[#4edea3]/40"
+                      src={w.avatar}
+                    />
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="text-sm font-bold text-white">{w.name}</h4>
+                        <span className="material-symbols-outlined text-xs text-[#4edea3]" title="KYC Verified">
+                          verified
+                        </span>
                       </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="text-sm font-bold text-white">{w.name}</h4>
-                          <span className="material-symbols-outlined text-[#4edea3] text-xs">verified</span>
-                        </div>
-                        <p className="text-xs text-[#bec8d2]">{w.specialtyTitle}</p>
+                      <p className="text-[11px] text-[#4edea3] font-medium">{w.specialtyTitle}</p>
+                      <div className="flex items-center gap-2 text-[10px] text-[#bec8d2] mt-0.5">
+                        <span className="text-[#ffb95f] font-bold font-mono">★ {w.rating}</span>
+                        <span>•</span>
+                        <span>{w.completedJobsCount} jobs completed</span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <span className="text-sm font-bold text-white">${w.baseHourlyRate}/hr</span>
-                      <span className="block text-[10px] font-bold uppercase text-[#4edea3]">
-                        {w.isAvailable ? 'Available Now' : 'In Transit'}
-                      </span>
-                    </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs text-[#bec8d2] mb-3">
-                    <span className="flex items-center gap-1 text-[#ffb95f]">
-                      <span className="material-symbols-outlined text-sm">star</span>
-                      {w.rating} ({w.completedJobsCount} reviews)
+                  <div className="text-right flex flex-col items-end">
+                    <span className="text-base font-bold text-[#ffb95f] font-mono">
+                      {formatInr(w.baseHourlyRate)}
+                      <span className="text-xs text-[#bec8d2] font-normal">/hr</span>
                     </span>
-                    <span>
-                      {w.distanceKm} km away (~{w.currentEtaMinutes} min)
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono mt-1">
+                      {w.distanceKm} km ({w.currentEtaMinutes}m ETA)
                     </span>
-                    <span className="text-[#4edea3] font-medium">100% Safety Score</span>
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleOpenBidModal(w)}
-                      className="flex-1 py-2 px-3 rounded-lg bg-[#222a3d] hover:bg-[#31394d] text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 border border-white/5"
-                    >
-                      <span className="material-symbols-outlined text-sm">send</span>Dispatch Offer
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setHighlightedWorkerId(w.id)}
-                      className="px-3 py-2 rounded-lg bg-[#060e20] text-[#bec8d2] hover:text-white text-xs font-medium border border-white/5"
-                    >
-                      Locate
-                    </button>
-                  </div>
-                </article>
-              ))}
+                <div className="text-[11px] text-[#bec8d2] flex items-center justify-between border-t border-white/5 pt-2">
+                  <span className="truncate">{w.insuranceCoverage}</span>
+                  <span className="font-mono text-slate-400 shrink-0">{w.licenseNumber}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenBidModal(w);
+                    }}
+                    className="flex-1 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                  >
+                    <span className="material-symbols-outlined text-sm">send</span>
+                    <span>Direct Dispatch Offer</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setHighlightedWorkerId(w.id);
+                    }}
+                    className="px-3 py-2 rounded-lg bg-[#060e20] text-[#bec8d2] hover:text-white text-xs font-medium border border-white/5 cursor-pointer"
+                  >
+                    Locate
+                  </button>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
       </div>
@@ -527,7 +447,7 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
           <div className="w-full max-w-lg rounded-2xl bg-[#131b2e] border border-white/10 p-6 md:p-8 shadow-2xl relative">
             <button
               type="button"
-              className="absolute top-4 right-4 text-[#bec8d2] hover:text-white"
+              className="absolute top-4 right-4 text-[#bec8d2] hover:text-white cursor-pointer"
               onClick={() => setActiveModalWorker(null)}
             >
               <span className="material-symbols-outlined">close</span>
@@ -535,25 +455,25 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
 
             <div className="flex items-center gap-2 mb-1">
               <span className="w-2 h-2 rounded-full bg-[#ffb95f]"></span>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#ffb95f]">
-                Guaranteed Dispatch Request
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#ffb95f] font-mono">
+                Guaranteed Dispatch Proposal
               </span>
             </div>
             <h3 className="text-xl font-bold text-white mb-1">Dispatch Offer to {activeModalWorker.name}</h3>
             <p className="text-xs text-[#bec8d2] mb-4">
-              Base Rate ${activeModalWorker.baseHourlyRate}/hr • {activeModalWorker.distanceKm} km estimated distance
+              Base Rate {formatInr(activeModalWorker.baseHourlyRate)}/hr • {activeModalWorker.distanceKm} km estimated distance
             </p>
 
             <div className="p-4 rounded-xl bg-[#060e20]/80 border border-white/5 mb-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-[#bec8d2]">Proposed Hourly Emergency Rate</span>
-                <span className="text-3xl font-bold text-[#ffb95f] font-mono">${modalBidAmount}</span>
+                <span className="text-xs text-[#bec8d2]">Proposed Hourly Rate</span>
+                <span className="text-2xl font-bold text-[#ffb95f] font-mono">{formatInr(modalBidAmount)}</span>
               </div>
               <input
                 className="w-full h-2 bg-[#222a3d] rounded-lg appearance-none cursor-pointer accent-[#ffb95f] mb-3"
-                max={95}
-                min={40}
-                step={1}
+                max={2500}
+                min={400}
+                step={50}
                 type="range"
                 value={modalBidAmount}
                 onChange={(e) => setModalBidAmount(parseInt(e.target.value, 10))}
@@ -562,23 +482,23 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setModalBidAmount(activeModalWorker.baseHourlyRate)}
-                  className="px-3 py-1 rounded-full bg-[#171f33] text-white text-xs border border-white/5"
+                  className="px-3 py-1 rounded-full bg-[#171f33] text-white text-xs border border-white/5 cursor-pointer"
                 >
                   Base Rate
                 </button>
                 <button
                   type="button"
-                  onClick={() => setModalBidAmount(activeModalWorker.baseHourlyRate + 10)}
-                  className="px-3 py-1 rounded-full bg-[#171f33] text-[#ffb95f] text-xs border border-[#ffb95f]/20"
+                  onClick={() => setModalBidAmount(activeModalWorker.baseHourlyRate + 150)}
+                  className="px-3 py-1 rounded-full bg-[#171f33] text-[#ffb95f] text-xs border border-[#ffb95f]/20 cursor-pointer"
                 >
-                  + $10 Rush
+                  + ₹150 Rush
                 </button>
                 <button
                   type="button"
-                  onClick={() => setModalBidAmount(activeModalWorker.baseHourlyRate + 25)}
-                  className="px-3 py-1 rounded-full bg-[#171f33] text-[#ffb95f] text-xs border border-[#ffb95f]/20"
+                  onClick={() => setModalBidAmount(activeModalWorker.baseHourlyRate + 300)}
+                  className="px-3 py-1 rounded-full bg-[#171f33] text-[#ffb95f] text-xs border border-[#ffb95f]/20 cursor-pointer"
                 >
-                  + $25 Urgent SOS
+                  + ₹300 Urgent SOS
                 </button>
               </div>
             </div>
@@ -598,8 +518,7 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
             <div className="flex items-start gap-2 p-3 rounded-lg bg-[#00a572]/10 text-[#4edea3] text-xs mb-6 border border-[#00a572]/20">
               <span className="material-symbols-outlined text-base shrink-0">shield</span>
               <span>
-                Funds are held safely in AegisCraft Smart Escrow. Technician is only disbursed upon verified dual QR task
-                sign-off.
+                Funds are held safely in AegisCraft INR Escrow. Technician is only disbursed upon verified dual digital task sign-off.
               </span>
             </div>
 
@@ -607,15 +526,15 @@ export const RadarMatchingView: React.FC<RadarMatchingViewProps> = ({
               <button
                 type="button"
                 onClick={handleConfirmBidModal}
-                className="flex-1 py-3 rounded-lg bg-[#ffb95f] hover:bg-[#ffddb8] text-[#472a00] text-sm font-bold shadow-lg transition-all flex items-center justify-center gap-2"
+                className="flex-1 py-3 rounded-lg bg-[#ffb95f] hover:bg-[#ffddb8] text-[#472a00] text-sm font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span className="material-symbols-outlined">send_and_archive</span>
-                <span>Submit Escrow Dispatch ($ {modalBidAmount})</span>
+                <span>Submit Escrow Dispatch ({formatInr(modalBidAmount)})</span>
               </button>
               <button
                 type="button"
                 onClick={() => setActiveModalWorker(null)}
-                className="px-4 py-3 rounded-lg bg-[#171f33] hover:bg-[#222a3d] text-white text-xs font-medium"
+                className="px-4 py-3 rounded-lg bg-[#171f33] hover:bg-[#222a3d] text-white text-xs font-medium cursor-pointer"
               >
                 Cancel
               </button>

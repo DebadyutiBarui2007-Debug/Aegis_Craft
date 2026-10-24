@@ -7,15 +7,47 @@ import {
   ChatMessage,
   SosAlert,
   ReviewRecord,
+  ServiceAgency,
+  AuthResponse,
+  RegisterPayload,
+  LoginPayload,
 } from '../types/index.ts';
 
 const API_BASE = '/api/v1';
+const AUTH_TOKEN_KEY = 'aegiscraft_auth_token';
+
+export const tokenStorage = {
+  get: (): string | null => {
+    try {
+      return localStorage.getItem(AUTH_TOKEN_KEY);
+    } catch {
+      return null;
+    }
+  },
+  set: (token: string) => {
+    try {
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
+    } catch {}
+  },
+  clear: () => {
+    try {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+    } catch {}
+  },
+};
 
 export async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
+  const token = tokenStorage.get();
+  const authHeaders: Record<string, string> = {};
+  if (token) {
+    authHeaders['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...authHeaders,
       ...options?.headers,
     },
   });
@@ -32,7 +64,36 @@ export async function fetchJson<T>(url: string, options?: RequestInit): Promise<
 
 export const api = {
   // Auth
-  getMe: () => fetchJson<{ user: User }>(`${API_BASE}/auth/me`),
+  getMe: () => fetchJson<{ user: User; token?: string }>(`${API_BASE}/auth/me`),
+  register: async (payload: RegisterPayload) => {
+    const res = await fetchJson<AuthResponse>(`${API_BASE}/auth/register`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    if (res.token) {
+      tokenStorage.set(res.token);
+    }
+    return res;
+  },
+  login: async (payload: LoginPayload) => {
+    const res = await fetchJson<AuthResponse>(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    if (res.token) {
+      tokenStorage.set(res.token);
+    }
+    return res;
+  },
+  logout: async () => {
+    try {
+      await fetchJson<{ success: boolean }>(`${API_BASE}/auth/logout`, {
+        method: 'POST',
+      });
+    } finally {
+      tokenStorage.clear();
+    }
+  },
   setRole: (role: 'customer' | 'worker_pro') =>
     fetchJson<{ success: boolean; user: User }>(`${API_BASE}/auth/role`, {
       method: 'POST',
@@ -46,11 +107,17 @@ export const api = {
     ),
 
   // Workers
-  getNearbyWorkers: (lat = 44.0462, lng = -123.022, radius = 3.2, category = 'all') =>
+  getNearbyWorkers: (lat = 12.9784, lng = 77.6408, radius = 3.2, category = 'all') =>
     fetchJson<{ count: number; workers: WorkerProfile[] }>(
       `${API_BASE}/workers/nearby?lat=${lat}&lng=${lng}&radius=${radius}&category=${category}`
     ),
   getWorker: (id: string) => fetchJson<{ worker: WorkerProfile }>(`${API_BASE}/workers/${id}`),
+
+  // Verified Indian Agencies Directory
+  getNearbyAgencies: (lat = 12.9784, lng = 77.6408, radius = 10.0, category = 'all', city = 'Bengaluru') =>
+    fetchJson<{ count: number; agencies: ServiceAgency[] }>(
+      `${API_BASE}/agencies/nearby?lat=${lat}&lng=${lng}&radius=${radius}&category=${category}&city=${encodeURIComponent(city)}`
+    ),
 
   // Jobs
   getJobs: () => fetchJson<{ jobs: JobRequest[] }>(`${API_BASE}/jobs`),
@@ -127,6 +194,9 @@ export const api = {
       } catch (err) {
         console.error('Failed to parse SSE event:', err);
       }
+    };
+    eventSource.onerror = () => {
+      // Browser EventSource automatically handles reconnect with exponential backoff
     };
     return () => {
       eventSource.close();

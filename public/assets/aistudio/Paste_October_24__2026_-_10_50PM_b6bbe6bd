@@ -1,0 +1,958 @@
+# MASTER IMPLEMENTATION PROMPT — BLUE-COLLAR MANAGEMENT PLATFORM
+## Smooth App Launch Animation + Role-Based Authentication + Complete Indian Localization + Real Nearby Service Agencies
+
+You are a senior full-stack engineer, authentication architect, frontend animation specialist, database engineer, localization expert, and product reliability engineer.
+
+Your task is to **modify my existing Blue-Collar Management Platform project directly**, implementing the following improvements without removing, breaking, or unnecessarily redesigning any existing feature.
+
+The application already has its frontend screens and backend architecture. Inspect the existing repository, understand the current implementation, and make the changes in the actual codebase. Connect every new feature to the existing frontend and backend correctly. Test the implementation, fix any errors caused by your changes, and update the README.md.
+
+This is an implementation task, not a design-only task. Do not merely provide instructions, sample code, a plan, or mockup screens.
+
+## THE FIVE MANDATORY OBJECTIVES
+
+1. Add an exceptionally smooth, attractive application launch animation lasting no more than 3 seconds.
+2. Implement a complete, persistent, secure authentication and registration flow that automatically opens the correct customer or worker interface.
+3. Localize the entire application for India, replacing USA-centric defaults with appropriate Indian formats, currency, addresses, contact conventions, and regional context.
+4. Show genuine nearby service providers, agencies, and their contact details from reliable, permitted sources without fabricating any business, phone number, rating, worker, or customer.
+5. Update README.md to document the implemented changes, setup instructions, configurations, and testing results.
+
+**Preserve all existing features, screens, navigation, the liquid-glass design language, the nature-inspired golden-rescue colors, job dispatch, geospatial matching, bidding, counteroffers, live tracking, messaging, SOS, ratings, transactions, and MCP integration. Make only the changes requested here and any necessary supporting modifications.**
+
+---
+
+# PART 1 — INSPECT THE EXISTING APPLICATION FIRST
+
+Before changing code, inspect the actual repository and determine:
+
+- The frontend framework and current application entry point.
+- The existing splash or loading screen, if any.
+- Current navigation and route protection.
+- Existing customer and worker interfaces.
+- Existing registration and login screens.
+- Current authentication APIs and session management.
+- The user and worker database models.
+- Existing environment variables and authentication configuration.
+- Existing mock users, placeholder businesses, hardcoded contacts, USD prices, American addresses, and other USA-specific defaults.
+- The existing README.md and current setup commands.
+- Existing map, location, service discovery, PostGIS, Redis, Socket.IO/WebSocket, and MCP integrations.
+- The project's actual build, lint, type-check, and test commands.
+
+Reuse existing, functioning implementations whenever possible.
+
+Do not replace the application with a starter template. Do not create a second authentication system if a suitable one already exists. Do not overwrite the working frontend just to implement an animation or change the locale.
+
+Create and execute the necessary changes within the existing architecture.
+
+# PART 2 — PREMIUM APP LOADING ANIMATION
+
+## 2.1 Visual concept
+
+Create a signature launch animation for the existing application, using its current brand identity.
+
+The animation must combine:
+
+- The existing platform logo or wordmark.
+- A subtle emerald-green nature-inspired glow.
+- A refined golden or amber accent.
+- A soft, liquid-glass-inspired surface treatment.
+- A gentle location-pin or rescue-inspired visual motif.
+- A restrained circular radar ripple symbolizing nearby help.
+- A smooth transition into the actual application interface.
+
+The result must feel premium, emotionally reassuring, natural, modern, and memorable. It should not look like a generic spinning loader or a childish animated logo.
+
+Use the existing application name and logo assets. If no suitable logo exists, create a simple, tasteful brand mark consistent with the current design system rather than inventing an unrelated identity.
+
+Retain the current color tokens wherever possible:
+
+- Forest/slate background: `#0F172A`
+- Glass surface: `#1E293B`
+- Emerald trust accent: `#10B981`
+- Sky-blue interactive accent: `#0EA5E9`
+- Golden-amber accent: `#F59E0B`
+- Light theme background: `#F8FAFC`
+
+Adapt the animation to both the existing light and dark themes without a bright flash during launch.
+
+## 2.2 Animation timeline
+
+The total splash animation must never exceed **3 seconds**.
+
+Use this suggested sequence:
+
+**0.0–0.5 seconds — Brand reveal**
+
+The background appears smoothly, followed by the existing logo using a subtle opacity and scale transition. Avoid a sudden flash or a large, aggressive zoom.
+
+**0.5–1.4 seconds — Nature and rescue identity**
+
+Introduce a restrained emerald ripple or location-inspired visual effect. Use no more than a few lightweight concentric rings. A soft amber highlight may appear briefly to create depth.
+
+**1.4–2.2 seconds — Wordmark and refinement**
+
+Reveal the existing app name and, if appropriate, a short brand tagline. Keep the composition minimal and beautifully balanced.
+
+Do not show a false statement such as “Finding workers” unless an actual worker-matching request has already started.
+
+**2.2–3.0 seconds — Seamless transition**
+
+Transition into the correct application destination through a smooth fade, subtle scale transition, or other lightweight animation suitable for the existing framework.
+
+Do not show a second loading screen immediately afterward unless a genuine data-loading operation requires it.
+
+These timings are design guidance, not a requirement to force the application to wait until the entire sequence finishes.
+
+## 2.3 Loading and startup behavior
+
+The splash screen must not block the user for 3 seconds unnecessarily.
+
+Implement the following startup flow:
+
+1. Initialize the minimal application shell.
+2. Restore and validate the existing authentication session.
+3. Determine whether the user is registered and authenticated.
+4. Retrieve the authoritative account role when needed.
+5. Resolve the appropriate destination.
+6. Transition directly to that destination as soon as the application is ready.
+
+Aim for a polished launch animation while keeping the total splash duration at or below 3 seconds.
+
+If startup finishes early, transition early.
+
+If an API, database, or network request takes longer than 3 seconds, dismiss the decorative splash by the deadline and display the appropriate in-app loading, connection, or retry state.
+
+**Never hold the user on an animation indefinitely while waiting for the backend.**
+
+A real offline state must remain accessible. The application must not falsely display that a user is logged in merely because a previous local value exists.
+
+## 2.4 Animation performance
+
+Make the animation lightweight and smooth on ordinary Android devices and other platforms supported by the existing application.
+
+- Reuse the project's current animation library when appropriate.
+- Avoid installing unnecessary animation packages.
+- Prefer efficient opacity and transform animations.
+- Avoid continuously animating complex blur filters.
+- Avoid multiple nested liquid-glass effects.
+- Do not perform database or network requests from the animation loop.
+- Prevent animation timers from being duplicated during navigation or component remounts.
+- Clean up timers and animation resources correctly.
+- Respect reduced-motion accessibility preferences.
+- Avoid layout shifts and white flashes.
+- Preserve the existing application's performance optimizations.
+
+Do not claim a particular frame rate or performance improvement unless you have measured it.
+
+---
+
+# PART 3 — COMPLETE CUSTOMER AND WORKER AUTHENTICATION
+
+The platform has two distinct user experiences:
+
+**Customer mode:** For users who need services.
+
+**Worker mode:** For service professionals who accept requests, negotiate prices, and perform jobs.
+
+Create one coherent authentication system that correctly identifies each user and opens the appropriate interface.
+
+## 3.1 First-time account creation
+
+The first-time flow should be:
+
+Application opens → Splash animation → Welcome/Authentication screen → Create Account → Choose Account Type → Enter Details → Validate → Create Account → Save Account → Open Correct Interface.
+
+The welcome/authentication screen must offer clear options to:
+
+- Create an account.
+- Sign in to an existing account.
+- Understand the difference between customer and worker accounts.
+
+Use the platform's existing brand identity, visual system, and navigation.
+
+Keep the screen clean and welcoming. Do not show the entire registration form inside a crowded home screen.
+
+## 3.2 Account-type selection
+
+Before or during registration, allow the person to choose their intended account type through two clearly designed options:
+
+**I Need a Service — Customer**
+
+For users who want to discover services, find workers, request jobs, negotiate prices, track jobs, communicate, and rate completed work.
+
+**I Provide Services — Worker**
+
+For professionals who want to create a worker profile, specify their service categories, complete required verification, receive job requests, submit counteroffers, manage assignments, and view supported earnings and transaction information.
+
+Use short, easy-to-understand descriptions.
+
+Persist the selected role through the existing authentication and database architecture.
+
+Do not rely on an unvalidated frontend variable as proof of a person's role.
+
+## 3.3 Registration form
+
+Create or update the registration flow with the minimum fields required by the existing authentication architecture:
+
+- Full name.
+- Mobile number with India `+91` as the default country calling code.
+- Email address where supported or required.
+- Password and confirmation where password-based registration is used.
+- Account type: customer or worker.
+- Consent to applicable terms and privacy information.
+
+Do not require fields that the backend and actual product do not need.
+
+Validate all information on both frontend and backend.
+
+Use sensible, India-friendly input behavior:
+
+- Indian mobile-number formatting.
+- Clear country code presentation.
+- Appropriate email validation.
+- Helpful password feedback.
+- Clear form labels.
+- Inline errors.
+- Loading states during submission.
+- Duplicate-submission prevention.
+- A readable success state.
+
+Keep the form accessible and usable on small screens.
+
+Never place a real password or authentication token into logs, analytics, or debug messages.
+
+## 3.4 Customer-specific registration
+
+When the user creates a customer account:
+
+1. Validate the form.
+2. Create the account through the real backend.
+3. Store the appropriate customer role.
+4. Create or initialize the required customer profile.
+5. Establish a valid authenticated session.
+6. Retrieve the authoritative account information.
+7. Navigate to the existing customer onboarding or customer home screen.
+
+The customer should immediately see the appropriate customer experience after successful registration.
+
+Do not route customers into the worker dashboard, worker-only navigation, or worker availability controls.
+
+## 3.5 Worker-specific registration
+
+When the user creates a worker account:
+
+1. Validate the form.
+2. Create the account through the real backend.
+3. Store the worker role.
+4. Initialize the worker profile.
+5. Present the required worker onboarding screens.
+6. Collect the supported service categories and required profile information.
+7. Present the genuine verification/KYC flow where implemented.
+8. Navigate to the worker onboarding continuation or worker home screen as appropriate.
+
+If verification is pending, accurately display the pending status.
+
+Never mark a worker as verified simply because registration succeeded.
+
+Follow the current backend eligibility rules when determining whether the worker can become available for matching.
+
+Do not show fake work history, fake earnings, fake ratings, fabricated customer details, or invented verification claims.
+
+## 3.6 Existing-user login
+
+When an existing user signs in:
+
+1. Authenticate against the actual backend.
+2. Validate the session.
+3. Retrieve the authoritative user profile and role.
+4. Restore the correct application state.
+5. Navigate automatically to the correct interface.
+
+A customer must enter customer mode.
+
+A worker must enter worker mode.
+
+**Do not ask users to choose their role every time they log in if their account already has a valid stored role.**
+
+The account role must be resolved from the trusted backend response, not inferred from a username, local storage, or the last screen viewed.
+
+If a role is missing, inconsistent, or invalid, display a safe recovery flow rather than routing to an arbitrary interface.
+
+If the existing architecture supports users who can genuinely hold multiple roles, preserve that capability with explicit backend authorization. Otherwise, use the existing single-role model.
+
+## 3.7 Persistent login and logout
+
+Implement correct session behavior:
+
+- Restore a valid session on app startup.
+- Refresh an eligible session when required.
+- Handle expired and revoked sessions.
+- Avoid login-refresh loops.
+- Preserve unsent, non-sensitive form input where practical.
+- Clear sensitive account state on logout.
+- Remove protected real-time subscriptions on logout.
+- Ensure logout cannot leave private job details or messages exposed.
+- Route the user back to the welcome/authentication screen after logout.
+
+Do not store passwords in local storage.
+
+Use the existing secure authentication design, such as HTTP-only secure cookies for browser sessions where appropriate, or platform secure storage for native applications.
+
+If the current application already has a properly implemented authentication provider, integrate with it instead of creating competing account systems.
+
+## 3.8 Backend security
+
+Enforce all permissions on the server:
+
+- Customers may access only their authorized customer records and jobs.
+- Workers may access only their own profiles, eligible requests, authorized bids, and assigned jobs.
+- Only authorized users may modify profiles, submit offers, accept offers, or access job conversations.
+- The frontend cannot promote a customer to a verified worker merely by changing a role field.
+- Role selection in a registration form must be validated and persisted securely.
+- Account data must remain associated with the correct authenticated identity.
+
+Keep the existing authorization model and strengthen it wherever needed for this flow.
+
+---
+
+# PART 4 — FULL INDIAN LOCALIZATION
+
+The application currently uses USA-centric assumptions. Correct these across the entire product without removing functionality.
+
+Make Indian localization the default experience for users in India.
+
+Localization must cover both visible frontend content and the underlying data contracts where required.
+
+## 4.1 Currency: Indian rupees
+
+Use `INR` as the default currency for new Indian jobs, bids, and applicable transaction records.
+
+Display amounts using Indian locale formatting, for example:
+
+- ₹250
+- ₹1,250
+- ₹12,500
+- ₹1,25,000
+
+Use `en-IN` or an equivalent Indian locale formatter.
+
+Implement a consistent money representation across frontend and backend.
+
+Store monetary values using integer minor units or another explicitly justified exact-decimal representation. Do not rely on floating-point arithmetic for pricing, bids, or transactions.
+
+Keep the currency code associated with each persisted amount.
+
+Update:
+- Customer service request prices.
+- Initial pricing information.
+- Worker base-rate presentation.
+- Bid and counteroffer interfaces.
+- Job agreements.
+- Transaction history.
+- Worker earnings.
+- Price comparisons and relevant tooltips.
+- Empty states and sample-content definitions.
+- Any other price display in the existing application.
+
+Remove USA dollar symbols from new Indian-default UI paths.
+
+Do not merely replace a `$` character with `₹` while leaving inconsistent backend semantics.
+
+**Important existing-data rule:** Never silently reinterpret an existing USD amount as an equivalent INR amount. Preserve its actual stored currency, and use a reviewed migration or explicit conversion process if old records require conversion.
+
+If an Indian customer creates a new job, use INR as the default unless the actual product requirements explicitly support another currency.
+
+Do not introduce an exchange-rate service unless the existing application requires multi-currency conversions.
+
+## 4.2 Indian names and personal information
+
+Replace USA-specific example profiles and assumptions with India-appropriate form conventions.
+
+Use a full-name field that accepts Indian naming patterns without requiring an arbitrary first/last-name structure.
+
+Support normal Indian names, spaces, and valid regional-language characters where appropriate.
+
+Do not reject legitimate names just because they differ from an American naming convention.
+
+Do not impose gendered titles or assumptions that are not necessary for the product.
+
+## 4.3 Indian phone numbers
+
+Set `+91` as the default country calling code.
+
+Support appropriate Indian telephone-number validation and formatting.
+
+Store phone numbers in a consistent normalized international representation where appropriate.
+
+Never invent contact numbers for workers, agencies, customers, support services, or emergency contacts.
+
+Separate:
+- A user's personal mobile number.
+- A provider's published business number.
+- A configured emergency contact.
+- An official public emergency service number.
+
+Do not place a fabricated number in any of these fields.
+
+Do not display a raw development placeholder as though it is a real contact number.
+
+## 4.4 Indian addresses and location input
+
+Adapt address-related screens for India.
+
+Use relevant fields where needed, such as:
+
+- Full address or location name.
+- House/building and street details when appropriate.
+- Locality or neighborhood.
+- Landmark, if useful.
+- City or town.
+- District, where appropriate.
+- State or Union Territory.
+- Six-digit Indian PIN code.
+
+Do not require every field when a map-selected point or another supported location method already provides sufficient information.
+
+Support an address-search or location-selection interface appropriate to the existing map provider.
+
+Validate the PIN code and location fields sensibly.
+
+Do not force the user to enter a US state, ZIP code, county, or city/state abbreviation.
+
+Use India as the default country where applicable, but preserve support for other countries only if the existing product already supports them.
+
+## 4.5 Indian date, time, and distances
+
+Use India-friendly presentation:
+
+- Locale: `en-IN`.
+- Default timezone for Indian display: `Asia/Kolkata`.
+- Dates: `DD/MM/YYYY` where an unambiguous textual format is not needed.
+- Distances: kilometers and meters.
+- Currency: INR for new Indian transactions.
+- Local timestamps for readable customer-facing information.
+
+Use ISO 8601 timestamps or another consistent UTC-based representation for backend storage and API exchange. Convert to Indian local time in the UI.
+
+Do not hardcode a fixed UTC offset throughout the codebase when a proper timezone library or platform formatter is available.
+
+For geospatial functions, store coordinates correctly and convert distance results into kilometers or meters only at the relevant display or business-rule boundary.
+
+Keep all matching-radius calculations consistent with the PostGIS implementation.
+
+## 4.6 Indian-language readiness
+
+Keep English as the default application language if that is the existing design.
+
+Prepare the UI strings so Bengali and Hindi can be supported consistently without restructuring every screen later.
+
+If the existing project already includes an internationalization library, reuse it.
+
+Do not mechanically translate the whole application into Bengali or Hindi without an explicit language-selection requirement.
+
+Make it easy to add Indian regional languages through a proper localization layer rather than duplicating UI components.
+
+## 4.7 Remove USA-centric content throughout the app
+
+Search the entire repository, not only the visible homepage, for:
+
+- `$` and USD pricing defaults.
+- Dollar-based sample amounts.
+- US ZIP-code assumptions.
+- American address formats.
+- US-style default date formats.
+- USA-centric phone validation.
+- Hardcoded American cities and locations.
+- Mock American workers or customers.
+- USA-specific support and agency records.
+- Any other default content incompatible with Indian users.
+
+Update each occurrence according to its actual purpose.
+
+Do not delete required technical functionality merely because an example was American. Replace its defaults and preserve its underlying feature.
+
+Keep production behavior consistent with the new localization.
+
+---
+
+# PART 5 — REAL CUSTOMER AND WORKER DATA ONLY
+
+This requirement is strict.
+
+**The application must not pretend that an example user, phone number, worker, rating, agency, business hub, transaction, or job is genuine.**
+
+After a user registers, their profile and relevant application data must be persisted in the real backend database and retrieved through authenticated APIs.
+
+After an existing user logs in, the application must load their actual stored data.
+
+Do not return hardcoded users as a fallback when an API call fails.
+
+Do not display fabricated customer counts, workers online, completed jobs, ratings, earnings, bid counts, reviews, or transaction records.
+
+Do not automatically seed fake workers and customers into a production database.
+
+Development fixtures are allowed for testing, but they must be visibly marked as test data, excluded from production seeding, and never misrepresented as real users.
+
+For a newly registered user with no history, show a natural empty state, such as:
+
+“You haven't booked a service yet. Explore nearby services to get started.”
+
+For a new worker without jobs, show:
+
+“No job requests yet. Once you become eligible and available, relevant opportunities will appear here.”
+
+Adjust this wording to the current product design.
+
+Use actual API results for:
+- User profile data.
+- Worker identity and categories.
+- Verification status.
+- Worker availability.
+- Ratings and reviews.
+- Job requests.
+- Offers and counteroffers.
+- Assigned jobs.
+- Location and tracking information.
+- Messages.
+- Notifications.
+- Transactions and earnings.
+- Agency and provider listings.
+
+When no data exists, display a clean empty state.
+
+When a request fails, display an honest error and recovery option.
+
+When the backend is unavailable, do not secretly substitute fake production data.
+
+Preserve realistic interactions by using actual persisted data or explicitly identified prototype/test data.
+
+---
+
+# PART 6 — REAL AGENCIES AND NEARBY SERVICE PROVIDERS IN INDIA
+
+The application should help users discover relevant genuine local service agencies, providers, and business locations around their actual location.
+
+This feature must be implemented as a real, location-aware directory, not a static list of invented companies.
+
+## 6.1 Discover providers near the actual user
+
+Use the existing location and map infrastructure where possible.
+
+Request the user's location through the supported browser or native-platform permission mechanism.
+
+Explain briefly why the application needs location access.
+
+If the user permits location access:
+- Determine the current coordinates using the actual device/location API.
+- Search for relevant service businesses near those coordinates.
+- Prioritize genuinely nearby results.
+- Display distances based on actual coordinates returned by the configured provider or geospatial service.
+- Respect the user's selected service category and supported search radius.
+
+If the user denies or disables location access:
+- Do not bypass the permission setting.
+- Do not use a guessed street address.
+- Offer a manual city, locality, or PIN-code search.
+- Allow a user to select their intended job location explicitly.
+
+Do not depend on hidden or inferred location values. Use the location that the user authorizes or enters.
+
+## 6.2 Reliable business-data sources
+
+Inspect the map and provider integrations already present in the application.
+
+If a reliable provider directory already exists, reuse it.
+
+Otherwise, implement a provider-discovery adapter using a configured and supported service, such as Google Places API or another appropriate licensed business-discovery API.
+
+Use official business websites, documented official provider APIs, and permitted business-listing sources where appropriate.
+
+Choose a practical implementation that can actually be configured within the existing project.
+
+Do not claim access to a private agency directory or provider partnership without evidence.
+
+Do not scrape websites in ways that violate their terms of service.
+
+Do not write a list of imagined local companies into the database and present it as a nearby search result.
+
+## 6.3 Popular agency discovery
+
+For the currently selected service category and location, search for relevant providers, such as:
+
+- Home cleaning services.
+- Plumbing services.
+- Electrical service providers.
+- Appliance repair businesses.
+- Other service categories already supported by the application.
+
+Include known national service brands in discovery queries only when relevant. Display such brands only when the configured data source returns a genuine relevant result for the user’s area.
+
+**Never force a well-known brand into the results merely because it is recognizable. If it has no confirmed nearby business listing, do not present it as having a local hub.**
+
+For agencies that genuinely have a nearby business listing, display the information returned by the configured source.
+
+A provider card may include:
+- Official business or listing name.
+- Genuine address or locality.
+- Published phone number, if actually returned.
+- Official website, if available.
+- Relevant service category.
+- Actual distance from the selected user location.
+- Opening hours, where available.
+- Actual provider rating and review count, if available.
+- A source attribution and freshness indicator when required.
+
+Never invent a phone number, opening time, rating, review count, location, company branch, or business relationship.
+
+Do not display a blank, synthetic, or placeholder phone number in a Call action.
+
+If the source does not supply a phone number, omit the phone action and display the available genuine information instead.
+
+## 6.4 Nearby agency discovery behavior
+
+Integrate a lightweight, dedicated section such as:
+
+**Nearby Service Providers**
+
+or an equivalent section consistent with the existing design.
+
+Do not overload the home screen with a massive business directory.
+
+Provide:
+- A concise list of nearby relevant providers.
+- A sensible distance-based ordering.
+- A way to inspect available business details.
+- A genuine Call action when a valid phone number is returned.
+- A genuine Website action when an official URL is available.
+- A way to retry or change the location.
+
+Keep the business directory separate from the existing peer-to-peer worker-matching system.
+
+Do not represent an external agency as a platform-verified individual worker or imply that it is a contracted platform partner unless the application has actually established that relationship.
+
+Distinguish external business listings from internally registered and verified workers.
+
+Use appropriate labels, such as “Local business listing” or “Platform-verified worker,” based on the actual source.
+
+## 6.5 Data freshness and source transparency
+
+Use the configured provider's current search results whenever the application requires nearby businesses.
+
+Cache listings only according to the provider's allowed caching and retention policies.
+
+Refresh results when the user changes location or service category, and follow any applicable provider-specific expiry rules.
+
+Where practical, show when the data was last refreshed.
+
+Use provider attribution wherever required.
+
+Do not make a business listing's presence imply that the company guarantees service availability, pricing, response times, or emergency support.
+
+A genuine business listing is not automatically a verified platform worker.
+
+## 6.6 Provider integration configuration
+
+Keep third-party API credentials on the server.
+
+Never expose privileged provider keys in frontend source code.
+
+Add the actual required environment variables to `.env.example`, such as a server-side Places API credential if that is the selected integration.
+
+Validate the supported APIs and permitted usage before implementation.
+
+Document billing, service activation, API restrictions, and required configuration in README.md when relevant.
+
+Do not allow an unconfigured provider directory to fall back to fake names and contact numbers.
+
+If no provider API key or business directory is configured, show an honest message explaining that nearby provider discovery is currently unavailable and provide manual location input or the existing platform worker-discovery route.
+
+A directory with no results must remain empty rather than being populated with fictional listings.
+
+## 6.7 Emergency contacts
+
+Inspect the existing SOS implementation separately from the commercial provider directory.
+
+Only use genuine, appropriately verified emergency contact information from official sources or configured user-provided contacts.
+
+Do not use a random local business as an emergency service.
+
+Do not represent a company's published business phone number as a public emergency hotline.
+
+Do not claim that an emergency alert has reached a contact without actual delivery confirmation.
+
+Preserve the existing SOS confirmation and backend delivery-state logic.
+
+---
+
+# PART 7 — CONNECT EVERYTHING TO THE EXISTING BACKEND
+
+These improvements must work with the actual backend architecture.
+
+Inspect and reuse the existing:
+- Authentication APIs.
+- User and worker database models.
+- Worker eligibility rules.
+- Service-category APIs.
+- Profile endpoints.
+- Session-management logic.
+- Map/location APIs.
+- Worker-matching services.
+- Socket.IO/WebSocket connection management.
+- Redis and PostGIS integration.
+- MCP server.
+- Environment-based configuration.
+- API error-handling conventions.
+
+Do not create a competing authentication database or duplicate source of truth.
+
+Do not break job creation, offer submission, bid acceptance, messaging, GPS tracking, ratings, transactions, or other existing business logic.
+
+The authentication identity must flow consistently through REST calls, WebSocket connections, and MCP authorization where relevant.
+
+Role-based routing is a frontend convenience; server-side authorization is mandatory.
+
+If the current application has an API abstraction, extend it instead of adding scattered raw API calls inside every screen.
+
+Keep frontend and backend response contracts consistent.
+
+Ensure the splash and registration flows behave correctly when the backend is:
+- Available.
+- Slow.
+- Temporarily unavailable.
+- Returning an authentication error.
+- Returning an empty profile.
+- Returning an expired session.
+- Returning an invalid or incomplete account role.
+
+Never route users based on a failed or fabricated API response.
+
+---
+
+# PART 8 — PERFORMANCE AND UX RELIABILITY
+
+The application should feel fast and calm rather than robotic.
+
+Implement:
+- Fast startup.
+- A maximum three-second splash animation.
+- No unnecessary animation delay.
+- Correct session restoration.
+- Smooth role-based routing.
+- Reusable authentication UI states.
+- Debounced or appropriately controlled business-directory searches.
+- Request cancellation where appropriate.
+- Safe request deduplication.
+- Clear loading skeletons and empty states.
+- No flickering during initialization.
+- No unnecessary full-screen reloads.
+- No duplicate network calls caused by component remounts.
+- No redundant WebSocket subscriptions.
+- No fake success responses.
+- Graceful recovery from network failures.
+
+Use the existing state-management and animation systems where feasible.
+
+Do not add heavy background animations or excessive liquid-glass effects.
+
+Keep the visual interface minimal and polished, with one clear primary action per screen.
+
+Ensure the splash screen does not repeatedly appear during ordinary tab navigation. It should appear at genuine application startup or another intentionally defined lifecycle event, not on every route change.
+
+Do not cause the registration screen to appear again after a valid session has already been restored.
+
+---
+
+# PART 9 — TEST EVERY IMPORTANT FLOW
+
+Run appropriate automated tests and exercise the actual screens.
+
+At a minimum, verify the following scenarios.
+
+## Launch animation
+
+- The application launches with the intended logo and brand treatment.
+- The animation finishes within 3 seconds.
+- A fast backend response allows early transition.
+- A slow backend does not leave the user stuck on the splash.
+- Reduced-motion preferences are respected.
+- The existing light and dark themes render correctly.
+
+## Authentication
+
+- A new customer can register.
+- A new customer lands on the customer interface.
+- A new worker can register.
+- A new worker enters the worker onboarding or worker interface.
+- A pending worker is not falsely marked verified.
+- An existing customer signs in and lands in customer mode.
+- An existing worker signs in and lands in worker mode.
+- A valid session is restored after reopening the application.
+- Invalid credentials show an understandable error.
+- An expired session is handled correctly.
+- Logout clears protected application state.
+- Customers cannot perform worker-only operations.
+- Workers cannot access another worker's private records.
+
+## Indian localization
+
+- The default currency is INR for new Indian operations.
+- Prices display correctly using Indian formatting.
+- Existing stored currency values are not silently reinterpreted.
+- Indian phone fields use the correct country-code behavior.
+- Address forms support Indian locations and PIN codes.
+- Dates, times, and distances are formatted correctly.
+- USA-specific defaults are removed from the relevant production paths.
+- No existing feature disappears as part of localization.
+
+## Real provider directory
+
+- Location permission is requested appropriately.
+- Manual location search works when permission is denied.
+- Results change when the selected location changes.
+- Nearby providers come from the configured real data source.
+- Distances and phone numbers are not fabricated.
+- Missing phone numbers do not create fake Call actions.
+- No-result behavior is honest.
+- An unconfigured API does not return fake agency records.
+- External agencies are not misrepresented as platform-verified workers.
+
+## Existing features
+
+Verify that the following remain functional after the changes:
+- Service discovery.
+- Service requests.
+- Nearby-worker matching.
+- Worker availability.
+- Bidding and counteroffers.
+- Agreement confirmation.
+- Chat.
+- Live tracking.
+- SOS.
+- Job completion.
+- Two-way ratings.
+- Job and transaction history.
+- Notifications.
+- Worker earnings.
+- Existing MCP functionality.
+
+Use the project's existing tests where appropriate, add focused new tests, run them, and correct failures caused by the implementation.
+
+Do not report a test as passed unless it has actually run successfully.
+
+---
+
+# PART 10 — UPDATE README.md
+
+After implementing the requested changes, update the existing README.md in place.
+
+Do not create a new README as a substitute unless the repository genuinely lacks one.
+
+Preserve useful existing setup instructions and architecture documentation. Add or revise only the necessary sections.
+
+Document the following changes.
+
+### 1. New features
+- Premium application loading animation.
+- Maximum three-second launch duration.
+- Smooth transition into the authenticated destination.
+- Customer and worker account registration.
+- Role-based routing.
+- Persistent authentication and logout behavior.
+- Indian-default currency and locale support.
+- Indian address, telephone, date, time, and distance conventions.
+- Genuine location-aware agency and provider discovery, if implemented.
+- Relevant error states and performance improvements.
+
+### 2. Authentication setup
+Document:
+- Registration and login endpoints or current authentication provider.
+- Required environment variables.
+- Database models or migrations involved.
+- Session restoration behavior.
+- How customer and worker roles are determined.
+- How to test both account types.
+
+Do not document real credentials or secrets.
+
+### 3. Indian localization
+Explain the selected locale, currency representation, timezone handling, migration behavior for existing data, and any relevant environment settings.
+
+### 4. Provider-directory setup
+Document:
+- The actual external provider used.
+- Required API keys and server-side environment variables.
+- Required service/API activation.
+- Location-permission behavior.
+- Manual-location fallback.
+- Data-source attribution.
+- Expected behavior when the provider is not configured.
+
+Only document integrations that exist in the code.
+
+### 5. Animation implementation
+Document:
+- Where the splash implementation is located.
+- How its maximum duration is enforced.
+- How reduced motion is supported.
+- How to run and test the startup flow.
+
+### 6. Environment configuration
+Update `.env.example` with the environment variables genuinely required by the implementation.
+
+Never put real secret values in `.env.example`.
+
+### 7. Testing
+Document the actual test commands and the test scenarios executed.
+
+Clearly state which tests passed and which could not be completed.
+
+### 8. Change summary
+Include a concise changelog or implementation summary listing:
+- Features added or improved.
+- Existing components modified.
+- Any migration required.
+- Any external credentials that still need configuration.
+- Any limitations that remain.
+
+**Do not claim that a provider API is connected or that an authentication flow is complete if the code still requires setup that has not been performed.**
+
+---
+
+# PART 11 — STRICT RULES
+
+1. Do not remove any existing feature.
+2. Do not rebuild the application from scratch.
+3. Do not replace the existing frontend with a generic design.
+4. Do not generate fake workers, customers, businesses, company branches, ratings, transactions, or contact numbers.
+5. Do not display artificial business data as real.
+6. Do not show a worker as verified unless the backend confirms verification.
+7. Do not hardcode the user's location.
+8. Do not bypass location permissions.
+9. Do not trust client-side roles as authorization.
+10. Do not store passwords or privileged secrets insecurely.
+11. Do not convert existing USD amounts into INR without an explicit, reviewed migration.
+12. Do not let the splash animation exceed 3 seconds.
+13. Do not block the application indefinitely on a network request.
+14. Do not create duplicate authentication or provider integrations if suitable ones already exist.
+15. Do not disable the existing MCP, Redis, PostGIS, WebSocket, bidding, tracking, or SOS functionality.
+16. Do not report successful builds, tests, API connections, or deployments without verification.
+17. Do not leave the README outdated after changing setup, configuration, or application behavior.
+18. Do not stop after generating a plan or describing what needs to be done.
+
+If an external provider requires an API key that is not available, implement the appropriate integration structure, document the exact configuration needed, and display a genuine unavailable state until configuration is completed.
+
+If the repository has incomplete or conflicting code, inspect it, make the smallest reliable change, and preserve all working functionality.
+
+---
+
+# FINAL EXECUTION INSTRUCTION
+
+Start by inspecting the actual project and its README.md. Then implement the splash animation, authentication and role-based routing, India-wide localization defaults, and genuine location-aware service-provider discovery directly in the existing codebase.
+
+Connect the changes to the existing backend. Test customer registration, worker registration, returning-user login, session restoration, Indian formatting, local provider lookup, and the original application features.
+
+Update README.md after implementation. Run the relevant builds, tests, and checks. Fix the issues you discover.
+
+At the end, summarize exactly what changed, which files were modified, which tests were actually executed, what passed, and whether any external API configuration remains necessary.
+
+**The final result must be the same existing Blue-Collar Management Platform, enhanced with a beautiful three-second-maximum startup experience, reliable customer/worker authentication, proper Indian localization, real nearby providers, and no fabricated production data. Do not remove existing features. Implement, connect, test, and document everything that can be completed in the available environment.**

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { JobRequest, BidOffer, ChatMessage } from '../types/index.ts';
+import { formatInr } from '../lib/biddingEngine.ts';
 
 interface WorkerTerminalViewProps {
   job: JobRequest;
@@ -24,9 +25,9 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
 }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [transcribedText, setTranscribedText] = useState(
-    "I've reviewed the panel photos and can fix the burnt contact within 45 minutes. Replacement 30A Eaton breaker is already in my service van."
+    "I've reviewed the panel photos and can fix the burnt contact within 45 minutes. Replacement 30A Havells MCB breaker is already in my service vehicle."
   );
-  const [counterRate, setCounterRate] = useState(85);
+  const [counterRate, setCounterRate] = useState(850);
   const [chatInput, setChatInput] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
 
@@ -41,7 +42,7 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
 
   const handleSendCounter = () => {
     onSubmitCounter(counterRate, transcribedText);
-    setStatusMessage(`Counteroffer ($${counterRate}) transmitted to customer queue.`);
+    setStatusMessage(`Counteroffer (${formatInr(counterRate)}) transmitted to customer queue.`);
   };
 
   const handleSendChat = () => {
@@ -57,41 +58,41 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
         <div className="flex items-center gap-4">
           <div className="relative">
             <img
-              alt="Mark J."
+              alt="Rajesh Sharma"
               className="w-16 h-16 rounded-xl object-cover ring-2 ring-[#4edea3]"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ"
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80"
             />
             <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-[#4edea3] ring-2 ring-[#060e20]"></span>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-white">Mark J. (Master Electrician)</h2>
-              <span className="px-2 py-0.5 rounded-full bg-[#4edea3]/20 text-[#4edea3] text-[10px] font-bold uppercase tracking-wider border border-[#4edea3]/30">
-                PRO ACTIVE
+              <h2 className="text-xl font-bold text-white">Rajesh Sharma (Grade A Master Electrician)</h2>
+              <span className="px-2 py-0.5 rounded-full bg-[#4edea3]/20 text-[#4edea3] text-[10px] font-bold uppercase tracking-wider border border-[#4edea3]/30 font-mono">
+                PRO TERMINAL ACTIVE
               </span>
             </div>
-            <p className="text-xs text-[#bec8d2] mt-0.5">
-              State Lic. #EL-8941 • Insured $2M Commercial • Ford Transit Service Van (#VAN-08)
+            <p className="text-xs text-[#bec8d2] mt-0.5 font-mono">
+              Karnataka Lic. #KA-EL-8842 • Commercial Bonded ₹10L • Commercial Service Vehicle
             </p>
             <div className="flex items-center gap-3 text-xs text-[#ffb95f] mt-1 font-semibold">
-              <span>★ 4.98 Rating (214 Jobs)</span>
+              <span className="font-mono">★ 4.98 Rating (214 Jobs)</span>
               <span className="text-[#3e4850]">•</span>
-              <span className="text-[#4edea3]">GPS RTK Telemetry: Online (Springfield Metro 4)</span>
+              <span className="text-[#4edea3] font-mono">GPS RTK Telemetry: Online (Bengaluru Sector 4)</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="bg-[#131b2e] px-4 py-2 rounded-lg border border-white/5 text-right">
-            <span className="text-[10px] uppercase font-bold text-[#bec8d2] block">Current Job Vault</span>
-            <span className="text-xl font-bold text-[#ffb95f]">${job.agreedAmount.toFixed(2)} USD</span>
+            <span className="text-[10px] uppercase font-bold text-[#bec8d2] block font-mono">Escrow Vault</span>
+            <span className="text-xl font-bold text-[#ffb95f] font-mono">{formatInr(job.agreedAmount)} INR</span>
           </div>
           <button
             type="button"
             onClick={onOpenSos}
-            className="px-3.5 py-2.5 rounded-lg bg-[#93000a]/40 text-[#ffb4ab] text-xs font-bold uppercase tracking-wider border border-[#ffb4ab]/30 hover:bg-[#93000a] transition-all"
+            className="px-3.5 py-2.5 rounded-lg bg-[#93000a]/50 text-[#ffb4ab] text-xs font-bold uppercase tracking-wider border border-[#ffb4ab]/40 hover:bg-[#93000a] transition-all cursor-pointer font-mono"
           >
-            SOS Beacon
+            112 SOS Beacon
           </button>
         </div>
       </div>
@@ -99,7 +100,7 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
       {statusMessage && (
         <div className="bg-[#4edea3]/10 border border-[#4edea3]/30 text-[#4edea3] px-4 py-2 rounded-lg text-xs flex items-center justify-between">
           <span>{statusMessage}</span>
-          <button onClick={() => setStatusMessage('')} className="text-[#4edea3] hover:text-white">
+          <button onClick={() => setStatusMessage('')} className="text-[#4edea3] hover:text-white cursor-pointer">
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
         </div>
@@ -111,10 +112,10 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
         <div className="lg:col-span-7 flex flex-col gap-4">
           <div className="bg-[#131b2e]/90 p-6 rounded-xl border border-white/5 shadow-xl flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#89ceff]">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#89ceff] font-mono">
                 Active Inbound Dispatch Request
               </span>
-              <span className="text-xs text-[#bec8d2]">0.8 km distance • 742 Evergreen Ter</span>
+              <span className="text-xs text-[#bec8d2] font-mono">420m distance • 742 12th Main Road</span>
             </div>
 
             <div>
@@ -129,14 +130,14 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
                   <span className="material-symbols-outlined text-[#ffb95f] text-base">mic</span>
                   Voice-to-Text Instant Proposal Generator
                 </span>
-                <span className="text-[10px] text-[#bec8d2] uppercase">Hands-Free Driver Mode</span>
+                <span className="text-[10px] text-[#bec8d2] uppercase font-mono">Hands-Free Driver Mode</span>
               </div>
 
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={handleStartVoice}
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
                     isRecording
                       ? 'bg-[#93000a] text-white animate-pulse'
                       : 'bg-[#ffb95f]/20 text-[#ffb95f] hover:bg-[#ffb95f]/30'
@@ -162,48 +163,48 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
             <div className="bg-[#171f33] p-4 rounded-xl border border-white/5 flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-white">Adjust Pro Counteroffer Rate</span>
-                <span className="text-2xl font-bold text-[#ffb95f] font-mono">${counterRate}.00</span>
+                <span className="text-2xl font-bold text-[#ffb95f] font-mono">{formatInr(counterRate)}</span>
               </div>
               <input
                 className="w-full h-2 bg-[#222a3d] rounded-lg appearance-none cursor-pointer accent-[#ffb95f]"
-                max={150}
-                min={50}
-                step={5}
+                max={2500}
+                min={450}
+                step={25}
                 type="range"
                 value={counterRate}
                 onChange={(e) => setCounterRate(parseInt(e.target.value, 10))}
               />
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 font-mono">
                 <button
                   type="button"
-                  onClick={() => setCounterRate(75)}
-                  className="px-3 py-1 rounded bg-[#222a3d] text-xs text-[#bec8d2] hover:text-white"
+                  onClick={() => setCounterRate(750)}
+                  className="px-3 py-1 rounded bg-[#222a3d] text-xs text-[#bec8d2] hover:text-white cursor-pointer"
                 >
-                  $75 (Mean)
+                  ₹750 (Labor Base)
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCounterRate(85)}
-                  className="px-3 py-1 rounded bg-[#ffb95f]/20 text-xs text-[#ffb95f] border border-[#ffb95f]/30 font-semibold"
+                  onClick={() => setCounterRate(850)}
+                  className="px-3 py-1 rounded bg-[#ffb95f]/20 text-xs text-[#ffb95f] border border-[#ffb95f]/30 font-semibold cursor-pointer"
                 >
-                  $85 (Includes 30A Breaker)
+                  ₹850 (Havells Breaker Included)
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCounterRate(95)}
-                  className="px-3 py-1 rounded bg-[#222a3d] text-xs text-[#bec8d2] hover:text-white"
+                  onClick={() => setCounterRate(1100)}
+                  className="px-3 py-1 rounded bg-[#222a3d] text-xs text-[#bec8d2] hover:text-white cursor-pointer"
                 >
-                  $95 (Emergency Rush)
+                  ₹1,100 (Immediate Rush)
                 </button>
               </div>
 
               <button
                 type="button"
                 onClick={handleSendCounter}
-                className="w-full py-3 rounded-lg bg-[#ffb95f] hover:bg-[#ffddb8] text-[#472a00] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all mt-1"
+                className="w-full py-3 rounded-lg bg-[#ffb95f] hover:bg-[#ffddb8] text-[#472a00] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all mt-1 cursor-pointer font-mono"
               >
                 <span className="material-symbols-outlined text-base">send</span>
-                <span>Transmit Counteroffer to Sarah Jenkins ($ {counterRate}.00)</span>
+                <span>Transmit Counteroffer to {job.customerName} ({formatInr(counterRate)})</span>
               </button>
             </div>
           </div>
@@ -214,14 +215,14 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
           <div className="bg-[#131b2e]/90 p-6 rounded-xl border border-white/5 shadow-xl flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-white">Technician Workflow Stages</h3>
-              <span className="text-xs text-[#4edea3] font-bold">Phase {job.currentPhase} of 4</span>
+              <span className="text-xs text-[#4edea3] font-bold font-mono">Phase {job.currentPhase} of 4</span>
             </div>
 
             <div className="flex flex-col gap-2">
               <button
                 type="button"
                 onClick={() => onAdvancePhase(2)}
-                className={`p-3 rounded-lg flex items-center justify-between text-left transition-all border ${
+                className={`p-3 rounded-lg flex items-center justify-between text-left transition-all border cursor-pointer ${
                   job.currentPhase === 2
                     ? 'bg-[#222a3d] border-[#4edea3] text-white shadow-md'
                     : 'bg-[#171f33] border-white/5 text-[#bec8d2] hover:text-white'
@@ -231,13 +232,13 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
                   <span className="material-symbols-outlined text-[#4edea3] text-lg">navigation</span>
                   <span className="text-xs font-semibold">1. Start Route (En Route, Broadcast GPS)</span>
                 </div>
-                {job.currentPhase >= 2 && <span className="text-[#4edea3] text-xs font-bold">Active</span>}
+                {job.currentPhase >= 2 && <span className="text-[#4edea3] text-xs font-bold font-mono">Active</span>}
               </button>
 
               <button
                 type="button"
                 onClick={() => onAdvancePhase(3)}
-                className={`p-3 rounded-lg flex items-center justify-between text-left transition-all border ${
+                className={`p-3 rounded-lg flex items-center justify-between text-left transition-all border cursor-pointer ${
                   job.currentPhase === 3
                     ? 'bg-[#222a3d] border-[#ffb95f] text-white shadow-md'
                     : 'bg-[#171f33] border-white/5 text-[#bec8d2] hover:text-white'
@@ -247,26 +248,26 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
                   <span className="material-symbols-outlined text-[#ffb95f] text-lg">build</span>
                   <span className="text-xs font-semibold">2. Arrived On-Site (Diagnostics &amp; Repair)</span>
                 </div>
-                {job.currentPhase >= 3 && <span className="text-[#ffb95f] text-xs font-bold">Active</span>}
+                {job.currentPhase >= 3 && <span className="text-[#ffb95f] text-xs font-bold font-mono">Active</span>}
               </button>
 
               <button
                 type="button"
                 onClick={onOpenReviewModal}
-                className="p-3 rounded-lg flex items-center justify-between text-left transition-all border bg-[#00a572]/20 hover:bg-[#00a572]/30 text-[#4edea3] border-[#00a572]/40"
+                className="p-3 rounded-lg flex items-center justify-between text-left transition-all border bg-[#00a572]/20 hover:bg-[#00a572]/30 text-[#4edea3] border-[#00a572]/40 cursor-pointer"
               >
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-lg">task_alt</span>
                   <span className="text-xs font-bold">3. Complete Job &amp; Request Escrow Sign-off</span>
                 </div>
-                <span className="text-xs font-bold">Trigger Dual Sign-off</span>
+                <span className="text-xs font-bold font-mono">Dual Sign-off</span>
               </button>
             </div>
           </div>
 
           {/* Quick Chat with Client */}
           <div className="bg-[#131b2e]/90 p-4 rounded-xl border border-white/5 shadow-xl flex flex-col h-[280px]">
-            <span className="text-xs font-bold text-white mb-2">Comms with Sarah Jenkins</span>
+            <span className="text-xs font-bold text-white mb-2">Comms with {job.customerName}</span>
             <div className="flex-1 overflow-y-auto flex flex-col gap-2 py-1 pr-1">
               {messages.map((m) => (
                 <div
@@ -277,7 +278,7 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
                       : 'self-start bg-[#171f33] text-white border border-white/5'
                   }`}
                 >
-                  <span className="text-[10px] text-[#bec8d2] block mb-0.5">
+                  <span className="text-[10px] text-[#bec8d2] block mb-0.5 font-mono">
                     {m.senderName} • {m.timestamp}
                   </span>
                   <p>{m.content}</p>
@@ -288,7 +289,7 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
             <div className="flex items-center gap-2 pt-2 border-t border-white/5">
               <input
                 className="flex-1 bg-[#222a3d] border border-white/10 px-3 py-1.5 rounded-lg text-xs text-white placeholder-[#88929b] outline-none"
-                placeholder="Message Sarah..."
+                placeholder={`Message ${job.customerName}...`}
                 type="text"
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
@@ -297,7 +298,7 @@ export const WorkerTerminalView: React.FC<WorkerTerminalViewProps> = ({
               <button
                 type="button"
                 onClick={handleSendChat}
-                className="p-2 rounded-lg bg-[#0ea5e9] text-white hover:bg-[#89ceff] hover:text-[#00344d]"
+                className="p-2 rounded-lg bg-[#0ea5e9] text-white hover:bg-[#89ceff] hover:text-[#00344d] cursor-pointer"
               >
                 <span className="material-symbols-outlined text-base">send</span>
               </button>

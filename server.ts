@@ -39,11 +39,61 @@ app.get('/api/v1/health', (req: Request, res: Response) => {
   });
 });
 
-// 2. Auth: Current User & Role Switch
+// 2. Auth: Current User, Register, Login & Role Switch
 app.get('/api/v1/auth/me', (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7);
+    const user = db.getUserByToken(token);
+    if (user) {
+      return res.json({ user, token });
+    }
+  }
   res.json({
     user: db.currentUser,
   });
+});
+
+app.post('/api/v1/auth/register', (req: Request, res: Response) => {
+  try {
+    const result = db.register(req.body);
+    res.status(201).json({
+      success: true,
+      message: 'Registration successful',
+      token: result.token,
+      user: result.user,
+    });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || 'Registration failed' });
+  }
+});
+
+app.post('/api/v1/auth/login', (req: Request, res: Response) => {
+  try {
+    const { identifier, phone, email, password } = req.body;
+    const loginId = identifier || phone || email;
+    if (!loginId) {
+      return res.status(400).json({ error: 'Mobile number or email required.' });
+    }
+    const result = db.login(loginId, password);
+    res.json({
+      success: true,
+      message: 'Login successful',
+      token: result.token,
+      user: result.user,
+    });
+  } catch (err: any) {
+    res.status(401).json({ error: err.message || 'Invalid credentials' });
+  }
+});
+
+app.post('/api/v1/auth/logout', (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7);
+    db.logout(token);
+  }
+  res.json({ success: true, message: 'Logged out successfully' });
 });
 
 app.post('/api/v1/auth/role', (req: Request, res: Response) => {
@@ -51,17 +101,41 @@ app.post('/api/v1/auth/role', (req: Request, res: Response) => {
   if (role === 'customer' || role === 'worker_pro') {
     db.currentUser.role = role;
     if (role === 'worker_pro') {
-      db.currentUser.name = 'Mark J.';
+      db.currentUser.name = 'Rajesh Sharma';
+      db.currentUser.phone = '+91 98451 88421';
       db.currentUser.avatar =
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDaz397TpeK9wHKhlQ-LWITbHWEvxV1IXzEAqubiSuS4FoXgI3NYH787ar8yeNsCAQ2p4G7_BwbLN0oIvXu6jKmGZzsRGRjJqncqM0i5M5pxZE9KPNS7XwfIcC_2NkC-vu4dc10rwkp4oHwOYjNiZBCLJc-SEZLU32gkOfyqdj_sCgUaabYnIx--jWI0w5QDr5nCrrfhreXI3xMOJ1yMlBhKNY7pQcGWLqL0m81vYdrINVae5b0M9eJnQ';
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80';
     } else {
-      db.currentUser.name = 'Sarah Jenkins';
+      db.currentUser.name = 'Aditi Roy';
+      db.currentUser.phone = '+91 98450 12345';
       db.currentUser.avatar =
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80';
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80';
     }
     return res.json({ success: true, user: db.currentUser });
   }
   return res.status(400).json({ error: 'Invalid role requested' });
+});
+
+// Real Verified Indian Service Agencies & Business Hubs Directory
+app.get('/api/v1/agencies/nearby', (req: Request, res: Response) => {
+  const lat = req.query.lat ? parseFloat(req.query.lat as string) : 12.9784;
+  const lng = req.query.lng ? parseFloat(req.query.lng as string) : 77.6408;
+  const radius = req.query.radius ? parseFloat(req.query.radius as string) : 10.0;
+  const category = (req.query.category as string) || 'all';
+  const city = (req.query.city as string) || '';
+
+  const agencies = db.getNearbyAgencies(lat, lng, radius, category, city);
+  res.json({
+    query: {
+      origin: { lat, lng },
+      radiusKm: radius,
+      category,
+      city: city || 'Bengaluru',
+      directoryType: 'Authorised Brand Service Hubs & Certified Centers',
+    },
+    count: agencies.length,
+    agencies,
+  });
 });
 
 // 3. Service Categories
@@ -460,10 +534,16 @@ app.post('/api/mcp/invoke', (req: Request, res: Response) => {
 
 // --- Vite / Static Files Middleware ---
 async function setupServer() {
+  const http = await import('http');
+  const server = http.createServer(app);
+
   if (process.env.NODE_ENV !== 'production') {
     const { createServer } = await import('vite');
     const vite = await createServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: false,
+      },
       appType: 'spa',
     });
     app.use(vite.middlewares);
@@ -474,7 +554,7 @@ async function setupServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`[AegisCraft Server] Listening on http://0.0.0.0:${PORT}`);
   });
 }
