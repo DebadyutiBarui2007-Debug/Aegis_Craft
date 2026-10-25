@@ -15,6 +15,13 @@ import {
 } from 'lucide-react';
 import { User as UserType, UserRole, RegisterPayload, LoginPayload } from '../types/index.ts';
 import { api } from '../services/api.ts';
+import {
+  formatIndianPhoneNumber,
+  isValidIndianPhoneNumber,
+  setupRecaptchaVerifier,
+  sendFirebasePhoneOtp,
+  verifyFirebasePhoneOtp,
+} from '../lib/firebase.ts';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -50,45 +57,98 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [phoneVerified, setPhoneVerified] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState('');
+  const [activeChallengeId, setActiveChallengeId] = useState<string | null>(null);
   const [otpSending, setOtpSending] = useState(false);
   const [otpVerifying, setOtpVerifying] = useState(false);
   const [debugOtpMessage, setDebugOtpMessage] = useState<string | null>(null);
+  const [confirmationResult, setConfirmationResult] = useState<any>(null);
+  const [firebaseIdToken, setFirebaseIdToken] = useState<string | null>(null);
+  const [firebaseUid, setFirebaseUid] = useState<string | null>(null);
 
   const handleSendOtp = async () => {
-    if (!phone.trim() || phone.replace(/[^\d]/g, '').length < 10) {
-      setError('Please enter a valid 10-digit mobile number before requesting OTP.');
+    const canonicalPhone = formatIndianPhoneNumber(phone);
+    if (!isValidIndianPhoneNumber(phone)) {
+      setError('Please enter a valid 10-digit Indian mobile number (e.g. +91 98450 12345).');
       return;
     }
     setOtpSending(true);
     setError(null);
+    setDebugOtpMessage(null);
+
+    // Try Firebase Phone Auth first
     try {
-      const res = await api.sendOtp(phone.trim());
+      const verifier = setupRecaptchaVerifier('recaptcha-container');
+      const confirmation = await sendFirebasePhoneOtp(canonicalPhone, verifier);
+      setConfirmationResult(confirmation);
       setOtpSent(true);
-      if (res.debugOtp) {
-        setDebugOtpMessage(`[Dev SMS Gateway] OTP Code: ${res.debugOtp}`);
-      } else {
-        setDebugOtpMessage('OTP sent successfully. Check your SMS messages.');
+      const masked = canonicalPhone.slice(0, 5) + '••••••' + canonicalPhone.slice(-3);
+      setDebugOtpMessage(`Verification SMS sent via Firebase to ${masked}.`);
+    } catch (fbErr: any) {
+      console.warn('Firebase Phone Auth unavailable or error encountered, sending server OTP:', fbErr);
+
+      // Server OTP Dispatch Fallback
+      try {
+        const res = await api.sendOtp(canonicalPhone);
+        setConfirmationResult(null);
+        if (res.challengeId) {
+          setActiveChallengeId(res.challengeId);
+        }
+        setOtpSent(true);
+        const masked = canonicalPhone.slice(0, 5) + '••••••' + canonicalPhone.slice(-3);
+        if (res.debugOtp) {
+          setDebugOtpMessage(`OTP sent to ${masked}. Verification code: ${res.debugOtp}`);
+          setOtpCode(res.debugOtp);
+        } else {
+          setDebugOtpMessage(`Verification code dispatched via SMS to ${masked}. Enter 6-digit code.`);
+        }
+      } catch (serverErr: any) {
+        console.error('Server OTP dispatch error:', serverErr);
+        setError(serverErr.message || 'Failed to send OTP verification code.');
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to send OTP');
     } finally {
       setOtpSending(false);
     }
   };
 
   const handleVerifyOtp = async () => {
-    if (!otpCode.trim() || otpCode.trim().length !== 6) {
-      setError('Please enter the 6-digit OTP received via SMS.');
+    const canonicalPhone = formatIndianPhoneNumber(phone);
+    const cleanCode = otpCode.replace(/\D/g, '').trim();
+
+    if (!cleanCode || cleanCode.length !== 6) {
+      setError('Please enter the 6-digit OTP code received via SMS.');
       return;
     }
     setOtpVerifying(true);
     setError(null);
+
     try {
-      await api.verifyOtp(phone.trim(), otpCode.trim());
-      setPhoneVerified(true);
-      setDebugOtpMessage(null);
+      if (confirmationResult) {
+        try {
+          const { user: fbUser, idToken } = await verifyFirebasePhoneOtp(confirmationResult, cleanCode);
+          setFirebaseIdToken(idToken);
+          setFirebaseUid(fbUser.uid);
+          setPhoneVerified(true);
+          setDebugOtpMessage('Phone number verified successfully via Firebase!');
+        } catch (fbVerifyErr: any) {
+          console.warn('Firebase OTP verification failed, trying server verification:', fbVerifyErr);
+          await api.verifyOtp(canonicalPhone, cleanCode, activeChallengeId || undefined);
+          setPhoneVerified(true);
+          setDebugOtpMessage('Phone verified successfully.');
+        }
+      } else {
+        await api.verifyOtp(canonicalPhone, cleanCode, activeChallengeId || undefined);
+        setPhoneVerified(true);
+        setDebugOtpMessage('Phone verified successfully.');
+      }
     } catch (err: any) {
-      setError(err.message || 'OTP verification failed');
+      console.error('OTP verification error:', err);
+      if (err.code === 'auth/invalid-verification-code') {
+        setError('Incorrect OTP verification code. Please check your SMS and try again.');
+      } else if (err.code === 'auth/code-expired') {
+        setError('OTP code has expired. Please click Resend OTP to request a new SMS.');
+      } else {
+        setError(err.message || 'OTP verification failed. Please re-enter code.');
+      }
     } finally {
       setOtpVerifying(false);
     }
@@ -97,7 +157,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   if (!isOpen) return null;
 
   const handlePhoneChange = (val: string) => {
-    // Keep digits and spaces/dashes
     const clean = val.replace(/[^\d\s+]/g, '');
     setPhone(clean);
   };
@@ -139,11 +198,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         if (!phone.trim()) throw new Error('Please enter your 10-digit mobile number');
         if (!phoneVerified) throw new Error('Phone number verification via OTP is required before registration.');
 
-        const cleanPhone = phone.startsWith('+91') ? phone : `+91 ${phone.replace(/^0+/, '').trim()}`;
+        const canonicalPhone = formatIndianPhoneNumber(phone);
 
         const payload: RegisterPayload = {
+          idToken: firebaseIdToken || undefined,
+          firebaseUid: firebaseUid || undefined,
+          challengeId: activeChallengeId || undefined,
           name: name.trim(),
-          phone: cleanPhone,
+          phone: canonicalPhone,
           phoneVerified: true,
           email: email.trim() || undefined,
           password: password || 'password123',
@@ -168,6 +230,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-hidden">
+      {/* Invisible Firebase reCAPTCHA Container */}
+      <div id="recaptcha-container"></div>
+
       <div className="relative z-10 w-full max-w-lg bg-slate-900/90 border border-emerald-500/30 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
         {/* Header */}

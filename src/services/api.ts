@@ -95,14 +95,14 @@ export const api = {
     }
   },
   sendOtp: (phone: string) =>
-    fetchJson<{ success: boolean; message: string; debugOtp?: string }>(`${API_BASE}/auth/otp/send`, {
+    fetchJson<{ success: boolean; challengeId?: string; phone?: string; message: string; debugOtp?: string }>(`${API_BASE}/auth/otp/send`, {
       method: 'POST',
       body: JSON.stringify({ phone }),
     }),
-  verifyOtp: (phone: string, code: string) =>
-    fetchJson<{ success: boolean; message: string }>(`${API_BASE}/auth/otp/verify`, {
+  verifyOtp: (phone: string, code: string, challengeId?: string) =>
+    fetchJson<{ success: boolean; challengeId?: string; phone?: string; message: string }>(`${API_BASE}/auth/otp/verify`, {
       method: 'POST',
-      body: JSON.stringify({ phone, code }),
+      body: JSON.stringify({ phone, code, challengeId }),
     }),
   setRole: (role: 'customer' | 'worker_pro') =>
     fetchJson<{ success: boolean; user: User }>(`${API_BASE}/auth/role`, {

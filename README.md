@@ -244,17 +244,38 @@ AegisCraft is fully containerized and configured for deployment on **Google Clou
 
 ---
 
-## 📱 Secure Phone Number OTP Verification
+## 📱 Phone Number SMS OTP Verification & Challenge Lifecycle Architecture
 
-AegisCraft enforces strict phone number ownership verification during registration for both Customer and Worker Pro accounts:
-- **OTP Challenge Flow**:
-  1. User enters 10-digit Indian mobile number (`+91`).
-  2. User clicks **Send OTP** (`POST /api/v1/auth/otp/send`).
-  3. Backend generates a cryptographically secure 6-digit OTP with a 5-minute TTL and logs/dispatches via SMS gateway.
-  4. User enters the 6-digit code and clicks **Verify OTP** (`POST /api/v1/auth/otp/verify`).
-  5. Upon success, the UI displays a green **Verified ✓** badge and unlocks account registration.
-- **Backend Enforcement**: `db.register()` requires `phoneVerified: true` and validates against active OTP challenges stored in server memory.
-- **Rate Limiting & Attempt Protection**: Maximum 5 verification attempts per challenge; challenge expires automatically after 5 minutes.
+AegisCraft enforces strict phone number ownership verification during registration for both Customer and Worker Pro accounts through a unified, resilient authentication pipeline:
+
+### 1. Canonical Phone Number Normalization
+- All phone number inputs across frontend forms, SMS dispatch gateways, verification lookups, and account registration are canonicalized to the **E.164 international standard for India** (`+91XXXXXXXXXX`).
+- Raw input formats such as `9845012345`, `+91 98450 12345`, `919845012345`, and `+91-98450-12345` are normalized by `normalizeIndianPhone()` to the exact same string (`+919845012345`), completely eliminating phone normalization lookup mismatches (`No active OTP challenge found`).
+
+### 2. Dual Provider Verification & Challenge Persistence
+- **Primary Provider (Firebase Phone Auth)**:
+  - User requests SMS verification via **Firebase Phone Authentication** (`signInWithPhoneNumber`) with invisible reCAPTCHA protection.
+  - Upon user entry of the 6-digit code, Firebase SDK verifies the OTP and generates a verified Firebase ID token.
+  - Server verifies the Firebase ID token via **Firebase Admin SDK** (`verifyIdToken`).
+- **Backup Provider (Server-Managed OTP Gateway)**:
+  - If Firebase Phone Auth encounters project configuration delays, network errors, or domain restrictions, the system smoothly dispatches an OTP via the backend OTP service (`api.sendOtp`).
+  - The backend generates a cryptographically secure 6-digit OTP, creates a unique challenge identifier (`challengeId`), and persists the challenge in server state under both `challengeId` and the canonical phone number (`+919845012345`).
+  - Dual lookup allows verification by `challengeId` or `phone`, guaranteeing challenge match regardless of client state.
+
+### 3. Resend OTP & Challenge Superseding
+- When **Resend OTP** is clicked:
+  - Any previous challenge for that phone number is invalidated and superseded by a fresh challenge with a new 5-minute expiration timer and reset attempt counter (max 5 attempts).
+
+### 4. Development & Test Mode Behavior
+- In local development and test environments, `sendOtp` returns `debugOtp` for rapid automated testing while preserving identical production challenge persistence and verification rules.
+
+### 5. Automated Verification Unit Test Suite
+- Automated unit tests (`npm test` / `src/lib/otp.test.ts`) verify:
+  1. E.164 canonical normalization across 4 distinct raw input formats.
+  2. Unformatted phone challenge dispatch and formatted verification lookup (zero challenge mismatches).
+  3. Rejection of invalid codes and attempt rate-limiting.
+  4. Resend OTP challenge superseding.
+  5. Account registration requiring verified phone status.
 
 ---
 

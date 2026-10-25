@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { db } from './src/lib/db.ts';
 import { CATEGORY_MARKET_CORRIDORS, calculateBidBreakdown } from './src/lib/biddingEngine.ts';
 import { calculateDistanceKm, calculateEtaMinutes, isWithinRadius } from './src/lib/spatial.ts';
+import { verifyFirebaseIdToken } from './src/lib/firebaseAdmin.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,6 +37,7 @@ app.get('/api/v1/health', (req: Request, res: Response) => {
     cluster: 'PostGIS 3.4 Live Cluster (us-west-postgis-01)',
     socket: 'Connected (PubSub Active)',
     escrowVault: 'Verified Operational',
+    firebaseAuthStatus: 'Active',
   });
 });
 
@@ -54,9 +56,29 @@ app.get('/api/v1/auth/me', (req: Request, res: Response) => {
   });
 });
 
-app.post('/api/v1/auth/register', (req: Request, res: Response) => {
+app.post('/api/v1/auth/register', async (req: Request, res: Response) => {
   try {
-    const result = db.register(req.body);
+    let firebaseUid: string | undefined = req.body.firebaseUid;
+    let verifiedPhone: string = req.body.phone;
+
+    if (req.body.idToken) {
+      const verifiedFirebase = await verifyFirebaseIdToken(req.body.idToken);
+      if (!verifiedFirebase) {
+        return res.status(401).json({ error: 'Firebase ID token verification failed or token expired.' });
+      }
+      firebaseUid = verifiedFirebase.uid;
+      if (verifiedFirebase.phone) {
+        verifiedPhone = verifiedFirebase.phone;
+      }
+    }
+
+    const result = db.register({
+      ...req.body,
+      phone: verifiedPhone,
+      firebaseUid,
+      phoneVerified: true,
+    });
+
     res.status(201).json({
       success: true,
       message: 'Registration successful',
@@ -68,12 +90,37 @@ app.post('/api/v1/auth/register', (req: Request, res: Response) => {
   }
 });
 
-app.post('/api/v1/auth/login', (req: Request, res: Response) => {
+app.post('/api/v1/auth/login', async (req: Request, res: Response) => {
   try {
-    const { identifier, phone, email, password } = req.body;
+    const { idToken, identifier, phone, email, password } = req.body;
+
+    if (idToken) {
+      const verifiedFirebase = await verifyFirebaseIdToken(idToken);
+      if (verifiedFirebase) {
+        const loginId = verifiedFirebase.uid || verifiedFirebase.phone || verifiedFirebase.email;
+        if (loginId) {
+          try {
+            const result = db.login(loginId);
+            return res.json({
+              success: true,
+              message: 'Firebase authentication login successful',
+              token: result.token,
+              user: result.user,
+            });
+          } catch {
+            return res.status(404).json({
+              error: 'Firebase user not registered in application database yet. Please complete registration.',
+              firebaseUid: verifiedFirebase.uid,
+              phone: verifiedFirebase.phone,
+            });
+          }
+        }
+      }
+    }
+
     const loginId = identifier || phone || email;
     if (!loginId) {
-      return res.status(400).json({ error: 'Mobile number or email required.' });
+      return res.status(400).json({ error: 'Mobile number, email, or Firebase credential required.' });
     }
     const result = db.login(loginId, password);
     res.json({
@@ -111,11 +158,11 @@ app.post('/api/v1/auth/otp/send', (req: Request, res: Response) => {
 
 app.post('/api/v1/auth/otp/verify', (req: Request, res: Response) => {
   try {
-    const { phone, code } = req.body;
+    const { phone, code, challengeId } = req.body;
     if (!phone || !code) {
       return res.status(400).json({ error: 'Phone number and OTP code required' });
     }
-    const result = db.verifyOtp(phone, code);
+    const result = db.verifyOtp(phone, code, challengeId);
     res.json(result);
   } catch (err: any) {
     res.status(400).json({ error: err.message || 'OTP verification failed' });

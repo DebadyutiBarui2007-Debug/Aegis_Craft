@@ -2,6 +2,7 @@ export type UserRole = 'customer' | 'worker_pro';
 
 export interface User {
   id: string;
+  firebaseUid?: string;
   name: string;
   email: string;
   role: UserRole;
@@ -195,6 +196,9 @@ export interface AuthResponse {
 }
 
 export interface RegisterPayload {
+  idToken?: string;
+  firebaseUid?: string;
+  challengeId?: string;
   name: string;
   email?: string;
   phone: string;
@@ -209,7 +213,10 @@ export interface RegisterPayload {
 }
 
 export interface LoginPayload {
-  identifier: string;
+  idToken?: string;
+  identifier?: string;
+  phone?: string;
+  email?: string;
   password?: string;
 }
 

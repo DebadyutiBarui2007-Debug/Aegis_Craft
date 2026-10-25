@@ -1,0 +1,26 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Registered user profile with verified phone and assigned role",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "name": { "type": "string", "maxLength": 100 },
+        "phone": { "type": "string", "pattern": "^\\+91[0-9]{10}$" },
+        "role": { "type": "string", "enum": ["customer", "worker_pro"] },
+        "city": { "type": "string", "maxLength": 50 },
+        "pincode": { "type": "string", "maxLength": 10 },
+        "phoneVerified": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "phone", "role", "phoneVerified"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User accounts collection"
+    }
+  }
+}

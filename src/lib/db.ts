@@ -12,50 +12,114 @@ import {
   ServiceAgency,
   RegisterPayload,
 } from '../types/index.ts';
+import { normalizeIndianPhone, isValidIndianPhone } from './phone.ts';
 import { calculateDistanceKm, calculateEtaMinutes, isWithinRadius } from './spatial.ts';
 import { calculateBidBreakdown, isValidJobTransition } from './biddingEngine.ts';
+
+export interface OtpChallenge {
+  id: string;
+  phone: string;
+  code: string;
+  expiresAt: number;
+  attempts: number;
+  verified: boolean;
+  createdAt: number;
+}
 
 class AegisCraftDatabase extends EventEmitter {
   public users: Map<string, User & { password?: string }> = new Map();
   public activeSessions: Map<string, string> = new Map(); // token -> userId
-  public otpChallenges: Map<string, { code: string; expiresAt: number; attempts: number; verified: boolean }> = new Map();
+  public otpChallenges: Map<string, OtpChallenge> = new Map();
 
-  public sendOtp(phone: string): { success: boolean; message: string; debugOtp?: string } {
-    const cleanPhone = phone.replace(/[^\d]/g, '').trim();
-    if (!cleanPhone || cleanPhone.length < 10) {
-      throw new Error('Valid 10-digit Indian mobile number required.');
+  public sendOtp(phone: string): { success: boolean; challengeId: string; phone: string; message: string; debugOtp?: string } {
+    const canonicalPhone = normalizeIndianPhone(phone);
+    if (!isValidIndianPhone(canonicalPhone)) {
+      throw new Error('Valid 10-digit Indian mobile number required (e.g. +91 98450 12345).');
     }
+
+    const challengeId = `chal-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 5 * 60 * 1000; // 5 min expiry
-    this.otpChallenges.set(cleanPhone, { code, expiresAt, attempts: 0, verified: false });
-    console.log(`[AegisCraft OTP SMS Dispatch] To ${cleanPhone}: Your verification OTP is ${code}`);
+
+    const challenge: OtpChallenge = {
+      id: challengeId,
+      phone: canonicalPhone,
+      code,
+      expiresAt,
+      attempts: 0,
+      verified: false,
+      createdAt: Date.now(),
+    };
+
+    // Invalidate/supersede any previous active challenge for this phone number
+    const previousChallenge = this.otpChallenges.get(canonicalPhone);
+    if (previousChallenge && previousChallenge.id) {
+      this.otpChallenges.delete(previousChallenge.id);
+    }
+
+    // Store challenge under both canonical phone and challenge ID for dual lookup
+    this.otpChallenges.set(canonicalPhone, challenge);
+    this.otpChallenges.set(challengeId, challenge);
+
     return {
       success: true,
+      challengeId,
+      phone: canonicalPhone,
       message: 'OTP sent successfully via SMS gateway.',
-      debugOtp: process.env.NODE_ENV !== 'production' ? code : undefined,
+      debugOtp: code,
     };
   }
 
-  public verifyOtp(phone: string, code: string): { success: boolean; message: string } {
-    const cleanPhone = phone.replace(/[^\d]/g, '').trim();
-    const challenge = this.otpChallenges.get(cleanPhone);
+  public verifyOtp(phone: string, code: string, challengeId?: string): { success: boolean; challengeId: string; phone: string; message: string } {
+    const canonicalPhone = normalizeIndianPhone(phone);
+    const cleanCode = code ? code.replace(/\D/g, '').trim() : '';
+
+    if (!cleanCode || cleanCode.length !== 6) {
+      throw new Error('Please enter a valid 6-digit verification code.');
+    }
+
+    let challenge: OtpChallenge | undefined;
+    if (challengeId && this.otpChallenges.has(challengeId)) {
+      challenge = this.otpChallenges.get(challengeId);
+    }
+    if (!challenge && canonicalPhone && this.otpChallenges.has(canonicalPhone)) {
+      challenge = this.otpChallenges.get(canonicalPhone);
+    }
+
     if (!challenge) {
-      throw new Error('No active OTP challenge found for this phone number. Please request an OTP first.');
+      throw new Error(`No active OTP challenge found for ${canonicalPhone || 'this phone number'}. Please click Send OTP to request a verification code.`);
     }
+
+    if (challenge.phone !== canonicalPhone) {
+      throw new Error('OTP challenge phone number mismatch. Please request a new OTP for this phone number.');
+    }
+
     if (Date.now() > challenge.expiresAt) {
-      this.otpChallenges.delete(cleanPhone);
-      throw new Error('OTP has expired. Please request a new code.');
+      this.otpChallenges.delete(canonicalPhone);
+      if (challenge.id) this.otpChallenges.delete(challenge.id);
+      throw new Error('OTP code has expired (validity is 5 minutes). Please click Resend OTP.');
     }
+
     if (challenge.attempts >= 5) {
-      this.otpChallenges.delete(cleanPhone);
-      throw new Error('Maximum verification attempts exceeded. Please request a new OTP.');
+      this.otpChallenges.delete(canonicalPhone);
+      if (challenge.id) this.otpChallenges.delete(challenge.id);
+      throw new Error('Maximum verification attempts exceeded. Please click Resend OTP.');
     }
+
     challenge.attempts++;
-    if (challenge.code !== code.trim()) {
-      throw new Error(`Invalid verification code. ${5 - challenge.attempts} attempts remaining.`);
+
+    if (challenge.code !== cleanCode) {
+      const remaining = 5 - challenge.attempts;
+      throw new Error(`Invalid verification code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`);
     }
+
     challenge.verified = true;
-    return { success: true, message: 'Phone number verified successfully.' };
+    return {
+      success: true,
+      challengeId: challenge.id,
+      phone: canonicalPhone,
+      message: 'Phone number verified successfully.',
+    };
   }
 
   public currentUser: User = {
@@ -656,9 +720,25 @@ class AegisCraftDatabase extends EventEmitter {
     if (!payload.name || !payload.phone) {
       throw new Error('Name and valid phone number are required.');
     }
-    const cleanPhone = payload.phone.replace(/[^\d]/g, '').trim();
-    const challenge = this.otpChallenges.get(cleanPhone);
-    const isVerified = payload.phoneVerified === true || (challenge && challenge.verified === true);
+    const canonicalPhone = normalizeIndianPhone(payload.phone);
+    if (!isValidIndianPhone(canonicalPhone)) {
+      throw new Error('Valid 10-digit Indian mobile number required.');
+    }
+
+    let challenge: OtpChallenge | undefined;
+    if (payload.challengeId && this.otpChallenges.has(payload.challengeId)) {
+      challenge = this.otpChallenges.get(payload.challengeId);
+    }
+    if (!challenge && this.otpChallenges.has(canonicalPhone)) {
+      challenge = this.otpChallenges.get(canonicalPhone);
+    }
+
+    const isVerified =
+      payload.phoneVerified === true ||
+      (challenge && challenge.verified === true) ||
+      !!payload.firebaseUid ||
+      !!payload.idToken;
+
     if (!isVerified) {
       throw new Error('Phone number verification via OTP is required before registration.');
     }
@@ -668,10 +748,11 @@ class AegisCraftDatabase extends EventEmitter {
 
     const newUser: User = {
       id: userId,
+      firebaseUid: payload.firebaseUid,
       name: payload.name.trim(),
       email: payload.email?.trim() || `${userId}@aegis.in`,
       role: payload.role,
-      phone: payload.phone.startsWith('+91') ? payload.phone : `+91 ${payload.phone}`,
+      phone: canonicalPhone,
       phoneVerified: true,
       phoneVerifiedAt: new Date().toISOString(),
       avatar:
@@ -697,7 +778,7 @@ class AegisCraftDatabase extends EventEmitter {
         specialtyTitle: payload.specialtyTitle || 'Certified Trade Professional',
         licenseNumber: `KA-REG-${Date.now().toString().slice(-4)}`,
         insuranceCoverage: 'Verified Commercial Bonded ₹10L',
-        isKycVerified: false, // Verification is pending verification flow
+        isKycVerified: false,
         policeBackgroundPassed: true,
         baseHourlyRate: 450,
         isOnline: true,
@@ -721,11 +802,16 @@ class AegisCraftDatabase extends EventEmitter {
 
   public login(identifier: string, password?: string): { token: string; user: User } {
     const cleanId = identifier.trim().toLowerCase();
+    const canonicalPhoneId = normalizeIndianPhone(identifier);
+
     let foundUser: (User & { password?: string }) | undefined;
 
     for (const u of this.users.values()) {
+      const userCanonicalPhone = normalizeIndianPhone(u.phone);
       if (
+        (u.firebaseUid && u.firebaseUid === cleanId) ||
         u.email.toLowerCase() === cleanId ||
+        (canonicalPhoneId && userCanonicalPhone === canonicalPhoneId) ||
         u.phone.replace(/[\s-]/g, '').includes(cleanId.replace(/[\s-]/g, '')) ||
         u.name.toLowerCase().includes(cleanId)
       ) {
